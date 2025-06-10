@@ -1,0 +1,386 @@
+@charset "UTF-8";
+* {
+  margin: 0px;
+  padding: 0px;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  font-family: "Geist", sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+}
+
+.desac {
+  display: none !important;
+}
+
+/* variables para el DOM en general.<-----------------------------------------------------------> */
+:root {
+  --color-fondo: #ffffff;
+  --color-texto: #000000;
+  --Fondo_principal: #ffffff;
+  --Texto_principal: #333333;
+  --Texto_secundario: #616161;
+  --Encabezados_botones_y_primarios: #3e86d3;
+  --Botones_secundarios_o_hover_azul: #7ab8ff;
+  --Botones_secundarios_o_hover_verde: #a8d08d;
+  --fondo_azul_claro: rgba(165, 190, 245, 0.336);
+  --fondo_azul_claro_hv: rgba(152, 176, 228, 0.336);
+  --hover_card: #e0f0ff;
+  --box_shadow: #c5c5c5;
+  --box_shadow_2: #ffffff;
+  --back_card: #e0f0ff17;
+}
+
+:root[data-tema="oscuro"] {
+  --color-fondo: #121212;
+  --color-texto: #f0f0f0;
+  --Fondo_principal: #1e1e1e;
+  --Texto_principal: #dddddd;
+  --Texto_secundario: #b6b6b6;
+  --Encabezados_botones_y_primarios: #3e86d3;
+  --Botones_secundarios_o_hover_azul: #7ab8ff;
+  --Botones_secundarios_o_hover_verde: #c1e7aa;
+  --fondo_azul_claro: rgba(93, 113, 155, 0.336);
+  --box_shadow: rgba(0, 0, 0, 0.7);
+  --box_shadow_2: rgba(0, 0, 0, 0.7);
+  --hover_card: rgb(26, 26, 26);
+  --back_card: #2e2e2e32;
+}
+
+body {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: justify !important;
+      -ms-flex-pack: justify !important;
+          justify-content: space-between !important;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  overflow-x: hidden;
+  gap: 0;
+  margin: 0;
+  height: 100%;
+  overflow-y: hidden;
+  width: 100% !important;
+  background-color: var(--Fondo_principal);
+}
+
+body header {
+  height: 10vh;
+  width: 100vw;
+  position: fixed;
+  z-index: 1000;
+  background-color: var(--Fondo_principal) !important;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
+}
+
+body header.reducir {
+  height: 50px;
+}
+
+body header.reducir #cont_nav_tit img {
+  height: 100%;
+  width: 100%;
+}
+
+body header nav {
+  padding-left: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  height: 100%;
+  width: 100%;
+}
+
+body header nav #cont_nav_tit {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: 3px;
+  height: 100%;
+}
+
+body header nav #cont_nav_tit i {
+  height: 60px;
+  width: 60px;
+  padding: 10px;
+  width: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  font-size: 1.6em;
+  background-color: var(--fondo_azul_claro);
+  color: white;
+  border-radius: 8px;
+}
+
+body header nav #cont_nav_tit h3 {
+  font-size: 2em;
+  color: red;
+}
+
+body header nav #cont_nav_links {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  padding: 30px;
+  height: auto;
+  height: 100%;
+  gap: 20px;
+}
+
+body header nav #cont_nav_links a {
+  border-radius: 10px;
+  padding: 10px 20px;
+  -webkit-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
+  color: white;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+body header nav #cont_nav_links a .desac {
+  display: none;
+}
+
+body header nav #cont_nav_links a:hover {
+  -webkit-animation: shake 0.5s ease;
+          animation: shake 0.5s ease;
+  background-color: #5a98db;
+}
+
+#login {
+  /* Fondo de la página */
+  /* Filtro de color azul */
+}
+
+#login main {
+  height: auto;
+  width: auto;
+  min-width: 100vw;
+  min-height: 100vh;
+}
+
+#login .background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: url("/Resources/Imagenes/fondo.png");
+  z-index: -1;
+}
+
+#login .overlay {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-backdrop-filter: blur(8px);
+          backdrop-filter: blur(8px);
+  background-color: rgba(0, 47, 108, 0.384);
+  /* Color azul con transparencia */
+  z-index: -1;
+}
+
+#login form {
+  min-height: 600px;
+  height: auto;
+  width: 450px;
+  background-color: #fcfcfc;
+  padding: 0px 0px;
+  border-radius: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+#login form .cont_logo {
+  padding: 10px;
+  width: 100%;
+  height: auto;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding: auto;
+  border-bottom: 1px solid rgba(131, 131, 131, 0.253);
+}
+
+#login form .cont_logo img {
+  height: 100px;
+  width: 100px;
+}
+
+#login form #cont_main_inputs {
+  padding: 50px 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  height: 100%;
+}
+
+#login form #cont_main_inputs .cont_input {
+  width: 70%;
+  height: 60px;
+  gap: 5px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  border: 1px solid rgba(128, 128, 128, 0.253);
+  border-radius: 30px;
+  padding: 20px;
+  -webkit-transition: all .1s ease-in-out;
+  transition: all .1s ease-in-out;
+}
+
+#login form #cont_main_inputs .cont_input #contra {
+  cursor: pointer;
+}
+
+#login form #cont_main_inputs .cont_input input {
+  color: rgba(128, 128, 128, 0.253);
+  border: none;
+  background-color: transparent;
+  outline: none;
+  width: 100%;
+  height: 20px;
+  font-size: 1em !important;
+  color: black;
+}
+
+#login form #cont_main_inputs button {
+  width: 70%;
+  height: 60px;
+  font-weight: bolder;
+  background-color: #3737f3;
+  color: white;
+  border-radius: 30px;
+  border: none;
+  cursor: pointer;
+  -webkit-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
+}
+
+#login form #cont_main_inputs button:hover {
+  background-color: #2626f5;
+}
+
+#login form #cont_main_inputs a {
+  text-decoration: none;
+}
+
+@media (max-width: 770px) {
+  #login form {
+    min-height: 500px;
+    height: auto;
+    max-height: 90%;
+    width: 90%;
+  }
+  #login form #cont_main_inputs .cont_input {
+    height: 40px;
+    width: 90%;
+  }
+  #login form #cont_main_inputs button {
+    height: 40px;
+    width: 90%;
+  }
+}
+/*# sourceMappingURL=estilo.css.map */
