@@ -7,14 +7,17 @@
             </title>
     </head>
 <body id="login"> 
+    <%- include('header.ejs') %>
     <main class="background" >
         <div class="overlay">
 
             <form method="post" action="/iniciar_sesion">
                 <div class="cont_logo">
-                    <img src="resources/imagenes/logo_ludi.png" alt="">
+                    <h2 class="titulo-form">Iniciar sesión</h2>
+                    <p class="descripcion-form">Ingresa a tu cuenta para gestionar tus reservas</p>
                 </div>
                 <div id="cont_main_inputs">
+                    
                     <div class="cont_input">
                         <input name="user_name" type="text" placeholder="Nombre de usuario">
                     </div>
