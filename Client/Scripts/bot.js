@@ -152,7 +152,7 @@ document.addEventListener('DOMContentLoaded', initializeBot);
 
 // También inicializar cuando la ventana se carga completamente (por si acaso)
 window.addEventListener('load', () => {
-    if (!chatMessages.hasChildNodes()) {
+    if (!chatMessages || !chatMessages.hasChildNodes()) {
         initializeBot();
     }
 });
