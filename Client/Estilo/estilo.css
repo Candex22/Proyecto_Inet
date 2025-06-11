@@ -17,6 +17,7 @@
 :root {
   --color-fondo: #ffffff;
   --color-texto: #000000;
+  --azul_oscuro: #2B476C;
   --Fondo_principal: #ffffff;
   --Texto_principal: #333333;
   --Texto_secundario: #616161;
@@ -107,9 +108,8 @@ body header nav {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
   -webkit-box-align: start;
       -ms-flex-align: start;
           align-items: flex-start;
@@ -132,7 +132,10 @@ body header nav #cont_nav_tit {
       -ms-flex-align: center;
           align-items: center;
   padding: 3px;
+  gap: 4px;
   height: 100%;
+  text-decoration: none;
+  width: 30%;
 }
 
 body header nav #cont_nav_tit i {
@@ -150,14 +153,37 @@ body header nav #cont_nav_tit i {
       -ms-flex-pack: center;
           justify-content: center;
   font-size: 1.6em;
-  background-color: var(--fondo_azul_claro);
+  background-color: var(--azul_oscuro);
   color: white;
   border-radius: 8px;
 }
 
 body header nav #cont_nav_tit h3 {
+  text-decoration: none;
   font-size: 2em;
-  color: red;
+  color: var(--azul_oscuro);
+}
+
+body header nav .secciones_nav {
+  width: 40%;
+  height: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 30px;
+  text-decoration: none;
+}
+
+body header nav .secciones_nav a {
+  font-weight: 500;
+  color: var(--azul_oscuro);
+  text-decoration: none;
 }
 
 body header nav #cont_nav_links {
@@ -176,6 +202,7 @@ body header nav #cont_nav_links {
   padding: 30px;
   height: auto;
   height: 100%;
+  width: 30%;
   gap: 20px;
 }
 
@@ -184,9 +211,26 @@ body header nav #cont_nav_links a {
   padding: 10px 20px;
   -webkit-transition: all .2s ease-in-out;
   transition: all .2s ease-in-out;
-  color: white;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 3px;
+  color: var(--azul_oscuro);
   font-weight: 600;
   text-decoration: none;
+  background-color: white;
+  border: 1px solid var(--azul_oscuro);
+}
+
+body header nav #cont_nav_links a#admin_btn {
+  background-color: var(--azul_oscuro);
+  color: white;
 }
 
 body header nav #cont_nav_links a .desac {
@@ -196,7 +240,111 @@ body header nav #cont_nav_links a .desac {
 body header nav #cont_nav_links a:hover {
   -webkit-animation: shake 0.5s ease;
           animation: shake 0.5s ease;
-  background-color: #5a98db;
+  background-color: #0f1e2e28;
+}
+
+body main {
+  height: auto;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-align: start;
+      -ms-flex-align: start;
+          align-items: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+}
+
+body main #cont_presentacion {
+  height: 100vh;
+  width: 100%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 20px;
+  background: radial-gradient(circle at 20% 30%, rgba(64, 92, 130, 0.25) 0%, transparent 40%), radial-gradient(circle at 85% 70%, rgba(140, 180, 210, 0.2) 0%, transparent 40%), linear-gradient(135deg, #1e2f4b 0%, #3b4e6d 100%);
+  background-repeat: no-repeat;
+  background-size: cover;
+  -webkit-filter: blur(0px);
+          filter: blur(0px);
+}
+
+body main #cont_presentacion h2 {
+  font-size: 4.4em;
+  width: 65%;
+  font-weight: 800;
+  text-align: center;
+  background: -webkit-gradient(linear, left top, left bottom, from(#ffffff), to(#cfd8e3));
+  background: linear-gradient(to bottom, #ffffff 0%, #cfd8e3 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+body main #cont_presentacion h4 {
+  color: #c4c4c4;
+  font-size: 2em;
+  width: 60%;
+  text-align: center;
+}
+
+body main #cont_presentacion #cont_btns_pres {
+  width: 30%;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  gap: 10px;
+  -ms-flex-pack: distribute;
+      justify-content: space-around;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+}
+
+body main #cont_presentacion #cont_btns_pres .btn_pres {
+  background: linear-gradient(135deg, #1f3558, #2d4c75);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 999px;
+  font-weight: 600;
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 0.5rem;
+  -webkit-box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+          box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  -webkit-transition: all 0.3s ease;
+  transition: all 0.3s ease;
+  text-decoration: none;
+}
+
+body main #cont_presentacion #cont_btns_pres .btn_pres:hover {
+  background: linear-gradient(135deg, #26456b, #3a5c8b);
+}
+
+body main #cont_presentacion #cont_btns_pres #btn_ofertas {
+  background-color: rgba(255, 0, 0, 0.24) !important;
+  border: 1px solid rgba(255, 255, 255, 0.158);
 }
 
 #login {
