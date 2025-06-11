@@ -1,3 +1,22 @@
+const dotenv = require('dotenv');
+
+// Antes: import { createClient } from '@supabase/supabase-js';
+const { createClient } = require('@supabase/supabase-js');
+
+dotenv.config();
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceRoleKey) {
+    console.error('ERROR: Las variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no están definidas.');
+    process.exit(1);
+}
+
+const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+
+
+
 const express = require('express')
 const app = express()
 
@@ -61,9 +80,9 @@ const isLogged = (req, res, next) => {
 }
 app.get('/', (req, res) => {
     // Mientras este en produccion para ahorrar tiempo
-     res.redirect('/index');
+    // res.redirect('/index');
 
-    //res.redirect('/login')
+    res.redirect('/login')
 
 })
 
@@ -74,100 +93,105 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register', { session: req.session });
 })
-app.get('/index', (req, res) => {
+app.get('/index', async (req, res) => {
+
     res.render('index', { session: req.session });
 })
 
 app.post('/registrar', async (req, res) => {
     try {
+        console.log('1. Solicitud de registro recibida.');
         const { nombre_us, apellido_us, nombre_usuario_us, email_us, password_us } = req.body;
-
+        console.log('2. Datos del formulario:', { nombre_us, email_us });
 
         const hash = await hashPassword(password_us);
-        const insert_usuario = "INSERT INTO usuarios ( nombre , apellido , nombre_usuario , email , contraseña, rol) VALUES (?,?,?,?,?,?)";
+        console.log('3. Contraseña hasheada.');
 
-        connection.query(insert_usuario, [nombre_us, apellido_us, nombre_usuario_us, email_us, hash, "usuario"], (err, result) => {
-            if (err) {
-                console.error('Error al registrarse ', err);
-                res.status(500).send('Error al registrarse ');
-            } else {
-                const info_us = "SELECT `usuario_id` FROM `usuarios` WHERE 1 ORDER BY `usuario_id` DESC";
-                connection.query(info_us, [], (err, result_id) => {
-                    if (err) {
-                        console.error('Error al registrarse ', err);
-                        res.status(500).send('Error al registrarse ');
-                    } else {
+        console.log('4. Intentando insertar en Supabase...');
+        const { data: insert_users, error } = await supabase
+            .from('Usuarios') // ¡Asegúrate de que es 'Usuario' o 'usuarios' según tu tabla real!
+            .insert([
+                {
+                    nombre: nombre_us,
+                    apellido: apellido_us,
+                    nombre_usuario: nombre_usuario_us,
+                    email: email_us,
+                    contraseña: hash, // O 'contrasena' si cambiaste el nombre de la columna
+                    rol: 'usuario'
+                }
+            ])
+            .select();
 
-
-                        req.session.usuario_id = result_id[0].usuario_id + 1;
-                        req.session.nombre_us = nombre_us
-                        req.session.apellido_us = apellido_us
-                        req.session.nombre_usuario_us = nombre_usuario_us
-                        req.session.email_us = email_us
-                        req.session.password_us = password_us
-                        req.session.rol_us = "usuario"
-                        req.session.user_sesion = true;
-                        res.redirect('/index');
-                    }
-                })
-
+        if (error) {
+            console.error('❌ Error en Supabase:', error);
+            // Intenta enviar más detalles si el error es {}
+            if (Object.keys(error).length === 0) {
+                console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
             }
-        })
+            return res.render('login.ejs', { error: 'Error al registrar el usuario.' });
+        }
 
+        console.log('5. Inserción exitosa en Supabase.');
+        const nuevoUsuario = insert_users[0];
+        // ... (resto del código de sesión)
+        console.log('6. Sesión creada. Redirigiendo a /index.');
+        return res.redirect('/index');
     } catch (err) {
-        console.error('Error en la consulta:', err);
-        res.render('register', { error: 'Ocurrio un error al monento de registrase' });
+        console.error('❌ Error general en /registrar:', err);
+        res.render('register', { error: 'Ocurrió un error al registrarse.' });
     }
-
-
-})
+});
 
 /* <---------------------------------------------------------------->*/
 app.post('/iniciar_sesion', async (req, res) => {
     try {
         const { user_name, password } = req.body;
 
-        // Si no se envían credenciales,  renderiza la vista sin error
         if (!user_name?.trim() || !password?.trim()) {
-
             return res.render('login.ejs', { error: 'Por favor, completa todos los campos.' });
         }
 
-        const query_ini = 'SELECT * FROM `usuarios` WHERE nombre_usuario =?';
-        const [userResults] = await connection.promise().query(query_ini, [user_name]);
+        // Buscar usuario en Supabase
+        const { data: userResults, error } = await supabase
+            .from('Usuarios') // o 'usuario', depende cómo se llame realmente
+            .select('*')
+            .eq('nombre_usuario', user_name)
 
-        if (userResults.length === 0) {
+        if (error) {
+            console.error('Error en consulta Supabase:', error)
+            return res.render('login.ejs', { error: 'Error al verificar los datos.' });
+        }
+
+        if (!userResults || userResults.length === 0) {
             return res.render('login.ejs', { error: 'Usuario o contraseña incorrectos' });
         }
 
-        const hashedPassword = userResults[0].contraseña;
-        const isMatch = await verifyPassword(password, hashedPassword);
-        if (isMatch) {
-            req.session.usuario_id = userResults[0].usuario_id;
-            req.session.nombre_us = userResults[0].nombre;
-            req.session.apellido_us = userResults[0].apellido;
-            req.session.nombre_usuario_us = userResults[0].nombre_usuario;
-            req.session.email_us = userResults[0].email;
-            req.session.password_us = userResults[0].contraseña;
-            req.session.rol_us = userResults[0].rol;
-            req.session.user_sesion = true;
-            if (req.session.rol_us == "root") {
-                req.session.root = true;
-                return res.redirect('/dashboard');
+        const usuario = userResults[0]
+        const hashedPassword = usuario.contraseña
 
-            } else {
-                req.session.root = false;
-                return res.redirect('/index');
-            }
+        const isMatch = await verifyPassword(password, hashedPassword)
 
-        } else {
+        if (!isMatch) {
             return res.render('login.ejs', { error: 'Usuario o contraseña incorrectos' });
         }
+
+        // Iniciar sesión
+        req.session.usuario_id = usuario.ID_usuario
+        req.session.nombre_us = usuario.nombre
+        req.session.apellido_us = usuario.apellido
+        req.session.nombre_usuario_us = usuario.nombre_usuario
+        req.session.email_us = usuario.email
+        req.session.password_us = usuario.contraseña
+        req.session.rol_us = usuario.rol
+        req.session.user_sesion = true
+        req.session.root = usuario.rol === 'root'
+
+        return res.redirect(req.session.root ? '/dashboard' : '/index')
+
     } catch (err) {
         console.error('Error en inicio de sesión:', err);
         return res.render('login.ejs', { error: 'Error al verificar los datos' });
     }
-
 })
 
 
