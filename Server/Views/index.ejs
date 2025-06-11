@@ -21,7 +21,32 @@
                     <a href="#" class="btn_pres" id="btn_ofertas">Ver ofertas Especiales</a>
                 </div>
             </section>
-
+            <div class="floating-chat-container">
+                <div class="chat-window" id="chatWindow">
+                    <div class="chat-header">
+                        <button class="chat-close" id="chatClose">
+                            <i class="fas fa-times"></i>
+                        </button>
+                        <h3>Asistente TravelPortal</h3>
+                        <div class="status">En línea</div>
+                    </div>
+                    
+                    <div class="chat-messages" id="chatMessages">
+                        <!-- Aca van los mensajes -->
+                    </div>
+                    
+                    <div class="chat-input-container">
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu mensaje...">
+                        <button class="send-btn" id="sendBtn">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <button class="chat-toggle-btn" id="chatToggle">
+                    <i class="fas fa-comments"></i>
+                </button>
+            </div>
         </main>
         <%- include('footer.ejs') %>
             <script src="Scripts/app.js"></script>
