@@ -110,15 +110,6 @@ body {
 
         &.reducir {
             height: 50px;
-
-            #cont_nav_tit {
-
-                img {
-
-                    height: 100%;
-                    width: 100%;
-                }
-            }
         }
 
         nav {
@@ -135,21 +126,23 @@ body {
                 justify-content: center;
                 align-items: center;
                 padding: 3px;
-                gap: 4px;
+                gap: 10px;
                 height: 100%;
+                width: auto;
                 text-decoration: none;
+
 
                 width: 30%;
 
                 i {
-                    height: 60px;
-                    width: 60px;
+                    height: 30px;
+                    width: 30px;
                     padding: 10px;
                     width: auto;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 1.6em;
+                    font-size: 1em;
                     background-color: var(--azul_oscuro);
                     color: white;
                     border-radius: 8px;
@@ -204,7 +197,7 @@ body {
                     text-decoration: none;
                     background-color: white;
                     border: 1px solid var(--azul_oscuro);
-
+                    transition: all .2s ease-in-out;
                     &#admin_btn {
                         background-color: var(--azul_oscuro);
                         color: white;
@@ -215,8 +208,8 @@ body {
                     }
 
                     &:hover {
-                        animation: shake 0.5s ease;
-                        background-color: #0f1e2e28;
+                        background-color: var(--azul_oscuro);
+                        color: white;
                     }
                 }
 
@@ -308,7 +301,7 @@ body {
             align-items: center;
 
             width: 100%;
-            padding: 2rem 1rem;
+            padding: 80px;
             background-color: #f9fafd;
             border: 1px solid #e0e6ed;
 
@@ -358,16 +351,19 @@ body {
                 }
 
                 h2 {
-                    font-size: 2.2rem;
+                    font-size: 3.2em;
                     font-weight: 700;
                     color: #1b2d4f;
                     margin: 0.5rem 0;
+                      text-align: center;
                 }
 
                 p {
                     color: #5c6e7f;
-                    font-size: 1rem;
+                    font-size: 1.4em;
                     max-width: 600px;
+                    width: 60%;
+                    text-align: center;
                     margin: 0 auto;
                 }
             }
@@ -739,7 +735,7 @@ body {
             }
         }
 
-       
+
     }
 
     // Responsive adjustments

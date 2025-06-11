@@ -75,10 +75,6 @@ body header {
 body header.reducir {
   height: 50px;
 }
-body header.reducir #cont_nav_tit img {
-  height: 100%;
-  width: 100%;
-}
 body header nav {
   padding-left: 20px;
   display: flex;
@@ -93,20 +89,21 @@ body header nav #cont_nav_tit {
   justify-content: center;
   align-items: center;
   padding: 3px;
-  gap: 4px;
+  gap: 10px;
   height: 100%;
+  width: auto;
   text-decoration: none;
   width: 30%;
 }
 body header nav #cont_nav_tit i {
-  height: 60px;
-  width: 60px;
+  height: 30px;
+  width: 30px;
   padding: 10px;
   width: auto;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6em;
+  font-size: 1em;
   background-color: var(--azul_oscuro);
   color: white;
   border-radius: 8px;
@@ -154,6 +151,7 @@ body header nav #cont_nav_links a {
   text-decoration: none;
   background-color: white;
   border: 1px solid var(--azul_oscuro);
+  transition: all 0.2s ease-in-out;
 }
 body header nav #cont_nav_links a#admin_btn {
   background-color: var(--azul_oscuro);
@@ -163,8 +161,8 @@ body header nav #cont_nav_links a .desac {
   display: none;
 }
 body header nav #cont_nav_links a:hover {
-  animation: shake 0.5s ease;
-  background-color: rgba(15, 30, 46, 0.1568627451);
+  background-color: var(--azul_oscuro);
+  color: white;
 }
 body main {
   height: auto;
@@ -237,7 +235,7 @@ body main .stats-section {
   justify-content: space-around;
   align-items: center;
   width: 100%;
-  padding: 2rem 1rem;
+  padding: 80px;
   background-color: #f9fafd;
   border: 1px solid #e0e6ed;
 }
@@ -281,15 +279,18 @@ body main .featured-destinations .section-header .badge {
   font-weight: 600;
 }
 body main .featured-destinations .section-header h2 {
-  font-size: 2.2rem;
+  font-size: 3.2em;
   font-weight: 700;
   color: #1b2d4f;
   margin: 0.5rem 0;
+  text-align: center;
 }
 body main .featured-destinations .section-header p {
   color: #5c6e7f;
-  font-size: 1rem;
+  font-size: 1.4em;
   max-width: 600px;
+  width: 60%;
+  text-align: center;
   margin: 0 auto;
 }
 body main .featured-destinations .cards-container {
