@@ -225,3 +225,5 @@ function Datatime() {
 
     return `${year}-${month}-${day}`;
 }
+
+app.use('/Scripts', express.static(path.join(__dirname, '../Client/Scripts')));
