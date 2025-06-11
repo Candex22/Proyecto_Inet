@@ -1,4 +1,3 @@
-// Los datos del "manual" incrustados directamente en el JavaScript
 const helpData = [
     {
         "id": "registro_cliente",
@@ -38,10 +37,65 @@ const helpData = [
     }
 ];
 
-const userInput = document.getElementById('user-input');
-const sendButton = document.getElementById('send-button');
-const chatMessages = document.getElementById('chat-messages');
+// Variables globales para los elementos del DOM
+let chatToggle, chatWindow, chatClose, chatInput, sendBtn, chatMessages;
 
+// Función para inicializar el bot cuando el DOM esté listo
+function initializeBot() {
+    // Obtener referencias a los elementos del DOM con los IDs correctos
+    chatToggle = document.getElementById('chatToggle');
+    chatWindow = document.getElementById('chatWindow');
+    chatClose = document.getElementById('chatClose');
+    chatInput = document.getElementById('chatInput');
+    sendBtn = document.getElementById('sendBtn');
+    chatMessages = document.getElementById('chatMessages');
+
+    // Verificar que todos los elementos existan
+    if (!chatToggle || !chatWindow || !chatClose || !chatInput || !sendBtn || !chatMessages) {
+        console.error('Error: No se encontraron todos los elementos del chat');
+        return;
+    }
+
+    // Event listeners para abrir/cerrar el chat
+    chatToggle.addEventListener('click', toggleChat);
+    chatClose.addEventListener('click', closeChat);
+
+    // Event listeners para enviar mensajes
+    sendBtn.addEventListener('click', sendMessage);
+    chatInput.addEventListener('keypress', handleKeyPress);
+
+    // Mensaje de bienvenida
+    addMessage("¡Hola! Soy tu asistente de TravelPortal. ¿En qué puedo ayudarte hoy?", "bot");
+}
+
+// Función para alternar la visibilidad del chat
+function toggleChat() {
+    if (chatWindow.classList.contains('active')) {
+        closeChat();
+    } else {
+        openChat();
+    }
+}
+
+// Función para abrir el chat
+function openChat() {
+    chatWindow.classList.add('active');
+    chatInput.focus();
+}
+
+// Función para cerrar el chat
+function closeChat() {
+    chatWindow.classList.remove('active');
+}
+
+// Función para manejar la tecla Enter
+function handleKeyPress(event) {
+    if (event.key === 'Enter') {
+        sendMessage();
+    }
+}
+
+// Función para agregar mensajes al chat
 function addMessage(text, sender) {
     const messageDiv = document.createElement('div');
     messageDiv.classList.add('message', `${sender}-message`);
@@ -50,6 +104,7 @@ function addMessage(text, sender) {
     chatMessages.scrollTop = chatMessages.scrollHeight; // Auto-scroll
 }
 
+// Función para obtener la respuesta del bot
 function getBotResponse(userQuery) {
     const lowerCaseQuery = userQuery.toLowerCase();
 
@@ -69,28 +124,35 @@ function getBotResponse(userQuery) {
     }
 
     // Mensaje de respuesta por defecto si no se encuentra nada
-    return "Disculpa, no pude encontrar una respuesta específica para tu pregunta. Por favor, intenta reformularla o sé más preciso. Puedes preguntar sobre: registro de clientes, gestión del carrito, pedidos pendientes, y para el personal de ventas: carga de productos, entregas, anulación de pedidos y estado de cuenta.";
+    return "Disculpa, no pude encontrar una respuesta específica para tu pregunta. Por favor, intenta reformularla o sé más preciso. Puedes preguntar sobre: registro de clientes, selección de paquetes, reservas, destinos populares, formas de pago y contacto.";
 }
 
+// Función para enviar mensajes
 function sendMessage() {
-    const query = userInput.value.trim();
+    const query = chatInput.value.trim();
     if (query === '') return;
 
-    addMessage(query, 'user'); // Muestra el mensaje del usuario
-    userInput.value = ''; // Limpia el input
+    // Deshabilitar el botón mientras se procesa
+    sendBtn.disabled = true;
 
-    const botAnswer = getBotResponse(query);
-    addMessage(botAnswer, 'bot'); // Muestra la respuesta del bot
+    addMessage(query, 'user'); // Muestra el mensaje del usuario
+    chatInput.value = ''; // Limpia el input
+
+    // Simular un pequeño delay para que parezca más natural
+    setTimeout(() => {
+        const botAnswer = getBotResponse(query);
+        addMessage(botAnswer, 'bot'); // Muestra la respuesta del bot
+        sendBtn.disabled = false; // Rehabilitar el botón
+        chatInput.focus(); // Volver a enfocar el input
+    }, 500);
 }
 
-sendButton.addEventListener('click', sendMessage);
-userInput.addEventListener('keypress', (event) => {
-    if (event.key === 'Enter') {
-        sendMessage();
+// Inicializar el bot cuando el DOM esté completamente cargado
+document.addEventListener('DOMContentLoaded', initializeBot);
+
+// También inicializar cuando la ventana se carga completamente (por si acaso)
+window.addEventListener('load', () => {
+    if (!chatMessages.hasChildNodes()) {
+        initializeBot();
     }
 });
-
-// Opcional: una función para mostrar un mensaje de bienvenida al cargar
-window.onload = () => {
-     addMessage("¡Hola! Soy tu asistente de ayuda para la aplicación de paquetes turísticos. ¿En qué puedo ayudarte hoy?", "bot");
-};
