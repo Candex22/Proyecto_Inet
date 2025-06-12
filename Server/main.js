@@ -83,6 +83,10 @@ app.get('/login', (req, res) => {
     res.render('login', { session: req.session });
 })
 
+app.get('/administrador', (req, res) => {
+    res.render('administrador', { session: req.session });
+})
+
 app.get('/register', (req, res) => {
     res.render('register', { session: req.session });
 })
@@ -278,3 +282,4 @@ function Datatime() {
 }
 
 app.use('/Scripts', express.static(path.join(__dirname, '../Client/Scripts')));
+app.use('/administrador', express.static(path.join(__dirname, '../Client')));
