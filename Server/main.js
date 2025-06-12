@@ -1,19 +1,20 @@
-const dotenv = require('dotenv');
+// config/supabase.js (o similar)
+require('dotenv').config();
 
-// Antes: import { createClient } from '@supabase/supabase-js';
 const { createClient } = require('@supabase/supabase-js');
 
-dotenv.config();
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseKey = process.env.SUPABASE_ANON_KEY; // O SUPABASE_SERVICE_ROLE_KEY si es necesario
 
-if (!supabaseUrl || !supabaseServiceRoleKey) {
-    console.error('ERROR: Las variables de entorno SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY no están definidas.');
+if (!supabaseUrl || !supabaseKey) {
+    console.error("ERROR: Las variables de entorno SUPABASE_URL o SUPABASE_KEY no están definidas.");
+    // Considera salir del proceso o manejar el error de otra forma
     process.exit(1);
 }
 
-const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+const supabase = createClient(supabaseUrl, supabaseKey);
 
+module.exports = supabase;
 
 
 
@@ -55,15 +56,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/resources', express.static(path.join(__dirname, '../Client/Resources')));
 
-// Conexión a la base de datos
 
-const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'BD',
-    port: 3306
-});
 
 // Encender servidor
 app.listen(PORT, () => {
@@ -80,9 +73,9 @@ const isLogged = (req, res, next) => {
 }
 app.get('/', (req, res) => {
     // Mientras este en produccion para ahorrar tiempo
-    // res.redirect('/index');
+    res.redirect('/index');
 
-    res.redirect('/login')
+    // res.redirect('/login')
 
 })
 
@@ -93,9 +86,66 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     res.render('register', { session: req.session });
 })
-app.get('/index', async (req, res) => {
 
-    res.render('index', { session: req.session });
+
+app.get('/index', async (req, res) => {
+    let { data: reseñas, error } = await supabase
+        .from('reseñas')
+        .select('*')
+    if (error) {
+        console.error('❌ Error en Supabase:ss', error);
+        // Intenta enviar más detalles si el error es {}
+        if (Object.keys(error).length === 0) {
+            console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
+        }
+        return res.render('login.ejs', { error: 'Error al registrar el usuario.' });
+    } else {
+        // Objeto para almacenar el resumen por paquete
+        let resumenPaquetes = {};
+
+        // Iterar sobre cada reseña para acumular los datos
+        for (let i = 0; i < reseñas.length; i++) {
+            const reseña = reseñas[i];
+            const idPaquete = reseña.id_paquete;
+            // Asegurarse de convertir el puntaje a número para la suma
+            const puntajeNumerico = parseFloat(reseña.puntaje);
+
+            // Si el paquete aún no está en nuestro objeto resumenPaquetes, inicializarlo
+            if (!resumenPaquetes[idPaquete]) {
+                resumenPaquetes[idPaquete] = {
+                    id_paquete: idPaquete,
+                    total_puntaje_sumado: 0,
+                    cantidad_reseñas: 0
+                };
+            }
+
+            // Sumar el puntaje y contar la reseña
+            resumenPaquetes[idPaquete].total_puntaje_sumado += puntajeNumerico;
+            resumenPaquetes[idPaquete].cantidad_reseñas += 1;
+        }
+        console.log(resumenPaquetes['98eef66f-34ed-4bc9-8b2c-98841dcbf834'].total_puntaje_sumado);
+        console.log(resumenPaquetes['98eef66f-34ed-4bc9-8b2c-98841dcbf834'].cantidad_reseñas);
+
+        let { data: paquete, error } = await supabase
+            .from('paquete')
+            .select('*')
+        if (error) {
+            console.error('❌ Error en Supabase:', error);
+            // Intenta enviar más detalles si el error es {}
+            if (Object.keys(error).length === 0) {
+                console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
+            }
+            return res.render('login.ejs', { error: 'Error al registrar el usuario.' });
+        } else {
+            res.render('index', { session: req.session, paquetes: paquete, reseñas: reseñas });
+
+        }
+    }
+
+
+
+
+
 })
 
 app.post('/registrar', async (req, res) => {
@@ -145,8 +195,9 @@ app.post('/registrar', async (req, res) => {
 /* <---------------------------------------------------------------->*/
 app.post('/iniciar_sesion', async (req, res) => {
     try {
-        const { user_name, password } = req.body;
 
+        const { user_name, password } = req.body;
+        console.log(user_name, " y ", password)
         if (!user_name?.trim() || !password?.trim()) {
             return res.render('login.ejs', { error: 'Por favor, completa todos los campos.' });
         }
