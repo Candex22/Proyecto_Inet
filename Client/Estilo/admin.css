@@ -49,22 +49,12 @@
 }
 
 body {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
-  overflow-x: hidden;
-  gap: 0;
+  /* Establece la fuente principal y el color de fondo para el cuerpo del dashboard */
+  font-family: 'Inter', sans-serif;
+  background-color: #f8f9fa; /* Fondo gris claro para el panel de administración */
   margin: 0;
-  height: 100%;
-  width: 100% !important;
-  background-color: var(--Fondo_principal);
+  padding: 0;
+  box-sizing: border-box; /* Asegura que padding y border no aumenten el tamaño total del elemento */
 }
 
 body header {
@@ -1151,188 +1141,144 @@ body .footer .footer-bottom p {
   }
 }
 
-body {
-  font-family: 'Inter', sans-serif;
-  background-color: #f8f9fa;
-  /* Color de fondo general, similar al de la imagen */
-  margin: 0;
-  padding: 0;
-  -webkit-box-sizing: border-box;
-          box-sizing: border-box;
-}
-
 .admin-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
+  /* Contenedor principal que centra y limita el ancho del contenido del dashboard */
+  max-width: 1200px; /* Ancho máximo para el contenido */
+  margin: 0 auto; /* Centra el contenedor horizontalmente */
+  padding: 2rem; /* Espaciado interno */
 }
 
 header {
-  text-align: left;
-  /* Alineado a la izquierda como en la imagen */
-  margin-bottom: 3rem;
+  /* Contenedor del título y subtítulo del dashboard */
+  text-align: left; /* Alineación del texto */
+  margin-bottom: 3rem; /* Espacio debajo del encabezado */
 }
 
 header h1 {
+  /* Estilo del título principal del panel */
   font-size: 2.5rem;
-  color: #2b476c;
-  /* Color del texto del título, usando --azul_oscuro */
+  color: var(--azul_oscuro); /* Utiliza la variable de color principal definida globalmente */
   margin-bottom: 0.5rem;
-  font-weight: 700;
-  /* Negrita */
+  font-weight: 700; /* Texto en negrita */
 }
 
 .subtitle {
-  color: #616161;
-  /* Color del texto del subtítulo, usando --Texto_secundario */
+  /* Estilo del subtítulo descriptivo del panel */
+  color: var(--Texto_secundario); /* Utiliza la variable de color secundario */
   font-size: 1.1rem;
 }
 
 .dashboard-cards {
-  display: -ms-grid;
-  display: grid;
-  -ms-grid-columns: (minmax(250px, 1fr))[auto-fit];
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  /* Contenedor Flexbox/Grid para las tarjetas de estadísticas */
+  display: grid; /* Usa Grid para un layout flexible */
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Columnas responsivas */
+  gap: 1.5rem; /* Espacio entre las tarjetas */
+  margin-bottom: 2rem; /* Espacio debajo de las tarjetas */
 }
 
 .card {
-  background: white;
-  border-radius: 12px;
-  padding: 1.5rem;
-  -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  /* Sombra más sutil */
-  -webkit-transition: -webkit-transform 0.3s ease;
-  transition: -webkit-transform 0.3s ease;
-  transition: transform 0.3s ease;
-  transition: transform 0.3s ease, -webkit-transform 0.3s ease;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
+  /* Estilo de cada tarjeta individual de estadísticas */
+  background: white; /* Fondo blanco */
+  border-radius: 12px; /* Bordes redondeados */
+  padding: 1.5rem; /* Espaciado interno */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra suave para un efecto elevado */
+  transition: transform 0.3s ease; /* Transición suave para el efecto hover */
+  display: flex; /* Permite organizar el contenido interno con flexbox */
+  flex-direction: column; /* Contenido apilado verticalmente */
+  justify-content: space-between; /* Distribuye el espacio entre los elementos */
 }
 
 .card:hover {
-  -webkit-transform: translateY(-5px);
-          transform: translateY(-5px);
+  /* Efecto al pasar el ratón sobre la tarjeta */
+  transform: translateY(-5px); /* Pequeño levantamiento */
 }
 
 .card-header {
-  display: -webkit-box;
-  display: -ms-flexbox;
+  /* Encabezado de la tarjeta (título y icono) */
   display: flex;
-  -webkit-box-pack: justify;
-      -ms-flex-pack: justify;
-          justify-content: space-between;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  margin-bottom: 1rem;
+  justify-content: space-between; /* Alinea el título a la izquierda y el icono a la derecha */
+  align-items: center;
+  margin-bottom: 1rem; /* Espacio debajo del encabezado */
 }
 
 .card-header span {
-  color: #616161;
-  /* Color del texto del encabezado de la tarjeta */
+  /* Estilo del texto del título dentro del encabezado de la tarjeta */
+  color: var(--Texto_secundario);
   font-size: 0.9rem;
-  font-weight: 600;
-  /* Texto seminegrita para "Total Productos" */
+  font-weight: 600; /* Seminegrita */
 }
 
 .card-header .icon {
+  /* Estilo de los iconos dentro del encabezado de la tarjeta */
   font-size: 1.5rem;
-  /* Tamaño del icono */
-  color: #9aa7b8;
-  /* Color de los iconos, un gris más claro */
+  color: #9aa7b8; /* Un color gris azulado para los iconos */
 }
 
 .main-value {
+  /* Estilo del valor numérico principal en la tarjeta */
   font-size: 2rem;
   font-weight: 700;
-  color: #2b476c;
-  /* Color de los valores principales, usando --azul_oscuro */
+  color: var(--azul_oscuro); /* Utiliza la variable de color principal */
   margin-bottom: 0.5rem;
 }
 
 .growth {
-  color: #4CAF50;
-  /* Color verde para el texto de crecimiento */
+  /* Estilo del texto que indica el crecimiento o cambio */
+  color: #4CAF50; /* Color verde para indicar crecimiento positivo */
   font-size: 0.9rem;
 }
 
 .tab-menu {
-  display: -webkit-box;
-  display: -ms-flexbox;
+  /* Contenedor del menú de pestañas */
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #e0e6ed;
-  /* Línea inferior más clara */
-  padding-bottom: 0rem;
-  /* Ajustado para que la línea esté pegada a los botones */
+  gap: 1rem; /* Espacio entre las pestañas */
+  margin-bottom: 2rem; /* Espacio debajo del menú de pestañas */
+  border-bottom: 1px solid #e0e6ed; /* Línea inferior del menú */
+  padding-bottom: 0rem; /* Asegura que la línea esté pegada a los botones */
 }
 
 .tab {
+  /* Estilo de cada botón de pestaña individual */
   padding: 0.75rem 1.5rem;
   border: none;
   background: none;
-  color: #616161;
-  /* Color de texto de las pestañas inactivas */
+  color: #616161; /* Color de texto de las pestañas inactivas */
   font-size: 1rem;
   cursor: pointer;
-  -webkit-transition: all 0.3s ease;
-  transition: all 0.3s ease;
-  border-radius: 8px 8px 0 0;
-  /* Bordes redondeados solo arriba */
+  transition: all 0.3s ease; /* Transición para efectos hover/active */
+  border-radius: 8px 8px 0 0; /* Bordes redondeados solo en la parte superior */
   position: relative;
-  bottom: -1px;
-  /* Para que el borde de la pestaña activa se solape con la línea */
+  bottom: -1px; /* Ajuste para que el borde de la pestaña activa se solape con la línea */
 }
 
 .tab:hover {
-  background: #f0f0f0;
-  /* Un gris muy claro al pasar el ratón */
-  color: #2b476c;
-  /* Azul oscuro al pasar el ratón */
+  /* Efecto al pasar el ratón sobre una pestaña inactiva */
+  background: #f0f0f0; /* Fondo gris muy claro */
+  color: var(--azul_oscuro); /* Texto azul oscuro */
 }
 
 .tab.active {
-  background: white;
-  /* Fondo blanco para la pestaña activa */
-  color: #2b476c;
-  /* Texto azul oscuro para la pestaña activa */
-  border: 1px solid #e0e6ed;
-  /* Borde para la pestaña activa */
-  border-bottom: 1px solid white;
-  /* Eliminar el borde inferior para que se fusione con el contenido */
-  font-weight: 600;
-  /* Seminegrita para la pestaña activa */
+  /* Estilo de la pestaña actualmente seleccionada (activa) */
+  background: white; /* Fondo blanco */
+  color: var(--azul_oscuro); /* Texto azul oscuro */
+  border: 1px solid #e0e6ed; /* Borde alrededor de la pestaña activa */
+  border-bottom: 1px solid white; /* El borde inferior se "elimina" para fusionarse con el contenido */
+  font-weight: 600; /* Texto seminegrita */
 }
 
 @media (max-width: 768px) {
   .admin-container {
-    padding: 1rem;
+    padding: 1rem; /* Reduce el padding en pantallas pequeñas */
   }
   .dashboard-cards {
-    -ms-grid-columns: 1fr;
-        grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* Una sola columna para las tarjetas en móviles */
   }
   .tab-menu {
-    -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
+    flex-wrap: wrap; /* Las pestañas pueden envolverse en varias líneas si no caben */
   }
   .tab {
-    -webkit-box-flex: 1;
-        -ms-flex: 1;
-            flex: 1;
-    text-align: center;
+    flex: 1; /* Las pestañas se expanden para llenar el espacio disponible */
+    text-align: center; /* Centra el texto de las pestañas */
   }
 }
 /*# sourceMappingURL=estilo.css.map */
