@@ -141,7 +141,7 @@
     color: #5c6e7f;
 }
 
-.cards-container {
+.lista-paquetes {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
@@ -150,7 +150,7 @@
     margin: 0 auto;
 }
 
-.card {
+.tarjeta-paquete {
     background: white;
     border-radius: 12px;
     overflow: hidden;
@@ -159,11 +159,11 @@
     position: relative;
 }
 
-.card:hover {
+.tarjeta-paquete:hover {
     transform: translateY(-5px);
 }
 
-.card-tags {
+.tarjeta-paquete-etiquetas {
     position: absolute;
     top: 1rem;
     left: 1rem;
@@ -217,17 +217,17 @@
     font-size: 2rem;
 }
 
-.card-body {
+.tarjeta-paquete-cuerpo {
     padding: 1.5rem;
 }
 
-.card-body h3 {
+.tarjeta-paquete-cuerpo h3 {
     color: #1b2d4f;
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
 }
 
-.card-body p {
+.tarjeta-paquete-cuerpo p {
     color: #5c6e7f;
     font-size: 0.95rem;
     margin-bottom: 1rem;
@@ -319,7 +319,7 @@
         width: 100%;
     }
 
-    .cards-container {
+    .lista-paquetes {
         grid-template-columns: 1fr;
         width: 95%;
         padding: 1rem;

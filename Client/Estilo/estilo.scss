@@ -429,6 +429,7 @@ body {
                     left: 25px;
                     background-color: #e74c3c;
                     color: #fff;
+                    width: auto;
                     font-size: 0.75rem;
                     font-weight: 700;
                     padding: 0.3rem 0.5rem;
@@ -1057,7 +1058,8 @@ header h1 {
 .card {
     background: white;
     border-radius: 12px;
-    padding: 1.5rem;
+    
+    padding: 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     /* Sombra más sutil */
     transition: transform 0.3s ease;
@@ -1212,7 +1214,6 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
     // This ID would typically wrap the entire package detail section.
     // We can apply specific page-level background or padding here if needed.
     background-color: $background-page; // Example: slightly different background for the page
-
     width: 100%;
 
     @media (max-width: 992px) {

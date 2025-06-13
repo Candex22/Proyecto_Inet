@@ -503,9 +503,10 @@ body main .featured-destinations .card .image-placeholder {
 body main .featured-destinations .card .discount {
   position: absolute;
   top: 155px;
-  left: 25px;
+  right: 25px;
   background-color: #e74c3c;
   color: #fff;
+  width: auto;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.3rem 0.5rem;
@@ -1211,7 +1212,7 @@ header h1 {
 .card {
   background: white;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 1rem;
   -webkit-box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   /* Sombra más sutil */
