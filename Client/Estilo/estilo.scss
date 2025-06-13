@@ -113,6 +113,7 @@ body {
             flex-direction: row;
             height: 100%;
             width: 100%;
+            border-bottom: 1px solid #e0e6ed;
 
             #cont_nav_tit {
                 display: flex;
@@ -156,11 +157,12 @@ body {
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                gap: 30px;
+                gap: 250px;
                 text-decoration: none;
 
                 a {
                     font-weight: 500;
+                    font-size: 1.2rem;
                     color: var(--azul_oscuro);
                     text-decoration: none;
                 }
