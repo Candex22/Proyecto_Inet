@@ -3,45 +3,144 @@
 
 <head>
     <%- include('head.ejs') %>
-        <title>
-            paquetes
-        </title>
+    <title>Paquetes - TravelPortal</title>
 </head>
 
-<body id="">
+<body>
     <%- include('header.ejs') %>
-        <main id="index_main">
+    <main id="index_main">
+        <section class="featured-destinations">
+            <div class="section-header">
+                <span class="badge">Nuestros paquetes</span>
+                <h2>Destinos Increíbles</h2>
+                <p>Descubre destinos increíbles con nuestros paquetes cuidadosamente seleccionados</p>
+            </div>
+        </section>
 
-            <section class="featured-destinations">
-                <div class="section-header">
-                    <span class="badge">Nuestros paquetes</span>
-                    <h2>Destinos Increíbles</h2>
-                    <p>Descubre destinos increíbles con nuestros paquetes cuidadosamente seleccionados</p>
+        <section class="filtros">
+            <div class="title">
+                <h2><i class="fa-solid fa-filter"></i> Filtros de búsqueda</h2>
+            </div>
+
+            <div class="inputs">
+                <div class="input-container">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" class="input" name="search" placeholder="Buscar destinos...">
                 </div>
-
-            </section>
-
-            <section class="filtros">
-                <div class="title">
-                    <h2> <i class="fa-solid fa-filter"></i> Filtros de búsqueda</h2>
+                <div class="input-container">
+                    <i class="fa-solid fa-globe"></i>
+                    <select class="input" name="category">
+                        <option value="" selected>Todas las categorías</option>
+                        <option value="Nacional">Nacional</option>
+                        <option value="Internacional">Internacional</option>
+                    </select>
                 </div>
+                <div class="input-container">
+                    <i class="fa-solid fa-sort"></i>
+                    <select class="input" name="order">
+                        <option value="" disabled selected>Ordenar por</option>
+                        <option value="precio-asc">Precio: Menor a Mayor</option>
+                        <option value="precio-desc">Precio: Mayor a Menor</option>
+                        <option value="rating">Mejor Valorados</option>
+                    </select>
+                </div>
+            </div>
+        </section>
 
-                <div class="inputs">
-                    <div class="input-container">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Buscar destinos...">
+        <div class="cards-container">
+            <!-- Ejemplo de tarjeta 1 -->
+            <div class="card">
+                <div class="card-tags">
+                    <span class="tag international">Internacional</span>
+                    <span class="tag featured">⭐ Destacado</span>
+                </div>
+                <span class="discount">-20%</span>
+                <div class="image-placeholder">
+                    <i class="fas fa-image"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Tour por París</h3>
+                    <p>Descubre la ciudad del amor con nuestro paquete especial que incluye visitas a la Torre Eiffel, el Louvre y más.</p>
+                    <div class="info">
+                        <span><i class="fas fa-calendar"></i> 7 Días</span>
+                        <span><i class="fas fa-users"></i> 2 personas</span>
                     </div>
-                    <div class="input-container">
-                        <input type="text" placeholder="Todas las categorías">
+                    <div class="rating">
+                        <p>Estrellas: 4.5 (12 reseñas)</p>
+                        ⭐⭐⭐⭐☆
                     </div>
-                    <div class="input-container">
-                        <input type="text" placeholder="Nombre">
+                    <div class="prices">
+                        <span class="old">$2,500</span>
+                        <span class="current">$2,000</span>
+                    </div>
+                    <div class="cont_btn">
+                        <a href="#" class="ver_detalles">Ver Detalles</a>
                     </div>
                 </div>
-            </section>
+            </div>
 
+            <!-- Ejemplo de tarjeta 2 -->
+            <div class="card">
+                <div class="card-tags">
+                    <span class="tag national">Nacional</span>
+                    <span class="tag featured">⭐ Destacado</span>
+                </div>
+                <div class="image-placeholder">
+                    <i class="fas fa-image"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Ruta del Vino</h3>
+                    <p>Recorre las mejores bodegas de Mendoza con degustaciones y alojamiento en hoteles boutique.</p>
+                    <div class="info">
+                        <span><i class="fas fa-calendar"></i> 5 Días</span>
+                        <span><i class="fas fa-users"></i> 4 personas</span>
+                    </div>
+                    <div class="rating">
+                        <p>Estrellas: 4.8 (8 reseñas)</p>
+                        ⭐⭐⭐⭐⭐
+                    </div>
+                    <div class="prices">
+                        <span class="current">$1,800</span>
+                    </div>
+                    <div class="cont_btn">
+                        <a href="#" class="ver_detalles">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
 
-        </main>
+            <!-- Ejemplo de tarjeta 3 -->
+            <div class="card">
+                <div class="card-tags">
+                    <span class="tag international">Internacional</span>
+                    <span class="tag featured">⭐ Destacado</span>
+                </div>
+                <span class="discount">-15%</span>
+                <div class="image-placeholder">
+                    <i class="fas fa-image"></i>
+                </div>
+                <div class="card-body">
+                    <h3>Roma Antigua</h3>
+                    <p>Explora la historia de Roma con visitas guiadas al Coliseo, el Vaticano y las ruinas antiguas.</p>
+                    <div class="info">
+                        <span><i class="fas fa-calendar"></i> 6 Días</span>
+                        <span><i class="fas fa-users"></i> 2 personas</span>
+                    </div>
+                    <div class="rating">
+                        <p>Estrellas: 4.2 (15 reseñas)</p>
+                        ⭐⭐⭐⭐☆
+                    </div>
+                    <div class="prices">
+                        <span class="old">$2,800</span>
+                        <span class="current">$2,380</span>
+                    </div>
+                    <div class="cont_btn">
+                        <a href="#" class="ver_detalles">Ver Detalles</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <%- include('footer.ejs') %>
 </body>
-
+    <script src="Scripts/sec-paquetes.js"></script>
 </html>
