@@ -75,17 +75,37 @@
               <div class="opinion-package">
                 <h2>opiniones sobre este paquete</h2>
                 <!-- reseñas_data -->
-                <% reseñas_data.forEach(reseña=> { %>
-                  <% // Bucle principal para cada paquete %>
-
-
-                    <div class="cont_reseña">
-
-                      <div class="card-body">
-
+                <% reseñas_data.forEach(reseña => { %>
+                  <div class="cont_reseña">
+                    <div class="cont_img_user">
+                      <% if (reseña.user_image) { %>
+                        <img src="<%= reseña.user_image %>" alt="<%= reseña.user_name %> profile picture">
+                      <% } else { %>
+                        <i class="fas fa-user-circle"></i> <% } %>
+                    </div>
+                    <div class="cont_infor_user">
+                      <h3 class="user_name">
+                        <%= reseña.user_name %>
+                      </h3>
+                      <div class="cont_fecha">
+                        <div class="stars">
+                          <% for (let i = 0; i < Math.floor(reseña.rating); i++) { %>
+                            <i class="fas fa-star"></i>
+                          <% } %>
+                          <% if (reseña.rating % 1 !== 0) { %>
+                            <i class="fas fa-star-half-alt"></i>
+                          <% } %>
+                          <% for (let i = 0; i < (5 - Math.ceil(reseña.rating)); i++) { %>
+                            <i class="far fa-star"></i> <% } %>
+                        </div>
+                        <span><%= reseña.date_posted %></span>
+                      </div>
+                      <div class="cont_reseña">
+                        <p><%= reseña.review_text %></p>
                       </div>
                     </div>
-                    <% }); %>
+                  </div>
+                <% }); %>
               </div>
             </div>
 

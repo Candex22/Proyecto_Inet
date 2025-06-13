@@ -77,93 +77,159 @@
                                     <p class="form-subtitle">Complete el formulario para agregar un nuevo producto al
                                         catálogo</p>
                                 </div>
-                                <form action="/admin/agregar-producto" method="post" enctype="multipart/form-data"
-                                    class="product-form">
+                                <form id="productForm" class="product-form">
                                     <div class="form-grid">
                                         <div class="form-group">
-                                            <label for="nombre">Nombre del Producto</label>
-                                            <input type="text" id="nombre" name="nombre"
-                                                placeholder="Ej: Tour Machu Picchu" required>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="categoria">Categoría</label>
-                                            <select id="categoria" name="categoria" required>
-                                                <option value="">Seleccione una categoría</option>
-                                                <option value="tours">Tours</option>
-                                                <option value="paquetes">Paquetes</option>
-                                                <option value="hoteles">Hoteles</option>
-                                                <option value="vuelos">Vuelos</option>
+                                            <label for="tipo_producto">Tipo de Producto</label>
+                                            <select id="tipo_producto" name="tipo_producto" required onchange="mostrarCamposEspecificos()">
+                                                <option value="">Seleccione un tipo</option>
+                                                <option value="paquete">Paquete Turístico</option>
+                                                <option value="hotel">Hotel</option>
+                                                <option value="vuelo">Vuelo</option>
+                                                <option value="alquiler">Alquiler de Auto</option>
                                             </select>
                                         </div>
 
-                                        <div class="form-group full-width">
-                                            <label for="descripcion">Descripción</label>
-                                            <textarea id="descripcion" name="descripcion" rows="4"
-                                                placeholder="Describa los detalles del producto..." required></textarea>
+                                        <!-- Campos comunes -->
+                                        <div class="form-group">
+                                            <label for="nombre">Nombre</label>
+                                            <input type="text" id="nombre" name="nombre" required>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="precio">Precio Base</label>
+                                            <label for="precio">Precio</label>
                                             <div class="input-with-icon">
                                                 <span class="currency">$</span>
-                                                <input type="number" id="precio" name="precio" placeholder="0.00"
-                                                    step="0.01" required>
+                                                <input type="number" id="precio" name="precio" step="0.01" required>
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
-                                            <label for="descuento">Descuento (%)</label>
-                                            <input type="number" id="descuento" name="descuento" placeholder="0" min="0"
-                                                max="100">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="duracion">Duración (días)</label>
-                                            <input type="number" id="duracion" name="duracion" placeholder="Ej: 3"
-                                                min="1">
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label for="capacidad">Capacidad Máxima</label>
-                                            <input type="number" id="capacidad" name="capacidad" placeholder="Ej: 20"
-                                                min="1">
-                                        </div>
-
-                                        <div class="form-group full-width">
-                                            <label for="imagen">Imagen Principal</label>
-                                            <div class="file-upload">
-                                                <input type="file" id="imagen" name="imagen" accept="image/*" required>
-                                                <label for="imagen" class="file-upload-label">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
-                                                    <span>Seleccionar imagen</span>
-                                                </label>
+                                        <!-- Campos específicos para Paquete -->
+                                        <div id="campos_paquete" style="display: none;">
+                                            <div class="form-group">
+                                                <label for="descripcion">Descripción</label>
+                                                <textarea id="descripcion" name="descripcion" rows="4"></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="fecha_inicio">Fecha Inicio Validez</label>
+                                                <input type="date" id="fecha_inicio" name="fecha_inicio">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="fecha_fin">Fecha Fin Validez</label>
+                                                <input type="date" id="fecha_fin" name="fecha_fin">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="tipo_viaje">Tipo de Viaje</label>
+                                                <select id="tipo_viaje" name="tipo_viaje">
+                                                    <option value="nacional">Nacional</option>
+                                                    <option value="internacional">Internacional</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="dias">Días</label>
+                                                <input type="number" id="dias" name="dias" min="1">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="personas">Personas</label>
+                                                <input type="number" id="personas" name="personas" min="1">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="descuento">Descuento (%)</label>
+                                                <input type="number" id="descuento" name="descuento" min="0" max="100">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="fecha_salida">Fecha de Salida</label>
+                                                <input type="date" id="fecha_salida" name="fecha_salida">
                                             </div>
                                         </div>
 
-                                        <div class="form-group full-width">
-                                            <label for="caracteristicas">Características</label>
-                                            <div class="caracteristicas-grid">
-                                                <label class="checkbox-container">
-                                                    <input type="checkbox" name="caracteristicas[]" value="wifi">
-                                                    <span class="checkmark"></span>
-                                                    WiFi Gratis
-                                                </label>
-                                                <label class="checkbox-container">
-                                                    <input type="checkbox" name="caracteristicas[]" value="desayuno">
-                                                    <span class="checkmark"></span>
-                                                    Desayuno Incluido
-                                                </label>
-                                                <label class="checkbox-container">
-                                                    <input type="checkbox" name="caracteristicas[]" value="transporte">
-                                                    <span class="checkmark"></span>
-                                                    Transporte
-                                                </label>
-                                                <label class="checkbox-container">
-                                                    <input type="checkbox" name="caracteristicas[]" value="guia">
-                                                    <span class="checkmark"></span>
-                                                    Guía Turístico
-                                                </label>
+                                        <!-- Campos específicos para Hotel -->
+                                        <div id="campos_hotel" style="display: none;">
+                                            <div class="form-group">
+                                                <label for="ciudad">Ciudad</label>
+                                                <input type="text" id="ciudad" name="ciudad">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="pais">País</label>
+                                                <input type="text" id="pais" name="pais">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="direccion">Dirección</label>
+                                                <input type="text" id="direccion" name="direccion">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="categoria_estrellas">Categoría (Estrellas)</label>
+                                                <input type="number" id="categoria_estrellas" name="categoria_estrellas" min="1" max="5">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="precio_noche">Precio por Noche</label>
+                                                <input type="number" id="precio_noche" name="precio_noche" step="0.01">
+                                            </div>
+                                        </div>
+
+                                        <!-- Campos específicos para Vuelo -->
+                                        <div id="campos_vuelo" style="display: none;">
+                                            <div class="form-group">
+                                                <label for="numero_vuelo">Número de Vuelo</label>
+                                                <input type="text" id="numero_vuelo" name="numero_vuelo">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="aerolinea">Aerolínea</label>
+                                                <input type="text" id="aerolinea" name="aerolinea">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="ciudad_origen">Ciudad Origen</label>
+                                                <input type="text" id="ciudad_origen" name="ciudad_origen">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="ciudad_destino">Ciudad Destino</label>
+                                                <input type="text" id="ciudad_destino" name="ciudad_destino">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="fecha_salida_vuelo">Fecha de Salida</label>
+                                                <input type="datetime-local" id="fecha_salida_vuelo" name="fecha_salida_vuelo">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="fecha_llegada">Fecha de Llegada</label>
+                                                <input type="datetime-local" id="fecha_llegada" name="fecha_llegada">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="clase_vuelo">Clase</label>
+                                                <select id="clase_vuelo" name="clase_vuelo">
+                                                    <option value="economica">Económica</option>
+                                                    <option value="premium">Premium</option>
+                                                    <option value="business">Business</option>
+                                                    <option value="primera">Primera</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+                                        <!-- Campos específicos para Alquiler de Auto -->
+                                        <div id="campos_alquiler" style="display: none;">
+                                            <div class="form-group">
+                                                <label for="marca">Marca</label>
+                                                <input type="text" id="marca" name="marca">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="modelo">Modelo</label>
+                                                <input type="text" id="modelo" name="modelo">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="tipo_vehiculo">Tipo de Vehículo</label>
+                                                <select id="tipo_vehiculo" name="tipo_vehiculo">
+                                                    <option value="sedan">Sedán</option>
+                                                    <option value="suv">SUV</option>
+                                                    <option value="deportivo">Deportivo</option>
+                                                    <option value="van">Van</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="ubicacion_recogida">Ubicación de Recogida</label>
+                                                <input type="text" id="ubicacion_recogida" name="ubicacion_recogida">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="ubicacion_devolucion">Ubicación de Devolución</label>
+                                                <input type="text" id="ubicacion_devolucion" name="ubicacion_devolucion">
                                             </div>
                                         </div>
                                     </div>
@@ -427,7 +493,24 @@
             </div>
         </div>
 
+        <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
         <script src="Scripts/admin.js"></script>
+        <script>
+        function mostrarCamposEspecificos() {
+            const tipoProducto = document.getElementById('tipo_producto').value;
+            
+            // Ocultar todos los campos específicos
+            document.getElementById('campos_paquete').style.display = 'none';
+            document.getElementById('campos_hotel').style.display = 'none';
+            document.getElementById('campos_vuelo').style.display = 'none';
+            document.getElementById('campos_alquiler').style.display = 'none';
+            
+            // Mostrar los campos correspondientes al tipo seleccionado
+            if (tipoProducto) {
+                document.getElementById('campos_' + tipoProducto).style.display = 'grid';
+            }
+        }
+        </script>
 </body>
 
-</html>
+</html> 
