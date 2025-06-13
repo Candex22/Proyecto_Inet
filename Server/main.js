@@ -349,146 +349,215 @@ function Datatime() {
     return `${year}-${month}-${day}`;
 }
 
-// Nueva ruta para agregar productos al carrito
-app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
+
+// Ruta para mostrar el carrito
+app.get('/carrito', isLogged, async (req, res) => {
     try {
-        const { id_paquete, nombre_paquete, precio_unitario, cantidad, descripcion_breve } = req.body;
-        const userId = req.session.usuario_id; // ID del usuario desde la sesión
+        const userId = req.session.usuario_id;
 
         if (!userId) {
-            return res.status(401).json({ error: 'Usuario no autenticado.' });
+            return res.redirect('/login');
         }
 
-        if (!id_paquete || !nombre_paquete || !precio_unitario || !cantidad || cantidad < 1) {
-            return res.status(400).json({ error: 'Datos del producto incompletos o inválidos.' });
-        }
-
-        // 1. Buscar un pedido abierto (carrito) para el usuario
-        let { data: pedidoExistente, error: pedidoError } = await supabase
+        // Buscar el pedido abierto (carrito) del usuario
+        let { data: pedidoAbierto, error: pedidoError } = await supabase
             .from('pedido')
             .select('*')
             .eq('id_usuario', userId)
-            .eq('estado', 'abierto') // Asume que tienes un estado 'abierto' para carritos activos
+            .eq('estado', 'abierto')
             .limit(1);
 
         if (pedidoError) {
-            console.error('Error al buscar pedido existente:', pedidoError);
-            return res.status(500).json({ error: 'Error interno del servidor al buscar el carrito.' });
+            console.error('Error al buscar pedido:', pedidoError);
+            return res.render('carrito', { 
+                session: req.session, 
+                cartItems: [], 
+                cartTotal: 0 
+            });
         }
 
-        let id_pedido;
+        let cartItems = [];
+        let cartTotal = 0;
 
-        if (pedidoExistente && pedidoExistente.length > 0) {
-            // Ya existe un carrito abierto para este usuario
-            id_pedido = pedidoExistente[0].id_pedido;
-            console.log(`Pedido existente encontrado: ${id_pedido}`);
-        } else {
-            // No hay carrito abierto, crear uno nuevo
-            const { data: nuevoPedido, error: nuevoPedidoError } = await supabase
-                .from('pedido')
-                .insert([
-                    {
-                        id_usuario: userId,
-                        fecha_pedido: new Date().toISOString().split('T')[0], // Fecha actual 'YYYY-MM-DD'
-                        estado: 'abierto',
-                        total_pedido: 0 // Se actualizará al agregar productos
+        if (pedidoAbierto && pedidoAbierto.length > 0) {
+            const id_pedido = pedidoAbierto[0].id_pedido;
+
+            // Obtener los detalles del pedido con información del paquete
+            let { data: detallesPedido, error: detallesError } = await supabase
+                .from('detalles_pedido')
+                .select(`
+                    id_detalle,
+                    id_producto_servicio,
+                    cantidad,
+                    precio_unitario,
+                    descripcion
+                `)
+                .eq('id_pedido', id_pedido);
+
+            if (detallesError) {
+                console.error('Error al obtener detalles del pedido:', detallesError);
+            } else {
+                // Para cada detalle, obtener información adicional del paquete
+                for (let detalle of detallesPedido) {
+                    const { data: paqueteInfo, error: paqueteError } = await supabase
+                        .from('paquete')
+                        .select('nombre_paquete, descripcion')
+                        .eq('id_paquete', detalle.id_producto_servicio)
+                        .limit(1);
+
+                    if (!paqueteError && paqueteInfo && paqueteInfo.length > 0) {
+                        cartItems.push({
+                            id_detalle: detalle.id_detalle,
+                            nombre_paquete: paqueteInfo[0].nombre_paquete,
+                            descripcion: detalle.descripcion || paqueteInfo[0].descripcion,
+                            precio_unitario: detalle.precio_unitario,
+                            cantidad: detalle.cantidad,
+                            imagen_url: null // Agregar si tienes imágenes
+                        });
+                        
+                        cartTotal += detalle.cantidad * detalle.precio_unitario;
                     }
-                ])
-                .select();
-
-            if (nuevoPedidoError) {
-                console.error('Error al crear nuevo pedido:', nuevoPedidoError);
-                return res.status(500).json({ error: 'Error interno del servidor al crear el carrito.' });
+                }
             }
-            id_pedido = nuevoPedido[0].id_pedido;
-            console.log(`Nuevo pedido creado: ${id_pedido}`);
         }
 
-        // 2. Verificar si el producto ya está en el carrito
-        let { data: detalleExistente, error: detalleError } = await supabase
+        res.render('carrito', { 
+            session: req.session, 
+            cartItems: cartItems, 
+            cartTotal: cartTotal 
+        });
+
+    } catch (error) {
+        console.error('Error en ruta /carrito:', error);
+        res.render('carrito', { 
+            session: req.session, 
+            cartItems: [], 
+            cartTotal: 0 
+        });
+    }
+});
+
+// Ruta para actualizar cantidad en el carrito
+app.post('/api/actualizar_cantidad_carrito', isLogged, async (req, res) => {
+    try {
+        const { id_detalle, cambio } = req.body;
+        const userId = req.session.usuario_id;
+
+        if (!id_detalle || !cambio) {
+            return res.status(400).json({ error: 'Datos incompletos.' });
+        }
+
+        // Obtener el detalle actual
+        const { data: detalleActual, error: getError } = await supabase
             .from('detalles_pedido')
-            .select('*')
-            .eq('id_pedido', id_pedido)
-            .eq('id_producto_servicio', id_paquete) // Usar id_paquete como id_producto_servicio
+            .select('cantidad, id_pedido')
+            .eq('id_detalle', id_detalle)
             .limit(1);
 
-        if (detalleError) {
-            console.error('Error al buscar detalle de pedido existente:', detalleError);
-            return res.status(500).json({ error: 'Error interno del servidor al verificar producto en carrito.' });
+        if (getError || !detalleActual || detalleActual.length === 0) {
+            return res.status(404).json({ error: 'Item no encontrado.' });
         }
 
-        let updatedProductQuantity;
+        const nuevaCantidad = detalleActual[0].cantidad + parseInt(cambio);
 
-        if (detalleExistente && detalleExistente.length > 0) {
-            // El producto ya está en el carrito, actualizar la cantidad
-            const currentQuantity = detalleExistente[0].cantidad;
-            updatedProductQuantity = currentQuantity + cantidad; // Sumar la nueva cantidad
-            const { error: updateError } = await supabase
-                .from('detalles_pedido')
-                .update({ cantidad: updatedProductQuantity })
-                .eq('id_detalle', detalleExistente[0].id_detalle);
-
-            if (updateError) {
-                console.error('Error al actualizar cantidad del producto en carrito:', updateError);
-                return res.status(500).json({ error: 'Error al actualizar la cantidad del producto en el carrito.' });
-            }
-            console.log(`Cantidad actualizada para el producto ${id_paquete} en el pedido ${id_pedido}. Nueva cantidad: ${updatedProductQuantity}`);
-        } else {
-            // El producto no está en el carrito, insertarlo como nuevo detalle
-            const { data: nuevoDetalle, error: insertError } = await supabase
-                .from('detalles_pedido')
-                .insert([
-                    {
-                        id_pedido: id_pedido,
-                        id_producto_servicio: id_paquete, // Esto es el id_paquete
-                        tipo_producto_servicio: 'paquete', // Para diferenciar si es un paquete, hotel, vuelo, etc.
-                        cantidad: cantidad,
-                        precio_unitario: precio_unitario,
-                        descripcion: descripcion_breve || nombre_paquete // Podrías usar nombre_paquete como descripción breve
-                    }
-                ])
-                .select();
-
-            if (insertError) {
-                console.error('Error al insertar nuevo detalle de pedido:', insertError);
-                return res.status(500).json({ error: 'Error al agregar el producto al carrito.' });
-            }
-            updatedProductQuantity = cantidad;
-            console.log(`Nuevo producto ${id_paquete} agregado al pedido ${id_pedido}.`);
+        if (nuevaCantidad < 1) {
+            return res.status(400).json({ error: 'La cantidad no puede ser menor a 1.' });
         }
 
-        // Opcional: Recalcular el total del pedido después de agregar/actualizar un producto
-        // Esto podría ser más eficiente con una función de base de datos o un trigger en Supabase
-        const { data: detallesActuales, error: getDetallesError } = await supabase
+        // Actualizar la cantidad
+        const { error: updateError } = await supabase
+            .from('detalles_pedido')
+            .update({ cantidad: nuevaCantidad })
+            .eq('id_detalle', id_detalle);
+
+        if (updateError) {
+            console.error('Error al actualizar cantidad:', updateError);
+            return res.status(500).json({ error: 'Error al actualizar la cantidad.' });
+        }
+
+        // Recalcular total del pedido
+        await recalcularTotalPedido(detalleActual[0].id_pedido);
+
+        res.json({ message: 'Cantidad actualizada exitosamente.', nueva_cantidad: nuevaCantidad });
+
+    } catch (error) {
+        console.error('Error en actualizar cantidad:', error);
+        res.status(500).json({ error: 'Error inesperado.' });
+    }
+});
+
+// Ruta para eliminar item del carrito
+app.post('/api/eliminar_item_carrito', isLogged, async (req, res) => {
+    try {
+        const { id_detalle } = req.body;
+
+        if (!id_detalle) {
+            return res.status(400).json({ error: 'ID de detalle requerido.' });
+        }
+
+        // Obtener el id_pedido antes de eliminar
+        const { data: detalleInfo, error: getError } = await supabase
+            .from('detalles_pedido')
+            .select('id_pedido')
+            .eq('id_detalle', id_detalle)
+            .limit(1);
+
+        if (getError || !detalleInfo || detalleInfo.length === 0) {
+            return res.status(404).json({ error: 'Item no encontrado.' });
+        }
+
+        const id_pedido = detalleInfo[0].id_pedido;
+
+        // Eliminar el item
+        const { error: deleteError } = await supabase
+            .from('detalles_pedido')
+            .delete()
+            .eq('id_detalle', id_detalle);
+
+        if (deleteError) {
+            console.error('Error al eliminar item:', deleteError);
+            return res.status(500).json({ error: 'Error al eliminar el item.' });
+        }
+
+        // Recalcular total del pedido
+        await recalcularTotalPedido(id_pedido);
+
+        res.json({ message: 'Item eliminado exitosamente.' });
+
+    } catch (error) {
+        console.error('Error en eliminar item:', error);
+        res.status(500).json({ error: 'Error inesperado.' });
+    }
+});
+
+// Función auxiliar para recalcular el total del pedido
+async function recalcularTotalPedido(id_pedido) {
+    try {
+        const { data: detalles, error } = await supabase
             .from('detalles_pedido')
             .select('cantidad, precio_unitario')
             .eq('id_pedido', id_pedido);
 
-        if (getDetallesError) {
-            console.error('Error al obtener detalles para recalcular total:', getDetallesError);
-            // No es un error crítico, el total se puede calcular en el frontend del carrito
-        } else {
-            let nuevoTotalPedido = 0;
-            detallesActuales.forEach(item => {
-                nuevoTotalPedido += item.cantidad * item.precio_unitario;
-            });
-
-            await supabase
-                .from('pedido')
-                .update({ total_pedido: nuevoTotalPedido })
-                .eq('id_pedido', id_pedido);
-            console.log(`Total del pedido ${id_pedido} actualizado a: ${nuevoTotalPedido}`);
+        if (error) {
+            console.error('Error al obtener detalles para recalcular:', error);
+            return;
         }
 
+        let nuevoTotal = 0;
+        detalles.forEach(item => {
+            nuevoTotal += item.cantidad * item.precio_unitario;
+        });
 
-        return res.status(200).json({ message: 'Producto agregado al carrito exitosamente.', id_pedido: id_pedido, cantidad_actualizada: updatedProductQuantity });
+        await supabase
+            .from('pedido')
+            .update({ total_pedido: nuevoTotal })
+            .eq('id_pedido', id_pedido);
 
+        console.log(`Total del pedido ${id_pedido} recalculado: ${nuevoTotal}`);
     } catch (error) {
-        console.error('Error en la ruta /api/agregar_a_carrito:', error);
-        return res.status(500).json({ error: 'Ocurrió un error inesperado al agregar el producto al carrito.' });
+        console.error('Error al recalcular total:', error);
     }
-});
-
+}
 
 app.use('/Scripts', express.static(path.join(__dirname, '../Client/Scripts')));
 app.use('/administrador', express.static(path.join(__dirname, '../Client')));
