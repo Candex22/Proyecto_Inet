@@ -101,6 +101,10 @@ app.get('/register', (req, res) => {
     res.render('register', { session: req.session });
 })
 
+app.get('/paquetes', (req, res) => {
+    res.render('paquetes', { session: req.session });
+})
+
 
 app.get('/index', async (req, res) => {
 
