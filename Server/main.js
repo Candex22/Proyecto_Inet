@@ -437,6 +437,112 @@ app.get('/carrito', isLogged, async (req, res) => {
     }
 });
 
+// Agregar esta ruta POST para manejar la adición de productos al carrito
+app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
+    try {
+        const { id_paquete, nombre_paquete, precio_unitario, cantidad, descripcion_breve } = req.body;
+        const userId = req.session.usuario_id;
+
+        if (!userId) {
+            return res.status(401).json({ error: 'Usuario no autenticado.' });
+        }
+
+        if (!id_paquete || !precio_unitario || !cantidad) {
+            return res.status(400).json({ error: 'Datos incompletos.' });
+        }
+
+        // Buscar o crear un pedido abierto (carrito) para el usuario
+        let { data: pedidoAbierto, error: pedidoError } = await supabase
+            .from('pedido')
+            .select('*')
+            .eq('id_usuario', userId)
+            .eq('estado', 'abierto')
+            .limit(1);
+
+        if (pedidoError) {
+            console.error('Error al buscar pedido:', pedidoError);
+            return res.status(500).json({ error: 'Error al procesar el pedido.' });
+        }
+
+        let id_pedido;
+
+        if (!pedidoAbierto || pedidoAbierto.length === 0) {
+            // Crear un nuevo pedido
+            const { data: nuevoPedido, error: crearError } = await supabase
+                .from('pedido')
+                .insert([{
+                    id_usuario: userId,
+                    fecha_pedido: new Date().toISOString(),
+                    estado: 'abierto',
+                    total_pedido: 0
+                }])
+                .select();
+
+            if (crearError) {
+                console.error('Error al crear pedido:', crearError);
+                return res.status(500).json({ error: 'Error al crear el pedido.' });
+            }
+
+            id_pedido = nuevoPedido[0].id_pedido;
+        } else {
+            id_pedido = pedidoAbierto[0].id_pedido;
+        }
+
+        // Verificar si el producto ya existe en el carrito
+        const { data: itemExistente, error: buscarError } = await supabase
+            .from('detalles_pedido')
+            .select('*')
+            .eq('id_pedido', id_pedido)
+            .eq('id_producto_servicio', id_paquete)
+            .limit(1);
+
+        if (buscarError) {
+            console.error('Error al buscar item existente:', buscarError);
+            return res.status(500).json({ error: 'Error al verificar el carrito.' });
+        }
+
+        if (itemExistente && itemExistente.length > 0) {
+            // Si existe, actualizar la cantidad
+            const nuevaCantidad = itemExistente[0].cantidad + parseInt(cantidad);
+            
+            const { error: actualizarError } = await supabase
+                .from('detalles_pedido')
+                .update({ cantidad: nuevaCantidad })
+                .eq('id_detalle', itemExistente[0].id_detalle);
+
+            if (actualizarError) {
+                console.error('Error al actualizar cantidad:', actualizarError);
+                return res.status(500).json({ error: 'Error al actualizar el carrito.' });
+            }
+        } else {
+            // Si no existe, crear nuevo detalle
+            const { error: insertarError } = await supabase
+                .from('detalles_pedido')
+                .insert([{
+                    id_pedido: id_pedido,
+                    id_producto_servicio: id_paquete,
+                    cantidad: parseInt(cantidad),
+                    precio_unitario: parseFloat(precio_unitario),
+                    descripcion: descripcion_breve
+                }]);
+
+            if (insertarError) {
+                console.error('Error al insertar detalle:', insertarError);
+                return res.status(500).json({ error: 'Error al agregar al carrito.' });
+            }
+        }
+
+        // Recalcular el total del pedido
+        await recalcularTotalPedido(id_pedido);
+
+        res.json({ message: 'Producto agregado al carrito exitosamente!' });
+
+    } catch (error) {
+        console.error('Error en agregar a carrito:', error);
+        res.status(500).json({ error: 'Error inesperado al agregar al carrito.' });
+    }
+});
+
 // Ruta para actualizar cantidad en el carrito
 app.post('/api/actualizar_cantidad_carrito', isLogged, async (req, res) => {
     try {
