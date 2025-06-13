@@ -102,7 +102,7 @@ body {
         transition: all .2s ease-in-out;
 
         &.reducir {
-            height: 50px;
+            height: 60px;
         }
 
         nav {
@@ -177,6 +177,7 @@ body {
                 height: 100%;
                 width: 30%;
                 gap: 20px;
+                
 
                 a {
                     border-radius: 10px;
@@ -285,7 +286,7 @@ body {
                     justify-content: center;
                     align-items: center;
                     text-align: center;
-
+                
 
                 }
 
@@ -425,10 +426,10 @@ body {
                 .discount {
                     position: absolute;
                     top: 155px;
-                    left: 25px;
+                    left: 170px;
                     background-color: #e74c3c;
                     color: #fff;
-                    width: auto;
+                    width: 20%;
                     font-size: 0.75rem;
                     font-weight: 700;
                     padding: 0.3rem 0.5rem;
@@ -1497,43 +1498,6 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
         }
     }
 
-    .opinion-package {
-       
-        display: flex;
-        flex-direction: column;
-        justify-items: flex-start;
-        align-items: flex-start;
-        gap: 10px   ;
-        .cont_reseña{
-           
-            display: flex;
-            flex-direction: row;
-            justify-items: flex-start;
-            align-items: flex-start;
-            padding: 10px;
-            border-radius: 10px;
-            .cont_img_user{
-                height: 50px;
-                width: 60px;
-                margin: 4px 10px;
-                border-radius: 50%;
-                background-color: rgb(156, 156, 156);
-             
-            }
-            .cont_infor_user{
-                background-color: red;
-                .cont_fecha{
-                    width: 100%;
-                    display: flex;
-                    justify-content: flex-start;
-                    align-items: flex-start;
-                    gap: 10px;
-                    
-                }
-            }
-        }
-    }
-    
     // Sidebar Styles
     .price-box {
         display: flex;

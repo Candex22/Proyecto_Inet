@@ -91,7 +91,7 @@ body header {
 }
 
 body header.reducir {
-  height: 50px;
+  height: 60px;
 }
 
 body header nav {
@@ -556,10 +556,10 @@ body main .featured-destinations .card .image-placeholder {
 body main .featured-destinations .card .discount {
   position: absolute;
   top: 155px;
-  right: 25px;
+  left: 170px;
   background-color: #e74c3c;
   color: #fff;
-  width: auto;
+  width: 20%;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.3rem 0.5rem;

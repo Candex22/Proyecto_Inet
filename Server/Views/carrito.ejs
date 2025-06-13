@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%- include('head.ejs') %>
+    <title>TravelPortal - Carrito</title>
+</head>
+
+<body>
+    <%- include('header.ejs') %>
+    <main>
+        <div class="cart-container">
+            <h1>Tu Carrito de Compras</h1>
+
+            <% if (cartItems && cartItems.length > 0) { %>
+                <div class="cart-items">
+                    <% cartItems.forEach(item => { %>
+                        <div class="cart-item">
+                            <div class="item-image">
+                                <% if (item.imagen_url) { %>
+                                    <img src="<%= item.imagen_url %>" alt="<%= item.nombre_paquete %>">
+                                <% } else { %>
+                                    <i class="fas fa-image"></i>
+                                <% } %>
+                            </div>
+                            <div class="item-details">
+                                <h3><%= item.descripcion || item.nombre_paquete %></h3>
+                                <p>Precio por persona: $<%= item.precio_unitario %></p>
+                                <div class="item-quantity-price">
+                                    <div class="item-quantity">
+                                        <button class="quantity-button" onclick="updateCartItemQuantity('<%= item.id_detalle %>', -1)" aria-label="Disminuir cantidad">-</button>
+                                        <span class="quantity-value"><%= item.cantidad %></span>
+                                        <button class="quantity-button" onclick="updateCartItemQuantity('<%= item.id_detalle %>', 1)" aria-label="Aumentar cantidad">+</button>
+                                    </div>
+                                    <span class="item-price">$<%= (item.cantidad * item.precio_unitario).toFixed(2) %></span>
+                                </div>
+                            </div>
+                            <button class="remove-item-button" onclick="removeCartItem('<%= item.id_detalle %>')" aria-label="Eliminar item">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    <% }); %>
+                </div>
+
+                <div class="cart-summary">
+                    <div class="summary-row">
+                        <span>Subtotal</span>
+                        <span>$<%= cartTotal.toFixed(2) %></span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total del Carrito</span>
+                        <span>$<%= cartTotal.toFixed(2) %></span>
+                    </div>
+                    <button class="checkout-button">Proceder al Pago</button>
+                </div>
+            <% } else { %>
+                <div class="empty-cart-message">
+                    <p>Tu carrito está vacío. ¡Explora nuestros paquetes y agrega algo increíble!</p>
+                    <a href="/paquetes" class="checkout-button" style="text-decoration: none;">Ver Paquetes</a>
+                </div>
+            <% } %>
+        </div>
+    </main>
+    <%- include('footer.ejs') %>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit-id.js" crossorigin="anonymous"></script>
+    <script src="/Scripts/carrito.js"></script>
+</body>
+
+</html>

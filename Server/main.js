@@ -103,6 +103,10 @@ app.get('/paquetes', (req, res) => {
     res.render('paquetes', { session: req.session });
 })
 
+app.get('/carrito', (req, res) => {
+    res.render('carrito', { session: req.session });
+})
+
 
 app.get('/index', async (req, res) => {
 
@@ -353,6 +357,216 @@ function Datatime() {
     const day = String(now.getDate()).padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+}
+
+
+// Ruta para mostrar el carrito
+app.get('/carrito', isLogged, async (req, res) => {
+    try {
+        const userId = req.session.usuario_id;
+
+        if (!userId) {
+            return res.redirect('/login');
+        }
+
+        // Buscar el pedido abierto (carrito) del usuario
+        let { data: pedidoAbierto, error: pedidoError } = await supabase
+            .from('pedido')
+            .select('*')
+            .eq('id_usuario', userId)
+            .eq('estado', 'abierto')
+            .limit(1);
+
+        if (pedidoError) {
+            console.error('Error al buscar pedido:', pedidoError);
+            return res.render('carrito', { 
+                session: req.session, 
+                cartItems: [], 
+                cartTotal: 0 
+            });
+        }
+
+        let cartItems = [];
+        let cartTotal = 0;
+
+        if (pedidoAbierto && pedidoAbierto.length > 0) {
+            const id_pedido = pedidoAbierto[0].id_pedido;
+
+            // Obtener los detalles del pedido con información del paquete
+            let { data: detallesPedido, error: detallesError } = await supabase
+                .from('detalles_pedido')
+                .select(`
+                    id_detalle,
+                    id_producto_servicio,
+                    cantidad,
+                    precio_unitario,
+                    descripcion
+                `)
+                .eq('id_pedido', id_pedido);
+
+            if (detallesError) {
+                console.error('Error al obtener detalles del pedido:', detallesError);
+            } else {
+                // Para cada detalle, obtener información adicional del paquete
+                for (let detalle of detallesPedido) {
+                    const { data: paqueteInfo, error: paqueteError } = await supabase
+                        .from('paquete')
+                        .select('nombre_paquete, descripcion')
+                        .eq('id_paquete', detalle.id_producto_servicio)
+                        .limit(1);
+
+                    if (!paqueteError && paqueteInfo && paqueteInfo.length > 0) {
+                        cartItems.push({
+                            id_detalle: detalle.id_detalle,
+                            nombre_paquete: paqueteInfo[0].nombre_paquete,
+                            descripcion: detalle.descripcion || paqueteInfo[0].descripcion,
+                            precio_unitario: detalle.precio_unitario,
+                            cantidad: detalle.cantidad,
+                            imagen_url: null // Agregar si tienes imágenes
+                        });
+                        
+                        cartTotal += detalle.cantidad * detalle.precio_unitario;
+                    }
+                }
+            }
+        }
+
+        res.render('carrito', { 
+            session: req.session, 
+            cartItems: cartItems, 
+            cartTotal: cartTotal 
+        });
+
+    } catch (error) {
+        console.error('Error en ruta /carrito:', error);
+        res.render('carrito', { 
+            session: req.session, 
+            cartItems: [], 
+            cartTotal: 0 
+        });
+    }
+});
+
+// Ruta para actualizar cantidad en el carrito
+app.post('/api/actualizar_cantidad_carrito', isLogged, async (req, res) => {
+    try {
+        const { id_detalle, cambio } = req.body;
+        const userId = req.session.usuario_id;
+
+        if (!id_detalle || !cambio) {
+            return res.status(400).json({ error: 'Datos incompletos.' });
+        }
+
+        // Obtener el detalle actual
+        const { data: detalleActual, error: getError } = await supabase
+            .from('detalles_pedido')
+            .select('cantidad, id_pedido')
+            .eq('id_detalle', id_detalle)
+            .limit(1);
+
+        if (getError || !detalleActual || detalleActual.length === 0) {
+            return res.status(404).json({ error: 'Item no encontrado.' });
+        }
+
+        const nuevaCantidad = detalleActual[0].cantidad + parseInt(cambio);
+
+        if (nuevaCantidad < 1) {
+            return res.status(400).json({ error: 'La cantidad no puede ser menor a 1.' });
+        }
+
+        // Actualizar la cantidad
+        const { error: updateError } = await supabase
+            .from('detalles_pedido')
+            .update({ cantidad: nuevaCantidad })
+            .eq('id_detalle', id_detalle);
+
+        if (updateError) {
+            console.error('Error al actualizar cantidad:', updateError);
+            return res.status(500).json({ error: 'Error al actualizar la cantidad.' });
+        }
+
+        // Recalcular total del pedido
+        await recalcularTotalPedido(detalleActual[0].id_pedido);
+
+        res.json({ message: 'Cantidad actualizada exitosamente.', nueva_cantidad: nuevaCantidad });
+
+    } catch (error) {
+        console.error('Error en actualizar cantidad:', error);
+        res.status(500).json({ error: 'Error inesperado.' });
+    }
+});
+
+// Ruta para eliminar item del carrito
+app.post('/api/eliminar_item_carrito', isLogged, async (req, res) => {
+    try {
+        const { id_detalle } = req.body;
+
+        if (!id_detalle) {
+            return res.status(400).json({ error: 'ID de detalle requerido.' });
+        }
+
+        // Obtener el id_pedido antes de eliminar
+        const { data: detalleInfo, error: getError } = await supabase
+            .from('detalles_pedido')
+            .select('id_pedido')
+            .eq('id_detalle', id_detalle)
+            .limit(1);
+
+        if (getError || !detalleInfo || detalleInfo.length === 0) {
+            return res.status(404).json({ error: 'Item no encontrado.' });
+        }
+
+        const id_pedido = detalleInfo[0].id_pedido;
+
+        // Eliminar el item
+        const { error: deleteError } = await supabase
+            .from('detalles_pedido')
+            .delete()
+            .eq('id_detalle', id_detalle);
+
+        if (deleteError) {
+            console.error('Error al eliminar item:', deleteError);
+            return res.status(500).json({ error: 'Error al eliminar el item.' });
+        }
+
+        // Recalcular total del pedido
+        await recalcularTotalPedido(id_pedido);
+
+        res.json({ message: 'Item eliminado exitosamente.' });
+
+    } catch (error) {
+        console.error('Error en eliminar item:', error);
+        res.status(500).json({ error: 'Error inesperado.' });
+    }
+});
+
+// Función auxiliar para recalcular el total del pedido
+async function recalcularTotalPedido(id_pedido) {
+    try {
+        const { data: detalles, error } = await supabase
+            .from('detalles_pedido')
+            .select('cantidad, precio_unitario')
+            .eq('id_pedido', id_pedido);
+
+        if (error) {
+            console.error('Error al obtener detalles para recalcular:', error);
+            return;
+        }
+
+        let nuevoTotal = 0;
+        detalles.forEach(item => {
+            nuevoTotal += item.cantidad * item.precio_unitario;
+        });
+
+        await supabase
+            .from('pedido')
+            .update({ total_pedido: nuevoTotal })
+            .eq('id_pedido', id_pedido);
+
+        console.log(`Total del pedido ${id_pedido} recalculado: ${nuevoTotal}`);
+    } catch (error) {
+        console.error('Error al recalcular total:', error);
+    }
 }
 
 app.use('/Scripts', express.static(path.join(__dirname, '../Client/Scripts')));
