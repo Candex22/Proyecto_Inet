@@ -6,22 +6,21 @@
 <script src="https://kit.fontawesome.com/1eff4537b0.js" crossorigin="anonymous"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="Estilo/admin.css">
 <link
     href="https://fonts.googleapis.com/css2?family=Poetsen+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
     rel="stylesheet">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="Estilo/admin.css">
 
 <body>
+    <%- include('header.ejs') %>
         <div class="admin-container">
-            <header>
+            <div class="titulo">
                 <h1>Panel de Administración</h1>
                 <p class="subtitle">Gestiona productos, pedidos y clientes de tu agencia de viajes</p>
-            </header>
-
+            </div>
             <section class="dashboard-cards">
                 <div class="card">
                     <div class="card-header">
@@ -59,13 +58,376 @@
                     <p class="growth">+20.1% desde el mes pasado</p>
                 </div>
             </section>
-
+        </div>
+        <div class="segunda-container">
             <nav class="tab-menu">
                 <button class="tab active">Productos</button>
                 <button class="tab">Pedidos</button>
                 <button class="tab">Clientes</button>
             </nav>
+
+            <!-- Tab Content Sections -->
+            <div class="tab-content" id="productos-tab">
+                <section class="dashboard-content">
+                    <div class="dashboard-section">
+                        <div class="dashboard-content">
+                            <div class="agregar-producto">
+                                <div class="form-header">
+                                    <h2><i class="fas fa-plus-circle"></i> Agregar Nuevo Producto</h2>
+                                    <p class="form-subtitle">Complete el formulario para agregar un nuevo producto al
+                                        catálogo</p>
+                                </div>
+                                <form action="/admin/agregar-producto" method="post" enctype="multipart/form-data"
+                                    class="product-form">
+                                    <div class="form-grid">
+                                        <div class="form-group">
+                                            <label for="nombre">Nombre del Producto</label>
+                                            <input type="text" id="nombre" name="nombre"
+                                                placeholder="Ej: Tour Machu Picchu" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="categoria">Categoría</label>
+                                            <select id="categoria" name="categoria" required>
+                                                <option value="">Seleccione una categoría</option>
+                                                <option value="tours">Tours</option>
+                                                <option value="paquetes">Paquetes</option>
+                                                <option value="hoteles">Hoteles</option>
+                                                <option value="vuelos">Vuelos</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group full-width">
+                                            <label for="descripcion">Descripción</label>
+                                            <textarea id="descripcion" name="descripcion" rows="4"
+                                                placeholder="Describa los detalles del producto..." required></textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="precio">Precio Base</label>
+                                            <div class="input-with-icon">
+                                                <span class="currency">$</span>
+                                                <input type="number" id="precio" name="precio" placeholder="0.00"
+                                                    step="0.01" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="descuento">Descuento (%)</label>
+                                            <input type="number" id="descuento" name="descuento" placeholder="0" min="0"
+                                                max="100">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="duracion">Duración (días)</label>
+                                            <input type="number" id="duracion" name="duracion" placeholder="Ej: 3"
+                                                min="1">
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="capacidad">Capacidad Máxima</label>
+                                            <input type="number" id="capacidad" name="capacidad" placeholder="Ej: 20"
+                                                min="1">
+                                        </div>
+
+                                        <div class="form-group full-width">
+                                            <label for="imagen">Imagen Principal</label>
+                                            <div class="file-upload">
+                                                <input type="file" id="imagen" name="imagen" accept="image/*" required>
+                                                <label for="imagen" class="file-upload-label">
+                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    <span>Seleccionar imagen</span>
+                                                </label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group full-width">
+                                            <label for="caracteristicas">Características</label>
+                                            <div class="caracteristicas-grid">
+                                                <label class="checkbox-container">
+                                                    <input type="checkbox" name="caracteristicas[]" value="wifi">
+                                                    <span class="checkmark"></span>
+                                                    WiFi Gratis
+                                                </label>
+                                                <label class="checkbox-container">
+                                                    <input type="checkbox" name="caracteristicas[]" value="desayuno">
+                                                    <span class="checkmark"></span>
+                                                    Desayuno Incluido
+                                                </label>
+                                                <label class="checkbox-container">
+                                                    <input type="checkbox" name="caracteristicas[]" value="transporte">
+                                                    <span class="checkmark"></span>
+                                                    Transporte
+                                                </label>
+                                                <label class="checkbox-container">
+                                                    <input type="checkbox" name="caracteristicas[]" value="guia">
+                                                    <span class="checkmark"></span>
+                                                    Guía Turístico
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-actions">
+                                        <button type="reset" class="btn-secondary">
+                                            <i class="fas fa-undo"></i> Limpiar
+                                        </button>
+                                        <button type="submit" class="btn-primary">
+                                            <i class="fas fa-save"></i> Guardar Producto
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="productos-existentes">
+                                <div class="table-header">
+                                    <div class="header-left">
+                                        <h2><i class="fas fa-box-open"></i> Productos Existentes</h2>
+                                        <p class="table-subtitle">Gestiona y organiza tu catálogo de productos</p>
+                                    </div>
+                                    <div class="table-actions">
+                                        <div class="search-box">
+                                            <i class="fas fa-search"></i>
+                                            <input type="text" placeholder="Buscar producto..." class="search-input">
+                                        </div>
+                                        <div class="filter-group">
+                                            <select class="filter-select">
+                                                <option value="">Todas las categorías</option>
+                                                <option value="tours">Tours</option>
+                                                <option value="paquetes">Paquetes</option>
+                                                <option value="hoteles">Hoteles</option>
+                                                <option value="vuelos">Vuelos</option>
+                                            </select>
+                                            <select class="filter-select">
+                                                <option value="">Estado</option>
+                                                <option value="activo">Activo</option>
+                                                <option value="inactivo">Inactivo</option>
+                                                <option value="agotado">Agotado</option>
+                                            </select>
+                                        </div>
+                                        <button class="btn-export">
+                                            <i class="fas fa-file-export"></i>
+                                            Exportar
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="table-responsive">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th class="th-checkbox">
+                                                    <label class="checkbox-container">
+                                                        <input type="checkbox" id="select-all">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </th>
+                                                <th>Nombre</th>
+                                                <th>Categoría</th>
+                                                <th>Precio</th>
+                                                <th>Estado</th>
+                                                <th class="th-actions">Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <label class="checkbox-container">
+                                                        <input type="checkbox">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </td>
+                                                <td>
+                                                    <div class="product-info">
+                                                        <h4>Tour Machu Picchu</h4>
+                                                        <span class="product-id">#PRD-001</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="category-badge tours">Tours</span>
+                                                </td>
+                                                <td>
+                                                    <div class="price-info">
+                                                        <span class="current-price">$299.99</span>
+                                                        <span class="old-price">$399.99</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge active">Activo</span>
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button class="btn-editar" title="Editar">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn-eliminar" title="Eliminar">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                        <button class="btn-view" title="Vista previa">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <label class="checkbox-container">
+                                                        <input type="checkbox">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                </td>
+                                                <td>
+                                                    <div class="product-info">
+                                                        <h4>Hotel Cusco Premium</h4>
+                                                        <span class="product-id">#PRD-002</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="category-badge hoteles">Hoteles</span>
+                                                </td>
+                                                <td>
+                                                    <div class="price-info">
+                                                        <span class="current-price">$199.99</span>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="status-badge active">Activo</span>
+                                                </td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button class="btn-editar" title="Editar">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                        <button class="btn-eliminar" title="Eliminar">
+                                                            <i class="fas fa-trash-alt"></i>
+                                                        </button>
+                                                        <button class="btn-view" title="Vista previa">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="table-footer">
+                                    <div class="footer-left">
+                                        <span class="selected-count">0 productos seleccionados</span>
+                                        <button class="btn-bulk-action" disabled>
+                                            <i class="fas fa-trash-alt"></i>
+                                            Eliminar seleccionados
+                                        </button>
+                                    </div>
+                                    <div class="pagination">
+                                        <button class="pagination-btn" disabled>
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <div class="pagination-pages">
+                                            <button class="page-btn active">1</button>
+                                            <button class="page-btn">2</button>
+                                            <button class="page-btn">3</button>
+                                            <span class="page-dots">...</span>
+                                            <button class="page-btn">10</button>
+                                        </div>
+                                        <button class="pagination-btn">
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-content" id="pedidos-tab">
+                <section class="dashboard-content">
+                    <div class="dashboard-section">
+                        <div class="pedidos-container">
+                            <h2><i class="fas fa-shopping-cart"></i> Gestión de Pedidos</h2>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID Pedido</th>
+                                            <th>Cliente</th>
+                                            <th>Fecha</th>
+                                            <th>Total</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>#ORD-001</td>
+                                            <td>Juan Pérez</td>
+                                            <td>2024-03-15</td>
+                                            <td>$1,299.99</td>
+                                            <td><span class="status-badge active">En Proceso</span></td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <button class="btn-editar" title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn-view" title="Ver Detalles">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="tab-content" id="clientes-tab">
+                <section class="dashboard-content">
+                    <div class="dashboard-section">
+                        <div class="clientes-container">
+                            <h2><i class="fas fa-users"></i> Gestión de Clientes</h2>
+                            <div class="table-responsive">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>ID Cliente</th>
+                                            <th>Nombre</th>
+                                            <th>Email</th>
+                                            <th>Fecha Registro</th>
+                                            <th>Estado</th>
+                                            <th>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>#CLI-001</td>
+                                            <td>María García</td>
+                                            <td>maria@email.com</td>
+                                            <td>2024-03-10</td>
+                                            <td><span class="status-badge active">Activo</span></td>
+                                            <td>
+                                                <div class="action-buttons">
+                                                    <button class="btn-editar" title="Editar">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="btn-view" title="Ver Detalles">
+                                                        <i class="fas fa-eye"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
         </div>
+
+        <script src="Scripts/admin.js"></script>
 </body>
 
 </html>
