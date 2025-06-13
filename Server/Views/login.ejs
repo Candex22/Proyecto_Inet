@@ -1,14 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <%- include('head.ejs') %>
-            <title>
-              Iniciar sesion
-            </title>
-    </head>
-<body id="login"> 
-    <%- include('header.ejs') %>
-    <main class="background" >
+
+<head>
+    <%- include('head.ejs') %>
+        <title>
+            Iniciar sesion
+        </title>
+</head>
+
+<body id="login">
+
+    <main class="background">
         <div class="overlay">
 
             <form method="post" action="/iniciar_sesion">
@@ -17,27 +19,28 @@
                     <p class="descripcion-form">Ingresa a tu cuenta para gestionar tus reservas</p>
                 </div>
                 <div id="cont_main_inputs">
-                    
+
                     <div class="cont_input">
                         <input name="user_name" type="text" placeholder="Nombre de usuario">
                     </div>
                     <div class="cont_input">
-                        <input id="input" name="password" type="password" placeholder="Contraseña"> 
+                        <input id="input" name="password" type="password" placeholder="Contraseña">
                         <i class="fa-solid fa-lock" id="contra"></i>
                     </div>
                     <button>Ingresar</button>
                     <a href="/register">No tienes cuenta todavia?</a>
-                    <% if (typeof error !== 'undefined' && error) { %>
+                    <% if (typeof error !=='undefined' && error) { %>
                         <div class="error-message">
-                          <%= error %>
+                            <%= error %>
                         </div>
-                      <% } %>
+                        <% } %>
                 </div>
             </form>
 
-        </div> 
+        </div>
     </main>
 </body>
+
 </html>
 <script>
     const contra = document.getElementById("contra")
@@ -45,11 +48,11 @@
     contra.addEventListener("click", () => {
         contra.classList.toggle("fa-lock")
         contra.classList.toggle("fa-eye")
-       
+
         if (contra.classList.contains("fa-eye")) {
-            input.type = "text"; 
+            input.type = "text";
         } else if (contra.classList.contains("fa-lock")) {
-            input.type = "password"; 
+            input.type = "password";
         }
     })
 </script>

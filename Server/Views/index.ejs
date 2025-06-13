@@ -53,104 +53,64 @@
                 </div>
 
                 <div class="cards-container">
+                    <% paquetes.forEach(paquete => { %> <% // Bucle principal para cada paquete %>
+                        <div class="card">
+                            <%
+                                // Inicializa las variables para cada paquete
+                                let estrellas_prom = 0;
+                                let cantidad_reseñas = 0;
 
-                    <div class="card">
-                        <div class="card-tags">
-                            <span class="tag international">Internacional</span>
-                            <span class="tag featured">⭐ Destacado</span>
-                        </div>
-                        <span class="discount">-19%</span>
-                        <div class="image-placeholder"></div>
-                        <div class="card-body">
-                            <h3>París Romántico</h3>
-                            <p>7 días en la ciudad del amor con vuelos y hotel incluidos</p>
-                            <div class="info">
-                                <span>📅 7 días</span>
-                                <span>👥 2 personas</span>
-                            </div>
-                            <div class="rating">
-                                ⭐ 4.8 <small>(124 reseñas)</small>
-                            </div>
-                            <div class="prices">
-                                <span class="old">$1599</span>
-                                <span class="current">$1299</span>
-                            </div>
-                            <button>Ver Detalles</button>
-                        </div>
-                    </div>
+                                // Busca el resumen de reseñas para este paquete específico usando su id_paquete
+                                const resumenDeEstePaquete = resumenReseñas[paquete.id_paquete];
 
-                    <div class="card">
-                        <div class="card-tags">
-                            <span class="tag national">Nacional</span>
+                                if (resumenDeEstePaquete) {
+                                    // Si encontramos reseñas para este paquete, calculamos el promedio
+                                    estrellas_prom = resumenDeEstePaquete.total_puntaje_sumado / resumenDeEstePaquete.cantidad_reseñas;
+                                    cantidad_reseñas = resumenDeEstePaquete.cantidad_reseñas;
+                                }
+                            %>
+                            <div class="card-tags">
+                                <% if(paquete.tipo_viaje=="Internacional"){ %>
+                                    <span class="tag international">Internacional</span>
+                                <%} if(paquete.tipo_viaje=="Nacional"){ %>
+                                    <span class="tag national">Nacional</span>
+                                <%}%>
+                                
+                                <span class="tag featured">⭐ Destacado</span>
+                            </div>
+                            <!-- <span class="discount">-19%</span> -->
+                            <div class="image-placeholder"></div>
+                            <div class="card-body">
+                                <h3><%= paquete.nombre_paquete %></h3>
+                                <p> <%= paquete.descripcion %> </p>
+                                <div class="info">
+                                    <span>📅 <%= paquete.Dias %> Dias</span>
+                                    <span>👥  <%= paquete.Personas %> personas</span>
+                                </div>
+                                <div class="rating">
+                                    <% if (cantidad_reseñas > 0) { %>
+                                        <p>Estrellas: <%= estrellas_prom.toFixed(1) %> (<%= cantidad_reseñas %> reseñas)</p>
+                                      
+                                        <% for (let i = 1; i <= 5; i++) { %>
+                                            <% if (i <= Math.round(estrellas_prom)) { %>
+                                                ⭐ 
+                                            <% } else { %>
+                                                ☆ 
+                                            <% } %>
+                                        <% } %>
+                                    <% } else { %>
+                                        <p>Sin reseñas aún.</p>
+                                    <% } %>
+                                </div>
+                                <div class="prices">
+                                    <span class="old">$1599</span>
+                                    <span class="current">$1299</span>
+                                </div>
+                                <a href="/paquete?id_paquete=<%=paquete.id_paquete">Ver Detalles</a>
+                            </div>
                         </div>
-                        <span class="discount">-18%</span>
-                        <div class="image-placeholder"></div>
-                        <div class="card-body">
-                            <h3>Bariloche Aventura</h3>
-                            <p>5 días de aventura en la Patagonia argentina</p>
-                            <div class="info">
-                                <span>📅 5 días</span>
-                                <span>👥 4 personas</span>
-                            </div>
-                            <div class="rating">
-                                ⭐ 4.9 <small>(89 reseñas)</small>
-                            </div>
-                            <div class="prices">
-                                <span class="old">$1099</span>
-                                <span class="current">$899</span>
-                            </div>
-                            <button>Ver Detalles</button>
-                        </div>
-                    </div>
+                    <% }); %> <% // Fin del bucle principal para cada paquete %>
 
-                    <div class="card">
-                        <div class="card-tags">
-                            <span class="tag international">Internacional</span>
-                            <span class="tag featured">⭐ Destacado</span>
-                        </div>
-                        <span class="discount">-15%</span>
-                        <div class="image-placeholder"></div>
-                        <div class="card-body">
-                            <h3>Caribe Todo Incluido</h3>
-                            <p>10 días en resort de lujo en Cancún</p>
-                            <div class="info">
-                                <span>📅 10 días</span>
-                                <span>👥 2 personas</span>
-                            </div>
-                            <div class="rating">
-                                ⭐ 4.7 <small>(156 reseñas)</small>
-                            </div>
-                            <div class="prices">
-                                <span class="old">$2599</span>
-                                <span class="current">$2199</span>
-                            </div>
-                            <button>Ver Detalles</button>
-                        </div>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-tags">
-                            <span class="tag national">Nacional</span>
-                        </div>
-                        <span class="discount">-22%</span>
-                        <div class="image-placeholder"></div>
-                        <div class="card-body">
-                            <h3>Mendoza Gourmet</h3>
-                            <p>4 días de turismo enológico y gastronomía</p>
-                            <div class="info">
-                                <span>📅 4 días</span>
-                                <span>👥 2 personas</span>
-                            </div>
-                            <div class="rating">
-                                ⭐ 4.6 <small>(67 reseñas)</small>
-                            </div>
-                            <div class="prices">
-                                <span class="old">$899</span>
-                                <span class="current">$699</span>
-                            </div>
-                            <button>Ver Detalles</button>
-                        </div>
-                    </div>
 
                 </div>
             </section>

@@ -73,9 +73,9 @@ const isLogged = (req, res, next) => {
 }
 app.get('/', (req, res) => {
     // Mientras este en produccion para ahorrar tiempo
-    res.redirect('/index');
+    // res.redirect('/index');
 
-    // res.redirect('/login')
+    res.redirect('/login')
 
 })
 
@@ -93,64 +93,71 @@ app.get('/register', (req, res) => {
 
 
 app.get('/index', async (req, res) => {
-    let { data: reseñas, error } = await supabase
-        .from('reseñas')
-        .select('*')
-    if (error) {
-        console.error('❌ Error en Supabase:ss', error);
-        // Intenta enviar más detalles si el error es {}
-        if (Object.keys(error).length === 0) {
-            console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
-        }
-        return res.render('login.ejs', { error: 'Error al registrar el usuario.' });
-    } else {
-        // Objeto para almacenar el resumen por paquete
-        let resumenPaquetes = {};
 
-        // Iterar sobre cada reseña para acumular los datos
-        for (let i = 0; i < reseñas.length; i++) {
-            const reseña = reseñas[i];
-            const idPaquete = reseña.id_paquete;
-            // Asegurarse de convertir el puntaje a número para la suma
-            const puntajeNumerico = parseFloat(reseña.puntaje);
 
-            // Si el paquete aún no está en nuestro objeto resumenPaquetes, inicializarlo
-            if (!resumenPaquetes[idPaquete]) {
-                resumenPaquetes[idPaquete] = {
-                    id_paquete: idPaquete,
-                    total_puntaje_sumado: 0,
-                    cantidad_reseñas: 0
-                };
-            }
+    try {
+        let { data: reseñas, error: reseñasError } = await supabase // Usa supabase
+            .from('reseñas')
+            .select('*');
 
-            // Sumar el puntaje y contar la reseña
-            resumenPaquetes[idPaquete].total_puntaje_sumado += puntajeNumerico;
-            resumenPaquetes[idPaquete].cantidad_reseñas += 1;
-        }
-        console.log(resumenPaquetes['98eef66f-34ed-4bc9-8b2c-98841dcbf834'].total_puntaje_sumado);
-        console.log(resumenPaquetes['98eef66f-34ed-4bc9-8b2c-98841dcbf834'].cantidad_reseñas);
-
-        let { data: paquete, error } = await supabase
-            .from('paquete')
-            .select('*')
-        if (error) {
-            console.error('❌ Error en Supabase:', error);
-            // Intenta enviar más detalles si el error es {}
-            if (Object.keys(error).length === 0) {
+        if (reseñasError) {
+            console.error('❌ Error en Supabase (al obtener reseñas):', reseñasError);
+            if (Object.keys(reseñasError).length === 0) {
                 console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
             }
-            return res.render('login.ejs', { error: 'Error al registrar el usuario.' });
+            return res.render('login.ejs', { error: 'Error al cargar reseñas.' });
         } else {
-            res.render('index', { session: req.session, paquetes: paquete, reseñas: reseñas });
 
+
+            // Objeto para almacenar el resumen por paquete
+            let resumenPaquetes = {};
+
+            // Iterar sobre cada reseña para acumular los datos
+            for (let i = 0; i < reseñas.length; i++) {
+                const reseña = reseñas[i];
+                const idPaquete = reseña.id_paquete;
+                // Asegurarse de convertir el puntaje a número para la suma
+                const puntajeNumerico = parseFloat(reseña.puntaje);
+
+                // Si el paquete aún no está en nuestro objeto resumenPaquetes, inicializarlo
+                if (!resumenPaquetes[idPaquete]) {
+                    resumenPaquetes[idPaquete] = {
+                        id_paquete: idPaquete,
+                        total_puntaje_sumado: 0,
+                        cantidad_reseñas: 0
+                    };
+                }
+
+                // Sumar el puntaje y contar la reseña
+                resumenPaquetes[idPaquete].total_puntaje_sumado += puntajeNumerico;
+                resumenPaquetes[idPaquete].cantidad_reseñas += 1;
+            }
+
+            // ==============================================================
+
+
+
+            let { data: paquetes, error: paquetesError } = await supabase // Usa supabase
+                .from('paquete')
+                .select('*');
+
+            if (paquetesError) {
+                console.error('❌ Error en Supabase (al obtener paquetes):', paquetesError);
+                if (Object.keys(paquetesError).length === 0) {
+                    console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
+                }
+                return res.render('login.ejs', { error: 'Error al cargar paquetes.' });
+            } else {
+
+
+                res.render('index', { session: req.session, paquetes: paquetes, reseñas: reseñas, resumenReseñas: resumenPaquetes });
+            }
         }
+    } catch (err) {
+        console.error('Error general en la ruta /index:', err);
+        return res.render('login.ejs', { error: 'Ocurrió un error inesperado al cargar la página.' });
     }
-
-
-
-
-
-})
+});
 
 app.post('/registrar', async (req, res) => {
     try {
@@ -249,7 +256,25 @@ app.post('/iniciar_sesion', async (req, res) => {
     }
 })
 
+app.get('/paquete', async (req, res) => {
+    const id_paquete = req.query.id_paquete
+    let { data: paquete_data, error } = await supabase
+        .from('paquete')
+        .select("*")
 
+        // Filters
+        .eq('id_paquete', id_paquete)
+
+        let { data: paquete_componentes, error } = await supabase
+        .from('paquete_componentes')
+        .select("*")
+      
+        // Filters
+        .eq('column', 'Equal to')
+
+
+    res.render('paquete', { session: req.session });
+})
 // Función para comparar una contraseña con su hash
 async function verifyPassword(plainPassword, hashedPassword) {
     try {
