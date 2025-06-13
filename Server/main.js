@@ -272,6 +272,16 @@ app.post('/iniciar_sesion', async (req, res) => {
     }
 })
 
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error al cerrar sesión:', err);
+            return res.redirect('/index');
+        }
+        res.redirect('/login');
+    });
+});
+
 app.get('/paquete', async (req, res) => {
     const id_paquete = req.query.id_paquete;
 

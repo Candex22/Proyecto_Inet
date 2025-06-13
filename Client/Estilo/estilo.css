@@ -237,6 +237,59 @@ body header nav #cont_nav_links a:hover {
   color: white;
 }
 
+body header nav #cont_nav_links .user-menu {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  height: 100%;
+}
+
+body header nav #cont_nav_links .user-menu .links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--azul_oscuro);
+  font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  height: 45px;
+  padding: 0 15px;
+}
+
+body header nav #cont_nav_links .user-menu .links:hover {
+  color: white;
+
+}
+
+body header nav #cont_nav_links .user-menu .links i {
+  font-size: 1.1em;
+}
+
+body header nav #cont_nav_links .user-menu .links.logout {
+  padding: 0 10px;
+}
+
+body header nav #cont_nav_links .user-menu .links.logout .text_links {
+  display: none;
+}
+
+body header nav #cont_nav_links .user-menu .links.logout i {
+  font-size: 1.2em;
+}
+
+body header.reducir nav #cont_nav_links .user-menu .links {
+  height: 100%;
+  padding: 18px 10px;
+}
+
+body header.reducir nav #cont_nav_links .user-menu .links i {
+  font-size: 1em;
+}
+
+body header.reducir nav #cont_nav_links .user-menu .links.logout {
+  padding: 18px 10px;
+}
+
 body main {
   height: auto;
   min-height: 100vh;

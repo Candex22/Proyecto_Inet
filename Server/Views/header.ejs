@@ -1,7 +1,5 @@
 <header>
-
     <nav>
-
         <% if (session.rol_us=="root" ) { %>
             <a href="/dashboard" class="container_nav" id="cont_nav_tit">
                 <i class="fa-solid fa-plane-departure"></i>
@@ -30,18 +28,27 @@
                             <span class="text_links">Carrito</span>
 
                         </a>
-                        <a href="/login" class="links">
-                            <i class="fa-solid fa-user"></i>
-                            <span class="text_links">Ingresar</span>
 
-                        </a>
+                        <% if (session.user_sesion) { %>
+                            <div class="user-menu">
+                                <a href="#" class="links">
+                                    <i class="fa-solid fa-user"></i>
+                                    <span class="text_links"><%= session.nombre_usuario_us %></span>
+                                </a>
+                                <a href="/logout" class="links logout">
+                                    <i class="fa-solid fa-sign-out-alt"></i>
+                                    <span class="text_links">Cerrar sesión</span>
+                                </a>
+                            </div>
+                        <% } else { %>
+                            <a href="login.ejs" class="links">
+                                <i class="fa-solid fa-user"></i>
+                                <span class="text_links">Ingresar</span>
 
-
+                            </a>
+                        <% } %>
                     </div>
-
-
     </nav>
-
 </header>
 
 
