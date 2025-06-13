@@ -58,13 +58,13 @@ app.use('/resources', express.static(path.join(__dirname, '../Client/Resources')
 
 // Conexión a la base de datos
 
-    // const connection = mysql.createConnection({
-    //     host: 'localhost',
-    //     user: 'root',
-    //     password: '',
-    //     database: 'BD',
-    //     port: 3306
-    // });
+// const connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '',
+//     database: 'BD',
+//     port: 3306
+// });
 
 // Encender servidor
 app.listen(PORT, () => {
@@ -289,14 +289,24 @@ app.get('/paquete', async (req, res) => {
         console.error("Error al obtener componentes del paquete:", componentesError);
         return res.status(500).send("Error interno del servidor al obtener componentes.");
     }
+    let { data: reseñas, reseñasError } = await supabase
+        .from('reseñas')
+        .select("*")
 
+        // Filters
+        .eq('id_paquete', id_paquete)
+    if (reseñasError) {
+        console.error("Error al obtener las reseñas del paquete:", reseñasError);
+        return res.status(500).send("Error interno del servidor al obtener componentes.");
+    }
+    console.log(reseñas[0])
     // Aquí puedes procesar paquete_data y paquete_componentes
     // antes de pasarlos a tu vista, por ejemplo, combinarlos.
     // console.log("Datos del paquete:", paquete_data);
     // console.log("Componentes del paquete:", paquete_componentes);
 
 
-    res.render('paquete', { session: req.session, paquete: paquete_data[0], componentes: paquete_componentes });
+    res.render('paquete', { session: req.session, paquete: paquete_data[0], componentes: paquete_componentes, reseñas_data: reseñas[0] });
 });
 
 // Función para comparar una contraseña con su hash
