@@ -265,24 +265,40 @@ app.post('/iniciar_sesion', async (req, res) => {
 })
 
 app.get('/paquete', async (req, res) => {
-    const id_paquete = req.query.id_paquete
-    let { data: paquete_data, error } = await supabase
+    const id_paquete = req.query.id_paquete;
+
+    // Renombra la segunda variable de error a 'errorComponentes' o similar
+    let { data: paquete_data, error: paqueteError } = await supabase
         .from('paquete')
         .select("*")
+        .eq('id_paquete', id_paquete);
 
-        // Filters
-        .eq('id_paquete', id_paquete)
+    // Es buena práctica manejar los errores
+    if (paqueteError) {
+        console.error("Error al obtener datos del paquete:", paqueteError);
+        return res.status(500).send("Error interno del servidor al obtener paquete.");
+    }
 
-        let { data: paquete_componentes, error } = await supabase
+    let { data: paquete_componentes, error: componentesError } = await supabase
         .from('paquete_componentes')
         .select("*")
-      
-        // Filters
-        .eq('column', 'Equal to')
+        // Asegúrate de que este filtro sea correcto y relevante para tu lógica
+        .eq('id_paquete', id_paquete); // Asumo que quieres filtrar por id_paquete aquí también
+
+    if (componentesError) {
+        console.error("Error al obtener componentes del paquete:", componentesError);
+        return res.status(500).send("Error interno del servidor al obtener componentes.");
+    }
+
+    // Aquí puedes procesar paquete_data y paquete_componentes
+    // antes de pasarlos a tu vista, por ejemplo, combinarlos.
+    // console.log("Datos del paquete:", paquete_data);
+    // console.log("Componentes del paquete:", paquete_componentes);
 
 
-    res.render('paquete', { session: req.session });
-})
+    res.render('paquete', { session: req.session, paquete: paquete_data[0], componentes: paquete_componentes });
+});
+
 // Función para comparar una contraseña con su hash
 async function verifyPassword(plainPassword, hashedPassword) {
     try {

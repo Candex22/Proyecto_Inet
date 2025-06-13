@@ -213,13 +213,15 @@ body main #cont_presentacion #cont_btns_pres .btn_pres {
   border: none;
   border-radius: 999px;
   font-weight: 600;
-  display: inline-flex;
-  align-items: center;
   gap: 0.5rem;
   box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.15), 0 4px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: all 0.3s ease;
   text-decoration: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 body main #cont_presentacion #cont_btns_pres .btn_pres:hover {
   background: linear-gradient(135deg, #26456b, #3a5c8b);
@@ -393,9 +395,13 @@ body main .featured-destinations .card .card-body .prices .current {
   font-weight: bold;
   color: #1e3a5f;
 }
-body main .featured-destinations .card .card-body button {
+body main .featured-destinations .card .card-body .cont_btn {
+  padding-top: 20px;
+}
+body main .featured-destinations .card .card-body .cont_btn .ver_detalles {
   background-color: #1e3a5f;
   color: white;
+  text-decoration: none;
   padding: 0.6rem;
   border: none;
   border-radius: 8px;
@@ -403,7 +409,7 @@ body main .featured-destinations .card .card-body button {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-body main .featured-destinations .card .card-body button:hover {
+body main .featured-destinations .card .card-body .cont_btn .ver_detalles:hover {
   background-color: #162d47;
 }
 body main .servicios {

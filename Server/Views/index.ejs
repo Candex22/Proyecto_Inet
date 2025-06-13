@@ -3,186 +3,208 @@
 
 <head>
     <%- include('head.ejs') %>
-        <title>TravelPortal</title>
+    <title>TravelPortal</title>
 </head>
 
 <body>
     <%- include('header.ejs') %>
-        <main id="index_main">
-            <section id="cont_presentacion">
-                <h2>
-                    Descubre el Mundo con Nosotros
-                </h2>
-                <h4>Los mejores paquetes turisticos nacionales e internacionales para crear recuerdos inolovidables</h4>
-                <div id="cont_btns_pres">
-                    <a href="#" class="btn_pres">
-                        <i class="fa-solid fa-plane"></i>
-                        Explorar Paquetes</a>
-                    <a href="#" class="btn_pres" id="btn_ofertas">Ver ofertas Especiales</a>
-                </div>
-            </section>
-            <section class="stats-section">
-                <div class="stat-item">
-                    <i class="fas fa-award"></i>
-                    <h3>15+</h3>
-                    <p>Años de Experiencia</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-users"></i>
-                    <h3>10K+</h3>
-                    <p>Clientes Satisfechos</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <h3>50+</h3>
-                    <p>Destinos</p>
-                </div>
-                <div class="stat-item">
-                    <i class="fas fa-shield-alt"></i>
-                    <h3>24/7</h3>
-                    <p>Soporte</p>
-                </div>
-            </section>
-
-
-            <section class="featured-destinations">
-                <div class="section-header">
-                    <span class="badge">Paquetes Destacados</span>
-                    <h2>Destinos Increíbles</h2>
-                    <p>Selecciona entre nuestros destinos más populares y comienza tu próxima aventura</p>
-                </div>
-
-                <div class="cards-container">
-                    <% paquetes.forEach(paquete => { %> <% // Bucle principal para cada paquete %>
-                        <div class="card">
-                            <%
-                                // Inicializa las variables para cada paquete
-                                let estrellas_prom = 0;
-                                let cantidad_reseñas = 0;
-
-                                // Busca el resumen de reseñas para este paquete específico usando su id_paquete
-                                const resumenDeEstePaquete = resumenReseñas[paquete.id_paquete];
-
-                                if (resumenDeEstePaquete) {
-                                    // Si encontramos reseñas para este paquete, calculamos el promedio
-                                    estrellas_prom = resumenDeEstePaquete.total_puntaje_sumado / resumenDeEstePaquete.cantidad_reseñas;
-                                    cantidad_reseñas = resumenDeEstePaquete.cantidad_reseñas;
-                                }
-                            %>
-                            <div class="card-tags">
-                                <% if(paquete.tipo_viaje=="Internacional"){ %>
-                                    <span class="tag international">Internacional</span>
-                                <%} if(paquete.tipo_viaje=="Nacional"){ %>
-                                    <span class="tag national">Nacional</span>
-                                <%}%>
-                                
-                                <span class="tag featured">⭐ Destacado</span>
-                            </div>
-                            <!-- <span class="discount">-19%</span> -->
-                            <div class="image-placeholder"></div>
-                            <div class="card-body">
-                                <h3><%= paquete.nombre_paquete %></h3>
-                                <p> <%= paquete.descripcion %> </p>
-                                <div class="info">
-                                    <span>📅 <%= paquete.Dias %> Dias</span>
-                                    <span>👥  <%= paquete.Personas %> personas</span>
-                                </div>
-                                <div class="rating">
-                                    <% if (cantidad_reseñas > 0) { %>
-                                        <p>Estrellas: <%= estrellas_prom.toFixed(1) %> (<%= cantidad_reseñas %> reseñas)</p>
-                                      
-                                        <% for (let i = 1; i <= 5; i++) { %>
-                                            <% if (i <= Math.round(estrellas_prom)) { %>
-                                                ⭐ 
-                                            <% } else { %>
-                                                ☆ 
-                                            <% } %>
-                                        <% } %>
-                                    <% } else { %>
-                                        <p>Sin reseñas aún.</p>
-                                    <% } %>
-                                </div>
-                                <div class="prices">
-                                    <span class="old">$1599</span>
-                                    <span class="current">$1299</span>
-                                </div>
-                                <a href="/paquete?id_paquete=<%=paquete.id_paquete">Ver Detalles</a>
-                            </div>
-                        </div>
-                    <% }); %> <% // Fin del bucle principal para cada paquete %>
-
-
-                </div>
-            </section>
-            <section class="servicios">
-                <div class="section-label">Nuestros Servicios</div>
-                <h2 class="section-title">Todo lo que Necesitas</h2>
-                <p class="section-subtitle">
-                    Ofrecemos servicios completos para hacer de tu viaje una experiencia perfecta
-                </p>
-
-                <div class="servicios-grid">
-                    <div class="servicio-card destacado">
-                        <div class="icono"><i class="fas fa-plane"></i></div>
-                        <h3>Pasajes Aéreos</h3>
-                        <p class="texto-servicio">Vuelos nacionales e internacionales a los mejores precios</p>
-                    </div>
-                    <div class="servicio-card">
-                        <div class="icono"><i class="fas fa-map-marker-alt"></i></div>
-                        <h3>Estadías</h3>
-                        <p class="texto-servicio" >Hoteles y alojamientos seleccionados para tu comodidad</p>
-                    </div>
-                    <div class="servicio-card destacado">
-                        <div class="icono"><i class="fas fa-users"></i></div>
-                        <h3>Grupos</h3>
-                        <p class="texto-servicio">Paquetes especiales para familias y grupos de pasajeros</p>
-                    </div>
-                    <div class="servicio-card">
-                        <div class="icono"><i class="fas fa-calendar-alt"></i></div>
-                        <h3>Todo Incluido</h3>
-                        <p class="texto-servicio">Paquetes completos con todos los servicios incluidos</p>
-                    </div>
-                </div>
-            </section>
-            <section class="hero-section">
-                <h1>¿Listo para tu Próxima Aventura?</h1>
-                <p>Únete a miles de viajeros que han confiado en nosotros para crear recuerdos inolvidables</p>
-                <div class="buttons">
-                    <button class="btn-primary">Explorar Destinos</button>
-                    <button class="btn-secondary">Contactar Asesor</button>
-                </div>
-            </section>
-
-            <div class="floating-chat-container">
-                <div class="chat-window" id="chatWindow">
-                    <div class="chat-header">
-                        <button class="chat-close" id="chatClose">
-                            <i class="fas fa-times"></i>
-                        </button>
-                        <h3>Asistente TravelPortal</h3>
-                        <div class="status">En línea</div>
-                    </div>
-
-                    <div class="chat-messages" id="chatMessages">
-                        <!-- Aca van los mensajes -->
-                    </div>
-
-                    <div class="chat-input-container">
-                        <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu mensaje...">
-                        <button class="send-btn" id="sendBtn">
-                            <i class="fas fa-paper-plane"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <button class="chat-toggle-btn" id="chatToggle">
-                    <i class="fas fa-comments"></i>
-                </button>
+    <main id="index_main">
+        <section id="cont_presentacion">
+            <h2>
+                Descubre el Mundo con Nosotros
+            </h2>
+            <h4>Los mejores paquetes turisticos nacionales e internacionales para crear recuerdos inolovidables</h4>
+            <div id="cont_btns_pres">
+                <a href="#" class="btn_pres">
+                    Explorar Paquetes</a>
+                <a href="#" class="btn_pres" id="btn_ofertas">Ver ofertas Especiales</a>
             </div>
-        </main>
-        <%- include('footer.ejs') %>
-            <script src="Scripts/app.js"></script>
-            <script src="Scripts/bot.js"></script>
+        </section>
+        <section class="stats-section">
+            <div class="stat-item">
+                <i class="fas fa-award"></i>
+                <h3>15+</h3>
+                <p>Años de Experiencia</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-users"></i>
+                <h3>10K+</h3>
+                <p>Clientes Satisfechos</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <h3>50+</h3>
+                <p>Destinos</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-shield-alt"></i>
+                <h3>24/7</h3>
+                <p>Soporte</p>
+            </div>
+        </section>
+
+
+        <section class="featured-destinations">
+            <div class="section-header">
+                <span class="badge">Paquetes Destacados</span>
+                <h2>Destinos Increíbles</h2>
+                <p>Selecciona entre nuestros destinos más populares y comienza tu próxima aventura</p>
+            </div>
+
+            <div class="cards-container">
+                <% paquetes.forEach(paquete => { %>
+                <% // Bucle principal para cada paquete %>
+                <div class="card">
+                    <%
+                        // Inicializa las variables para cada paquete
+                        let estrellas_prom = 0;
+                        let cantidad_reseñas = 0;
+
+                        // Busca el resumen de reseñas para este paquete específico usando su id_paquete
+                        const resumenDeEstePaquete = resumenReseñas[paquete.id_paquete];
+
+                        if (resumenDeEstePaquete) {
+                            // Si encontramos reseñas para este paquete, calculamos el promedio
+                            estrellas_prom = resumenDeEstePaquete.total_puntaje_sumado / resumenDeEstePaquete.cantidad_reseñas;
+                            cantidad_reseñas = resumenDeEstePaquete.cantidad_reseñas;
+                        }
+
+                        // --- NUEVA LÓGICA PARA EL DESCUENTO POR CADA PAQUETE ---
+                        const precioOriginal = parseFloat(paquete.precio_total);
+                        const porcentajeDescuento = parseFloat(paquete.descuento); // Asumimos que 'descuento' es un número (ej. 10 para 10%)
+
+                        let precioFinalConDescuento;
+                        let hayDescuento = porcentajeDescuento > 0;
+
+                        if (hayDescuento) {
+                            const montoDescontado = (precioOriginal * porcentajeDescuento) / 100;
+                            precioFinalConDescuento = precioOriginal - montoDescontado;
+                        } else {
+                            precioFinalConDescuento = precioOriginal; // Si no hay descuento, el precio final es el original
+                        }
+                        // --- FIN DE LA LÓGICA DEL DESCUENTO ---
+                    %>
+                    <div class="card-tags">
+                        <% if(paquete.tipo_viaje=="Internacional"){ %>
+                        <span class="tag international">Internacional</span>
+                        <%} if(paquete.tipo_viaje=="Nacional"){ %>
+                        <span class="tag national">Nacional</span>
+                        <%}%>
+                        
+                        <span class="tag featured">⭐ Destacado</span>
+                    </div>
+                    <% if (hayDescuento) { %>
+                    <span class="discount">-<%= porcentajeDescuento %>%</span>
+                    <% } %>
+                    <div class="image-placeholder"></div>
+                    <div class="card-body">
+                        <h3><%= paquete.nombre_paquete %></h3>
+                        <p> <%= paquete.descripcion %> </p>
+                        <div class="info">
+                            <span>📅 <%= paquete.Dias %> Dias</span>
+                            <span>👥 <%= paquete.Personas %> personas</span>
+                        </div>
+                        <div class="rating">
+                            <% if (cantidad_reseñas > 0) { %>
+                            <p>Estrellas: <%= estrellas_prom.toFixed(1) %> (<%= cantidad_reseñas %> reseñas)</p>
+
+                            <% for (let i = 1; i <= 5; i++) { %>
+                            <% if (i <= Math.round(estrellas_prom)) { %>
+                            ⭐
+                            <% } else { %>
+                            ☆
+                            <% } %>
+                            <% } %>
+                            <% } else { %>
+                            <p>Sin reseñas aún.</p>
+                            <% } %>
+                        </div>
+                        <div class="prices">
+                            <% if (hayDescuento) { %>
+                            <span class="old">$ <%= precioOriginal.toFixed(2) %></span>
+                            <% } %>
+                            <span class="current">$ <%= precioFinalConDescuento.toFixed(2) %></span>
+                        </div>
+                        <div class="cont_btn">
+                            <a class="ver_detalles" href="/paquete?id_paquete=<%= paquete.id_paquete %>">Ver Detalles</a>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+                <% // Fin del bucle principal para cada paquete %>
+
+
+            </div>
+        </section>
+        <section class="servicios">
+            <div class="section-label">Nuestros Servicios</div>
+            <h2 class="section-title">Todo lo que Necesitas</h2>
+            <p class="section-subtitle">
+                Ofrecemos servicios completos para hacer de tu viaje una experiencia perfecta
+            </p>
+
+            <div class="servicios-grid">
+                <div class="servicio-card destacado">
+                    <div class="icono"><i class="fas fa-plane"></i></div>
+                    <h3>Pasajes Aéreos</h3>
+                    <p class="texto-servicio">Vuelos nacionales e internacionales a los mejores precios</p>
+                </div>
+                <div class="servicio-card">
+                    <div class="icono"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3>Estadías</h3>
+                    <p class="texto-servicio">Hoteles y alojamientos seleccionados para tu comodidad</p>
+                </div>
+                <div class="servicio-card destacado">
+                    <div class="icono"><i class="fas fa-users"></i></div>
+                    <h3>Alquiler de automotores</h3>
+                    <p class="texto-servicio">Alquila cualquier tipo de automotor para moverte en tus vacaciones</p>
+                </div>
+                <div class="servicio-card">
+                    <div class="icono"><i class="fas fa-calendar-alt"></i></div>
+                    <h3>Todo Incluido</h3>
+                    <p class="texto-servicio">Paquetes completos con todos los servicios incluidos</p>
+                </div>
+            </div>
+        </section>
+        <section class="hero-section">
+            <h1>¿Listo para tu Próxima Aventura?</h1>
+            <p>Únete a miles de viajeros que han confiado en nosotros para crear recuerdos inolvidables</p>
+            <div class="buttons">
+                <button class="btn-primary">Explorar Destinos</button>
+                <button class="btn-secondary">Contactar Asesor</button>
+            </div>
+        </section>
+
+        <div class="floating-chat-container">
+            <div class="chat-window" id="chatWindow">
+                <div class="chat-header">
+                    <button class="chat-close" id="chatClose">
+                        <i class="fas fa-times"></i>
+                    </button>
+                    <h3>Asistente TravelPortal</h3>
+                    <div class="status">En línea</div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Aca van los mensajes -->
+                </div>
+
+                <div class="chat-input-container">
+                    <input type="text" class="chat-input" id="chatInput" placeholder="Escribe tu mensaje...">
+                    <button class="send-btn" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+
+            <button class="chat-toggle-btn" id="chatToggle">
+                <i class="fas fa-comments"></i>
+            </button>
+        </div>
+    </main>
+    <%- include('footer.ejs') %>
+    <script src="Scripts/app.js"></script>
+    <script src="Scripts/bot.js"></script>
 </body>
 
 </html>
