@@ -71,7 +71,7 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
             case 'vuelo':
                 response = await agregarVuelo(formData);
                 break;
-            case 'alquiler_auto':
+            case 'alquiler':
                 response = await agregarAlquilerAuto(formData);
                 break;
             default:
