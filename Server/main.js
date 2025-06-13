@@ -61,7 +61,7 @@ const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'BD',
+    database: 'bd-nueva',
     port: 3306
 });
 

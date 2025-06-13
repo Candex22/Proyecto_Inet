@@ -15,7 +15,7 @@
 
 /* variables para el DOM en general.<-----------------------------------------------------------> */
 :root {
-  --color-fondo: #ffffff;
+  --color-fondo: #f0f0f0;
   --color-texto: #000000;
   --azul_oscuro: #2B476C;
   --Fondo_principal: #ffffff;
@@ -1213,7 +1213,7 @@ body .footer .footer-bottom p {
 .card-header .icon {
   /* Estilo de los iconos dentro del encabezado de la tarjeta */
   font-size: 1.5rem;
-  color: #9aa7b8; /* Un color gris azulado para los iconos */
+  color: var(--azul_oscuro); /* Un color gris azulado para los iconos */
 }
 
 .main-value {
@@ -1288,24 +1288,24 @@ body .footer .footer-bottom p {
   grid-row-gap: 0px;
   }
 
-.dashboard-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 50px;
-}
+  .dashboard-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+  }
 .dashboard-section .agregar-producto { 
   width: 100%;
   height: 100%;
-  background-color: #f0f0f0;
+  background-color: var(--color-fondo);
 }
 .dashboard-section .productos-existentes { 
   width: 100%;
   height: 100%;
-  background-color: #f0f0f0;
+  background-color: var(--color-fondo);
 }
-.dashboard-section .agregar-producto h2 {
+.dashboard-section .agregar-producto .productos-existentes h2 {
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--azul_oscuro);
@@ -1353,68 +1353,68 @@ body .footer .footer-bottom p {
 }
 
 .form-header h2 {
-    color: var(--Texto_principal);
-    font-size: 1.8rem;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
+  color: var(--Texto_principal);
+  font-size: 1.8rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .form-header h2 i {
-    color: var(--Encabezados_botones_y_primarios);
+  color: var(--Encabezados_botones_y_primarios);
 }
 
 .form-subtitle {
-    color: var(--Texto_secundario);
-    font-size: 0.95rem;
+  color: var(--Texto_secundario);
+  font-size: 0.95rem;
 }
 
 .product-form {
-    width: 100%;
+  width: 100%;
 }
 
 .form-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2rem;
 }
 
 .form-group {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .form-group.full-width {
-    grid-column: 1 / -1;
+  grid-column: 1 / -1;
 }
 
 .form-group label {
-    color: var(--Texto_principal);
-    font-weight: 500;
-    font-size: 0.95rem;
+  color: var(--Texto_principal);
+  font-weight: 500;
+  font-size: 0.95rem;
 }
 
 .form-group input,
 .form-group select,
 .form-group textarea {
-    padding: 0.75rem;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    font-size: 0.95rem;
-    transition: all 0.3s ease;
-    background: var(--Fondo_principal);
-    color: var(--Texto_principal);
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  background: var(--Fondo_principal);
+  color: var(--Texto_principal);
 }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-    border-color: var(--Encabezados_botones_y_primarios);
-    box-shadow: 0 0 0 2px rgba(62, 134, 211, 0.1);
-    outline: none;
+  border-color: var(--Encabezados_botones_y_primarios);
+  box-shadow: 0 0 0 2px rgba(62, 134, 211, 0.1);
+  outline: none;
 }
 
 .input-with-icon {
@@ -1659,7 +1659,8 @@ th {
     justify-content: center;
     align-items: center;
     gap: 1rem;
-    margin-top: 1.5rem;
+    
+    
 }
 
 .pagination-btn {
@@ -2219,3 +2220,39 @@ td {
 }
 
 /*# sourceMappingURL=estilo.css.map */
+.pedidos-container,
+.clientes-container {
+  background-color: var(--color-fondo);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  transition: transform 0.3s ease;
+  border: 1px solid #e0e6ed;
+}
+
+.pedidos-container:hover,
+.clientes-container:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #eeeeee;
+    cursor: pointer;
+    border: 1px solid #e0e6ed;
+    transition: transform 0.3s ease;
+    border-radius: 12px;
+}
+
+.pedidos-container h2,
+.clientes-container h2 {
+    color: var(--Texto_principal);
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pedidos-container h2 i,
+.clientes-container h2 i {
+    color: var(--Encabezados_botones_y_primarios);
+}
