@@ -58,6 +58,7 @@ app.use('/resources', express.static(path.join(__dirname, '../Client/Resources')
 
 // Conexión a la base de datos
 
+/*
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -65,6 +66,7 @@ const connection = mysql.createConnection({
     database: 'BD',
     port: 3306
 });
+*/
 
 // Encender servidor
 app.listen(PORT, () => {

@@ -1300,6 +1300,53 @@ body .footer .footer-bottom p {
   height: 100%;
   background-color: var(--color-fondo);
 }
+
+@media (max-width: 1400px) {
+  .dashboard-content {
+    grid-template-columns: 1fr;
+    grid-row-gap: 50px;
+    height: 60%;
+  }
+  
+  .dashboard-section {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 0 10px;
+    grid-column-gap: 20px;
+  }
+  
+  .dashboard-section {
+    gap: 20px;
+  }
+  
+  .dashboard-section .agregar-producto,
+  .dashboard-section .productos-existentes {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-container {
+    padding: 1rem; /* Reduce el padding en pantallas pequeñas */
+  }
+  .dashboard-cards {
+    grid-template-columns: 1fr; /* Una sola columna para las tarjetas en móviles */
+  }
+  .tab-menu {
+    flex-wrap: wrap; /* Las pestañas pueden envolverse en varias líneas si no caben */
+  }
+  .tab {
+    flex: 1; /* Las pestañas se expanden para llenar el espacio disponible */
+    text-align: center; /* Centra el texto de las pestañas */
+  }
+}
+
 .dashboard-section .productos-existentes { 
   width: 100%;
   height: 100%;
