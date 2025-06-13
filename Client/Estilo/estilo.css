@@ -169,11 +169,7 @@ body header nav .secciones_nav {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-<<<<<<< HEAD
-  gap: 30px;
-=======
   gap: 250px;
->>>>>>> 73f25bc421a1c52f68d061c31983f4b44703214a
   text-decoration: none;
 }
 
@@ -1741,7 +1737,6 @@ header h1 {
   color: #343a40;
 }
 
-<<<<<<< HEAD
 #cont_paquete .opinion-package {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1803,12 +1798,11 @@ header h1 {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-=======
+}
 #cont_paquete .price-box {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
->>>>>>> 73f25bc421a1c52f68d061c31983f4b44703214a
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
