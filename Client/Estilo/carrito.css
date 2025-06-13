@@ -1,0 +1,34 @@
+/* Estilos para el mensaje de notificación */
+.message-box {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 25px;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
+.message-box.success {
+    background-color: #28a745; /* Verde para éxito */
+}
+
+.message-box.error {
+    background-color: #dc3545; /* Rojo para error */
+}
+
+.message-box.info {
+    background-color: #17a2b8; /* Azul para información */
+}
+
+/* Clases para animar la aparición (se agregan/quitan con JS) */
+.message-box.show {
+    opacity: 1;
+    transform: translateY(0);
+}
