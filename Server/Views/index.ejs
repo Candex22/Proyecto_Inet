@@ -53,10 +53,10 @@
 
             <div class="cards-container">
                 <% paquetes.forEach(paquete => { %>
-                <% // Bucle principal para cada paquete %>
+               
                 <div class="card">
                     <%
-                        // Inicializa las variables para cada paquete
+                        
                         let estrellas_prom = 0;
                         let cantidad_reseñas = 0;
 
@@ -69,7 +69,7 @@
                             cantidad_reseñas = resumenDeEstePaquete.cantidad_reseñas;
                         }
 
-                        // --- NUEVA LÓGICA PARA EL DESCUENTO POR CADA PAQUETE ---
+                        
                         const precioOriginal = parseFloat(paquete.precio_total);
                         const porcentajeDescuento = parseFloat(paquete.descuento); // Asumimos que 'descuento' es un número (ej. 10 para 10%)
 
@@ -82,7 +82,7 @@
                         } else {
                             precioFinalConDescuento = precioOriginal; // Si no hay descuento, el precio final es el original
                         }
-                        // --- FIN DE LA LÓGICA DEL DESCUENTO ---
+                      
                     %>
                     <div class="card-tags">
                         <% if(paquete.tipo_viaje=="Internacional"){ %>
@@ -131,7 +131,7 @@
                     </div>
                 </div>
                 <% }); %>
-                <% // Fin del bucle principal para cada paquete %>
+                
 
 
             </div>

@@ -3,146 +3,167 @@
 
 <head>
   <%- include('head.ejs') %>
-  <title>TravelPortal</title>
+    <title>TravelPortal</title>
 </head>
 
 <body>
   <%- include('header.ejs') %>
-  <main id="package_detail_main">
-    <div id="cont_paquete">
-      <div class="container">
-        <div class="header">
-          <a href="/index" class="back-link">
-            <i class="fas fa-arrow-left"></i> Volver a paquetes
-          </a>
-        </div>
+    <main id="package_detail_main">
+      <div id="cont_paquete">
+        <div class="container">
+          <div class="header">
+            <a href="/index" class="back-link">
+              <i class="fas fa-arrow-left"></i> Volver a paquetes
+            </a>
+          </div>
 
-        <div class="package-details">
-          <div class="package-main-content">
-            <div class="package-header-info">
-              <div class="badges">
-                <% if(paquete.tipo_viaje=="Internacional"){ %>
-                <span class="badge internacional">Internacional</span>
-                <%} if(paquete.tipo_viaje=="Nacional"){ %>
-                <span class="badge national">Nacional</span>
-                <%}%>
-                    <span class="badge destacado">Destacado</span>
-            </div>
-                               
-            </div>
+          <div class="package-details">
+            <div class="package-main-content">
+              <div class="package-header-info">
+                <div class="badges">
+                  <% if(paquete.tipo_viaje=="Internacional" ){ %>
+                    <span class="badge internacional">Internacional</span>
+                    <%} if(paquete.tipo_viaje=="Nacional" ){ %>
+                      <span class="badge national">Nacional</span>
+                      <%}%>
+                        <span class="badge destacado">Destacado</span>
+                </div>
 
-            <h1>
+              </div>
+
+              <h1>
                 <%= paquete.nombre_paquete %>
-                </h1>
-                <div class="rating-info">
-                  <div class="stars">
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star"></i>
-                    <i class="fas fa-star-half-alt"></i>
-                  </div>
-                  <span class="reviews">4.3 (10 reseñas)</span>
-                  <span class="location"><i class="fas fa-map-marker-alt"></i> París, Francia</span>
+              </h1>
+              <div class="rating-info">
+                <div class="stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star-half-alt"></i>
                 </div>
+                <span class="reviews">4.3 (10 reseñas)</span>
+                <span class="location"><i class="fas fa-map-marker-alt"></i> París, Francia</span>
+              </div>
 
-                <div class="image-gallery">
-                  <div class="image-placeholder main-image">
-                    <i class="fas fa-image"></i>
-                  </div>
-                  <div class="image-placeholder">
-                    <i class="fas fa-image"></i>
-                  </div>
-                  <div class="image-placeholder">
-                    <i class="fas fa-image"></i>
-                  </div>
+              <div class="image-gallery">
+                <div class="image-placeholder main-image">
+                  <i class="fas fa-image"></i>
                 </div>
-
-                <nav class="package-nav">
-                  <ul>
-                    <li><a href="#" class="active">Descripción</a></li>
-                    <li><a href="#">Opiniones</a></li>
-                  </ul>
-                </nav>
-
-                <div class="about-package">
-                  <h2>Sobre este paquete</h2>
-                  <p>
-                    <%= paquete.descripcion_amplia %>
-                  </p>
-
+                <div class="image-placeholder">
+                  <i class="fas fa-image"></i>
+                </div>
+                <div class="image-placeholder">
+                  <i class="fas fa-image"></i>
                 </div>
               </div>
 
-              <div class="package-sidebar">
-                <div class="price-box">
-                  <div class="current-price">
-                    <% if (paquete.descuento> 0 ) { %>
+              <nav class="package-nav">
+                <ul>
+                  <li><a href="#" class="active">Descripción</a></li>
+                  <li><a href="#">Opiniones</a></li>
+                </ul>
+              </nav>
+
+              <div class="about-package">
+                <h2>Sobre este paquete</h2>
+                <p>
+                  <%= paquete.descripcion_amplia %>
+                </p>
+
+              </div>
+              <div class="opinion-package">
+                <h2>opiniones sobre este paquete</h2>
+                <!-- reseñas_data -->
+                <% reseñas_data.forEach(reseña=> { %>
+                  <% // Bucle principal para cada paquete %>
+
+
+                    <div class="cont_reseña">
+
+                      <div class="card-body">
+
+                      </div>
+                    </div>
+                    <% }); %>
+              </div>
+            </div>
+
+            <div class="package-sidebar">
+              <div class="price-box">
+                <div class="current-price">
+                  <% if (paquete.descuento> 0 ) { %>
                     <span class="price-value" id="price-value"></span>
                     <span class="original-price">$ <%= paquete.precio_total %></span>
-                    <span class="discount-badge"> <%= paquete.descuento %>% OFF</span>
+                    <span class="discount-badge">
+                      <%= paquete.descuento %>% OFF
+                    </span>
                     <% }else { %>
-                    <span class="price-value">$ <%= paquete.precio_total %> </span>
-                    <% }%>
+                      <span class="price-value">$ <%= paquete.precio_total %> </span>
+                      <% }%>
 
-
-                  </div>
 
                 </div>
 
-                <div class="package-info-item">
-                  <i class="far fa-calendar-alt icon"></i>
-                  <div class="info-details">
-                    <span class="label">Duración</span>
-                    <span class="value"><%= paquete.Dias %> días / <%= paquete.Dias-1 %> noches</span>
-                  </div>
-                </div>
-
-                <div class="package-info-item">
-                  <i class="far fa-clock icon"></i>
-                  <div class="info-details">
-                    <span class="label">Próxima salida</span>
-                    <span class="value" id="fecha_salida">15 de Julio, 2023</span>
-                  </div>
-                </div>
-
-                <div class="package-info-item">
-                  <i class="fas fa-users icon"></i>
-                  <div class="info-details">
-                    <span class="label">Personas</span>
-                    <div class="quantity-selector">
-                      <button class="quantity-button" id="restar_persona">-</button>
-                      <span id="personas-display"> <%= paquete.Personas %></span>
-                      <button class="quantity-button" id="sumar_persona">+</button>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="price-summary">
-                  <div class="summary-row">
-                    <span>Precio por persona</span>
-                    <span class="summary-value" id="precio_p">$1299</span>
-                  </div>
-                  <div class="summary-row total-price">
-                    <span id="total_per">Total (<%= paquete.Personas %> personas)</span>
-                    <span class="summary-value" id="precio-paquete">$ <%= paquete.precio_total %></span>
-                  </div>
-                </div>
-
-                <button class="reserve-button">Reservar ahora</button>
-                <p class="cancellation-policy">
-                  Sin cargos de cancelación hasta 30 días antes del viaje.
-                </p>
               </div>
+
+              <div class="package-info-item">
+                <i class="far fa-calendar-alt icon"></i>
+                <div class="info-details">
+                  <span class="label">Duración</span>
+                  <span class="value">
+                    <%= paquete.Dias %> días / <%= paquete.Dias-1 %> noches
+                  </span>
+                </div>
+              </div>
+
+              <div class="package-info-item">
+                <i class="far fa-clock icon"></i>
+                <div class="info-details">
+                  <span class="label">Próxima salida</span>
+                  <span class="value" id="fecha_salida">15 de Julio, 2023</span>
+                </div>
+              </div>
+
+              <div class="package-info-item">
+                <i class="fas fa-users icon"></i>
+                <div class="info-details">
+                  <span class="label">Personas</span>
+                  <div class="quantity-selector">
+                    <button class="quantity-button" id="restar_persona">-</button>
+                    <span id="personas-display">
+                      <%= paquete.Personas %>
+                    </span>
+                    <button class="quantity-button" id="sumar_persona">+</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="price-summary">
+                <div class="summary-row">
+                  <span>Precio por persona</span>
+                  <span class="summary-value" id="precio_p">$1299</span>
+                </div>
+                <div class="summary-row total-price">
+                  <span id="total_per">Total (<%= paquete.Personas %> personas)</span>
+                  <span class="summary-value" id="precio-paquete">$ <%= paquete.precio_total %></span>
+                </div>
+              </div>
+
+              <button class="reserve-button">Reservar ahora</button>
+              <p class="cancellation-policy">
+                Sin cargos de cancelación hasta 30 días antes del viaje.
+              </p>
             </div>
           </div>
         </div>
-  </main>
-  <%- include('footer.ejs') %>
-  <script id="data_paquete" type="application/json">
+      </div>
+    </main>
+    <%- include('footer.ejs') %>
+      <script id="data_paquete" type="application/json">
     <%- JSON.stringify(paquete) %>
   </script>
-  <script src="Scripts/paquete.js"></script>
+      <script src="Scripts/paquete.js"></script>
 
 </body>
 
