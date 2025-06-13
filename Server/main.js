@@ -303,14 +303,15 @@ app.get('/paquete', async (req, res) => {
         console.error("Error al obtener las reseñas del paquete:", reseñasError);
         return res.status(500).send("Error interno del servidor al obtener componentes.");
     }
-    console.log(reseñas[0])
+    console.log(reseñas[0].id_reseña)
+   
     // Aquí puedes procesar paquete_data y paquete_componentes
     // antes de pasarlos a tu vista, por ejemplo, combinarlos.
     // console.log("Datos del paquete:", paquete_data);
     // console.log("Componentes del paquete:", paquete_componentes);
 
 
-    res.render('paquete', { session: req.session, paquete: paquete_data[0], componentes: paquete_componentes, reseñas_data: reseñas[0] });
+    res.render('paquete', { session: req.session, paquete: paquete_data[0], componentes: paquete_componentes, reseñas_data: reseñas });
 });
 
 // Función para comparar una contraseña con su hash
