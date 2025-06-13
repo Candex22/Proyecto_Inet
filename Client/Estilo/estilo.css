@@ -503,10 +503,10 @@ body main .featured-destinations .card .image-placeholder {
 body main .featured-destinations .card .discount {
   position: absolute;
   top: 155px;
-  right: 25px;
+  left: 170px;
   background-color: #e74c3c;
   color: #fff;
-  width: auto;
+  width: 20%;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.3rem 0.5rem;
@@ -1737,68 +1737,6 @@ header h1 {
   color: #343a40;
 }
 
-#cont_paquete .opinion-package {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: column;
-          flex-direction: column;
-  justify-items: flex-start;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
-  gap: 10px;
-}
-
-#cont_paquete .opinion-package .cont_reseña {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  justify-items: flex-start;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
-  padding: 10px;
-  border-radius: 10px;
-}
-
-#cont_paquete .opinion-package .cont_reseña .cont_img_user {
-  height: 50px;
-  width: 60px;
-  margin: 4px 10px;
-  border-radius: 50%;
-  background-color: #9c9c9c;
-}
-
-#cont_paquete .opinion-package .cont_reseña .cont_infor_user {
-  background-color: red;
-}
-
-#cont_paquete .opinion-package .cont_reseña .cont_infor_user .cont_fecha {
-  width: 100%;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
-  -webkit-box-align: start;
-      -ms-flex-align: start;
-          align-items: flex-start;
-  gap: 10px;
-}
-
-#cont_paquete .price-box {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-}
 #cont_paquete .price-box {
   display: -webkit-box;
   display: -ms-flexbox;
