@@ -48,13 +48,15 @@ app.use(
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'Views'));
 
-//  permite que los archivos dentro de /Client sean accesibles desde el navegador
+// Configuración de archivos estáticos
 app.use(express.static(path.join(__dirname, '../Client')));
+app.use('/Scripts', express.static(path.join(__dirname, '../Client/Scripts')));
+app.use('/Resources', express.static(path.join(__dirname, '../Client/Resources')));
+app.use('/Estilo', express.static(path.join(__dirname, '../Client/Estilo')));
 
 // Middleware para procesar JSON y datos de formularios
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use('/resources', express.static(path.join(__dirname, '../Client/Resources')));
 
 // Conexión a la base de datos
 
@@ -145,6 +147,24 @@ app.get('/carrito', (req, res) => {
     res.render('carrito', { session: req.session });
 })
 
+app.get('/logout', (req, res) => {
+    console.log('🚪 Usuario cerrando sesión:', req.session.nombre_usuario_us);
+    
+    // Destruir la sesión inmediatamente
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('❌ Error al cerrar sesión:', err);
+            return res.redirect('/login');
+        }
+        
+        console.log('✅ Sesión cerrada exitosamente');
+        // Limpiar la cookie de sesión
+        res.clearCookie('connect.sid');
+        
+        // Redirigir al login
+        res.redirect('/login');
+    });
+});
 
 app.get('/index', async (req, res) => {
 
@@ -309,20 +329,6 @@ app.post('/iniciar_sesion', async (req, res) => {
         return res.render('login.ejs', { error: 'Error al verificar los datos' });
     }
 })
-
-app.get('/logout', (req, res) => {
-    // Destruir la sesión
-    req.session.destroy((err) => {
-        if (err) {
-            console.error('Error al cerrar sesión:', err);
-            return res.redirect('/index');
-        }
-        // Limpiar la cookie de sesión
-        res.clearCookie('connect.sid');
-        // Redirigir al login
-        res.redirect('/login');
-    });
-});
 
 app.get('/paquete', async (req, res) => {
     const id_paquete = req.query.id_paquete;
