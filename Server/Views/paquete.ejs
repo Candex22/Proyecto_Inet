@@ -77,7 +77,6 @@
               <div class="opinion-package desac conts_opcs">
                 <h2>opiniones sobre este paquete</h2>
                 <!-- reseñas_data -->
-<<<<<<< HEAD
                 <% reseñas_data.forEach( reseña=> { %>
                   <% // Bucle principal para cada paquete %>
 
@@ -90,25 +89,24 @@
                           María González</h3>
                         <div class="cont_fecha">
                           <div class="stars">
-                            <% 
-                            const puntajeNum = parseFloat(reseña.puntaje);
-                            const estrellasEnteras = Math.floor(puntajeNum);
-                            const hayMediaEstrella = (puntajeNum - estrellasEnteras) >= 0.5;
-                            %>
-                            
-                            <% for (let i = 0; i < estrellasEnteras; i++) { %>
+                            <% const puntajeNum=parseFloat(reseña.puntaje); const
+                              estrellasEnteras=Math.floor(puntajeNum); const hayMediaEstrella=(puntajeNum -
+                              estrellasEnteras)>= 0.5;
+                              %>
+
+                              <% for (let i=0; i < estrellasEnteras; i++) { %>
                                 <i class="fas fa-star"></i>
-                            <% } %>
-                            
-                            <% if (hayMediaEstrella) { %>
-                                <i class="fas fa-star-half-alt"></i>
-                            <% } %>
-                            
-                            <% const estrellasVacias = 5 - estrellasEnteras - (hayMediaEstrella ? 1 : 0); %>
-                            <% for (let i = 0; i < estrellasVacias; i++) { %>
-                                <i class="far fa-star"></i>
-                            <% } %>
-                        </div>
+                                <% } %>
+
+                                  <% if (hayMediaEstrella) { %>
+                                    <i class="fas fa-star-half-alt"></i>
+                                    <% } %>
+
+                                      <% const estrellasVacias=5 - estrellasEnteras - (hayMediaEstrella ? 1 : 0); %>
+                                        <% for (let i=0; i < estrellasVacias; i++) { %>
+                                          <i class="far fa-star"></i>
+                                          <% } %>
+                          </div>
                           <span>
                             <%=reseña.fecha %>
                           </span>
@@ -119,56 +117,103 @@
                           </p>
                         </div>
                       </div>
-
-=======
-                <% reseñas_data.forEach(reseña => { %>
-                  <div class="cont_reseña">
-                    <div class="cont_img_user">
-                      <% if (reseña.user_image) { %>
-                        <img src="<%= reseña.user_image %>" alt="<%= reseña.user_name %> profile picture">
-                      <% } else { %>
-                        <i class="fas fa-user-circle"></i> <% } %>
->>>>>>> c27ba3250b3ee6cb8792612ad0103a4e6e9100dc
                     </div>
-                    <div class="cont_infor_user">
-                      <h3 class="user_name">
-                        <%= reseña.user_name %>
-                      </h3>
-                      <div class="cont_fecha">
-                        <div class="stars">
-                          <% for (let i = 0; i < Math.floor(reseña.rating); i++) { %>
-                            <i class="fas fa-star"></i>
-                          <% } %>
-                          <% if (reseña.rating % 1 !== 0) { %>
-                            <i class="fas fa-star-half-alt"></i>
-                          <% } %>
-                          <% for (let i = 0; i < (5 - Math.ceil(reseña.rating)); i++) { %>
-                            <i class="far fa-star"></i> <% } %>
+                    <% }); %>
+              </div>
+              <div class="vuelos-package desac conts_opcs" id="vuelos_content">
+                <h2>Detalles del Vuelo</h2>
+            
+                <div class="flight-details-container">
+                    <div class="flight-detail-card">
+                        <h3>Información General</h3>
+                        <div class="detail-item">
+                            <i class="fas fa-plane-departure"></i>
+                            <span>Aerolínea: </span><strong><%= vuelos_data.aerolinea %></strong>
                         </div>
-                        <span><%= reseña.date_posted %></span>
-                      </div>
-                      <div class="cont_reseña">
-                        <p><%= reseña.review_text %></p>
-                      </div>
+                        <div class="detail-item">
+                            <i class="fas fa-ticket-alt"></i>
+                            <span>Clase de Vuelo: </span><strong><%= vuelos_data.clase_vuelo %></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-hashtag"></i>
+                            <span>Número de Vuelo: </span><strong><%= vuelos_data.numero_vuelo %></strong>
+                        </div>
+                        <div class="detail-item price-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>Precio Base: </span><strong class="price-value">$ <%= vuelos_data.precio_base %></strong>
+                        </div>
                     </div>
-                  </div>
-                <% }); %>
-              </div>
-              <div class="vuelos-package desac conts_opcs">
-                <h2>Sobre el vuelo de este paquete</h2>
-                <p>
-                  <%= vuelos_data.aerolinea %>
-                </p>
-                <p></p>
-
-              </div>
-              <div class="hotel-package desac conts_opcs">
-                <h2>Sobre este paquete</h2>
-                <p>
-                  <%= paquete.descripcion_amplia %>
-                </p>
-
-              </div>
+            
+                    <div class="flight-detail-card">
+                        <h3>Ruta y Fechas</h3>
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Origen: </span><strong><%= vuelos_data.ciudad_origin %></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Destino: </span><strong><%= vuelos_data.ciudad_destino %></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>Fecha de Salida: </span><strong><%= new Date(vuelos_data.fecha_salida).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="far fa-calendar-alt"></i>
+                            <span>Fecha de Llegada: </span><strong><%= new Date(vuelos_data.fecha_llegada).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) %></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="far fa-clock"></i>
+                            <span>Duración del Vuelo: </span><strong><%= vuelos_data.duracion_vuelo %></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+              <div class="hotel-package desac conts_opcs" id="hotel_content">
+                <h2>Detalles del Hotel</h2>
+            
+                <div class="hotel-details-container">
+                    <div class="hotel-detail-card">
+                        <h3>Información Principal</h3>
+                        <div class="detail-item">
+                            <i class="fas fa-hotel"></i>
+                            <span>Nombre del Hotel: </span><strong><%= hoteles_data.nombre %></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Ciudad: </span><strong><%= hoteles_data.ciudad %></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-globe-americas"></i>
+                            <span>País: </span><strong><%= hoteles_data.pais %></strong>
+                        </div>
+                        <div class="detail-item">
+                            <i class="fas fa-directions"></i>
+                            <span>Dirección: </span><strong><%= hoteles_data.direccion %></strong>
+                        </div>
+                    </div>
+            
+                    <div class="hotel-detail-card price-card">
+                        <h3>Categoría y Precios</h3>
+                        <div class="detail-item">
+                            <i class="fas fa-star"></i>
+                            <span>Categoría: </span>
+                            <div class="hotel-stars">
+                                <% for (let i = 0; i < hoteles_data.categoria_estrellas; i++) { %>
+                                    <i class="fas fa-star"></i>
+                                <% } %>
+                                <% for (let i = 0; i < (5 - hoteles_data.categoria_estrellas); i++) { %>
+                                    <i class="far fa-star"></i>
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="detail-item price-item">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>Precio por Noche: </span><strong class="price-value">$ <%= hoteles_data.precio_noche %></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
             </div>
 
             <div class="package-sidebar">

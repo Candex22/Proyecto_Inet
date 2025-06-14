@@ -58,13 +58,13 @@ app.use('/resources', express.static(path.join(__dirname, '../Client/Resources')
 
 // Conexión a la base de datos
 
-    // const connection = mysql.createConnection({
-    //     host: 'localhost',
-    //     user: 'root',
-    //     password: '',
-    //     database: 'BD',
-    //     port: 3306
-    // });
+// const connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '',
+//     database: 'BD',
+//     port: 3306
+// });
 
 // Encender servidor
 app.listen(PORT, () => {
@@ -76,10 +76,10 @@ const isLogged = (req, res, next) => {
     console.log('🔐 Checking authentication...');
     console.log('🔐 Session user:', req.session.user_sesion);
     console.log('🔐 User ID:', req.session.usuario_id);
-    
+
     if (!req.session.user_sesion || !req.session.usuario_id) {
         console.log('❌ User not authenticated');
-        
+
         // Check if it's an API request
         if (req.path.startsWith('/api/')) {
             // For API routes, return JSON error instead of redirect
@@ -466,10 +466,10 @@ app.get('/carrito', isLogged, async (req, res) => {
 
         if (pedidoError) {
             console.error('Error al buscar pedido:', pedidoError);
-            return res.render('carrito', { 
-                session: req.session, 
-                cartItems: [], 
-                cartTotal: 0 
+            return res.render('carrito', {
+                session: req.session,
+                cartItems: [],
+                cartTotal: 0
             });
         }
 
@@ -511,25 +511,25 @@ app.get('/carrito', isLogged, async (req, res) => {
                             cantidad: detalle.cantidad,
                             imagen_url: null // Add if you have images
                         });
-                        
+
                         cartTotal += detalle.cantidad * detalle.precio_unitario;
                     }
                 }
             }
         }
 
-        res.render('carrito', { 
-            session: req.session, 
-            cartItems: cartItems, 
-            cartTotal: cartTotal 
+        res.render('carrito', {
+            session: req.session,
+            cartItems: cartItems,
+            cartTotal: cartTotal
         });
 
     } catch (error) {
         console.error('Error en ruta /carrito:', error);
-        res.render('carrito', { 
-            session: req.session, 
-            cartItems: [], 
-            cartTotal: 0 
+        res.render('carrito', {
+            session: req.session,
+            cartItems: [],
+            cartTotal: 0
         });
     }
 });
@@ -538,7 +538,7 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
     console.log('🛒 Cart API called');
     console.log('📦 Request body:', req.body);
     console.log('👤 User ID:', req.session.usuario_id);
-    
+
     try {
         const { id_paquete, nombre_paquete, precio_unitario, cantidad, descripcion_breve } = req.body;
         const userId = req.session.usuario_id;
@@ -575,7 +575,7 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
 
         if (!pedidoAbierto || pedidoAbierto.length === 0) {
             console.log('🆕 Creating new order...');
-            
+
             // Create new order
             const { data: nuevoPedido, error: crearError } = await supabase
                 .from('pedido')
@@ -616,7 +616,7 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
             console.log('➕ Updating existing item quantity...');
             // Update quantity
             const nuevaCantidad = itemExistente[0].cantidad + parseInt(cantidad);
-            
+
             const { error: actualizarError } = await supabase
                 .from('detalles_pedido')
                 .update({ cantidad: nuevaCantidad })
@@ -626,7 +626,7 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
                 console.error('❌ Error updating quantity:', actualizarError);
                 return res.status(500).json({ error: `Error al actualizar cantidad: ${actualizarError.message}` });
             }
-            
+
             console.log('✅ Quantity updated to:', nuevaCantidad);
         } else {
             console.log('🆕 Creating new order detail...');
@@ -645,7 +645,7 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
                 console.error('❌ Error inserting detail:', insertarError);
                 return res.status(500).json({ error: `Error al agregar al carrito: ${insertarError.message}` });
             }
-            
+
             console.log('✅ New detail created successfully');
         }
 
@@ -653,10 +653,10 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
         await recalcularTotalPedido(id_pedido);
 
         console.log('🎉 Product added to cart successfully!');
-        
+
         // CRITICAL: Ensure we return JSON response
         res.setHeader('Content-Type', 'application/json');
-        res.json({ 
+        res.json({
             success: true,
             message: 'Producto agregado al carrito exitosamente!',
             id_pedido: id_pedido
@@ -669,11 +669,12 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
     }
 });
 
+
 // Enhanced recalcularTotalPedido function with better error handling
 async function recalcularTotalPedido(id_pedido) {
     try {
         console.log('🧮 Recalculando total para pedido:', id_pedido);
-        
+
         const { data: detalles, error } = await supabase
             .from('detalles_pedido')
             .select('cantidad, precio_unitario')
@@ -805,7 +806,7 @@ app.use('/administrador', express.static(path.join(__dirname, '../Client')));
 
 app.use((err, req, res, next) => {
     console.error('💥 Unhandled error:', err);
-    
+
     if (req.path.startsWith('/api/')) {
         res.status(500).json({ error: 'Error interno del servidor' });
     } else {

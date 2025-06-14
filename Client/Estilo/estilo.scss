@@ -153,12 +153,13 @@ body {
             .secciones_nav {
                 width: 40%;
                 height: 100%;
-                background-color: red !important;  
+
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 gap: 250px;
                 text-decoration: none;
+
                 a {
                     font-weight: 500;
                     font-size: 1.2rem;
@@ -177,7 +178,7 @@ body {
                 height: 100%;
                 width: 30%;
                 gap: 20px;
-                
+
 
                 a {
                     border-radius: 10px;
@@ -286,7 +287,7 @@ body {
                     justify-content: center;
                     align-items: center;
                     text-align: center;
-                
+
 
                 }
 
@@ -1058,7 +1059,7 @@ header h1 {
 .card {
     background: white;
     border-radius: 12px;
-    
+
     padding: 1rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     /* Sombra más sutil */
@@ -1503,42 +1504,268 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
     }
 
     .opinion-package {
-       
-        display: flex;
-        flex-direction: column;
-        justify-items: flex-start;
-        align-items: flex-start;
-        gap: 10px   ;
-        .cont_reseña{
-           
+        h2 {
+            font-size: 1.8em;
+            color: #333333;
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+    
+        .cont_reseña {
             display: flex;
-            flex-direction: row;
-            justify-items: flex-start;
             align-items: flex-start;
-            padding: 10px;
-            border-radius: 10px;
-            .cont_img_user{
-                height: 50px;
+            gap: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #FFFFFF;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    
+            .cont_img_user {
+                flex-shrink: 0;
                 width: 60px;
-                margin: 4px 10px;
+                height: 60px;
                 border-radius: 50%;
-                background-color: rgb(156, 156, 156);
-             
-            }
-            .cont_infor_user{
-                background-color: red;
-                .cont_fecha{
+                background-color: #E0E0E0;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                overflow: hidden;
+    
+                img {
                     width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+    
+                .fas.fa-user-circle {
+                    font-size: 3em;
+                    color: #666666;
+                }
+            }
+    
+            .cont_infor_user {
+                flex-grow: 1;
+    
+                .user_name {
+                    font-size: 1.2em;
+                    color: #333333;
+                    margin-top: 0;
+                    margin-bottom: 5px;
+                    font-weight: 600;
+                }
+    
+                .cont_fecha {
                     display: flex;
-                    justify-content: flex-start;
-                    align-items: flex-start;
-                    gap: 10px;
-                    
+                    align-items: center;
+                    margin-bottom: 10px;
+    
+                    .stars {
+                        color: #FFC107;
+                        font-size: 1.1em;
+                        margin-right: 10px;
+    
+                        .far.fa-star {
+                            color: #FFD966;
+                        }
+                    }
+    
+                    span {
+                        font-size: 0.9em;
+                        color: #666666;
+                    }
+                }
+            }
+    
+            p {
+                font-size: 1em;
+                color: #333333;
+                line-height: 1.6;
+                margin-top: 0;
+            }
+        }
+    }
+
+    .vuelos-package {
+        padding: 25px 0;
+        
+        h2 {
+            font-size: 1.8em;
+            color: #333333;
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: left;
+        }
+    
+        .flight-details-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+    
+            .flight-detail-card {
+                background-color: #FFFFFF;
+                border: 1px solid #E0E0E0;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                padding: 25px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+    
+                h3 {
+                    font-size: 1.4em;
+                    color: #333333;
+                    margin-top: 0;
+                    margin-bottom: 20px;
+                    font-weight: 600;
+                    border-bottom: 1px solid #F0F0F0;
+                    padding-bottom: 10px;
+                }
+    
+                .detail-item {
+                    display: flex;
+                    align-items: center;
+                    margin-bottom: 15px;
+                    font-size: 1em;
+                    color: #555555;
+    
+                    i {
+                        color: #007bff;
+                        margin-right: 12px;
+                        font-size: 1.15em;
+                        width: 25px;
+                        text-align: center;
+                    }
+    
+                    span {
+                        font-weight: 400;
+                        margin-right: 5px;
+                    }
+    
+                    strong {
+                        color: #333333;
+                        font-weight: 500;
+                    }
+    
+                    &:last-child {
+                        margin-bottom: 0;
+                    }
+                }
+    
+                .price-item {
+                    justify-content: space-between;
+                    padding-top: 10px;
+                    border-top: 1px dashed #E0E0E0;
+                    margin-top: 15px;
+    
+                    .price-value {
+                        color: #007bff;
+                        font-size: 1.5em;
+                        font-weight: 700;
+                    }
                 }
             }
         }
     }
     
+
+    .hotel-package {
+        padding: 25px 0; 
+
+        h2 {
+            font-size: 1.8em;
+            color: #333333; 
+            margin-bottom: 25px;
+            font-weight: 600;
+            text-align: left; 
+        }
+
+        .hotel-details-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 25px; 
+
+            .hotel-detail-card {
+                background-color: #FFFFFF;
+                border: 1px solid #E0E0E0;
+                border-radius: 8px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); 
+                padding: 25px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between; 
+
+                h3 {
+                    font-size: 1.4em;
+                    color: #333333;
+                    margin-top: 0;
+                    margin-bottom: 20px;
+                    font-weight: 600;
+                    border-bottom: 1px solid #F0F0F0; 
+                    padding-bottom: 10px;
+                }
+
+                .detail-item {
+                    display: flex;
+                    align-items: center; 
+                    margin-bottom: 15px; 
+                    font-size: 1em;
+                    color: #555555; 
+
+                    i {
+                        color: #007bff; 
+                        margin-right: 12px; 
+                        font-size: 1.15em; 
+                        width: 25px;
+                        text-align: center;
+                    }
+
+                    span {
+                        font-weight: 400;
+                        margin-right: 5px; 
+                    }
+
+                    strong {
+                        color: #333333; 
+                        font-weight: 500; 
+                    }
+
+                    .hotel-stars {
+                        color: #FFC107; 
+                        font-size: 1em; 
+                        margin-left: auto; 
+
+                        .far.fa-star {
+                            color: #FFD966; 
+                        }
+                    }
+
+                    &:last-child {
+                        margin-bottom: 0; 
+                    }
+                }
+
+           
+                &.price-card {
+                    .price-item {
+                        justify-content: space-between; 
+                        padding-top: 10px; 
+                        border-top: 1px dashed #E0E0E0;
+                        margin-top: 15px; 
+                        .price-value {
+                            color: #007bff; 
+                            font-size: 1.5em; 
+                            font-weight: 700; 
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+
+
     // Sidebar Styles
     .price-box {
         display: flex;
