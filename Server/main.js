@@ -73,12 +73,26 @@ app.listen(PORT, () => {
 
 
 const isLogged = (req, res, next) => {
-    if (req.session.user_sesion == '' || typeof req.session.user_sesion == 'undefined') {
-        res.redirect('/')
+    console.log('🔐 Checking authentication...');
+    console.log('🔐 Session user:', req.session.user_sesion);
+    console.log('🔐 User ID:', req.session.usuario_id);
+    
+    if (!req.session.user_sesion || !req.session.usuario_id) {
+        console.log('❌ User not authenticated');
+        
+        // Check if it's an API request
+        if (req.path.startsWith('/api/')) {
+            // For API routes, return JSON error instead of redirect
+            return res.status(401).json({ error: 'Usuario no autenticado. Por favor, inicia sesión.' });
+        } else {
+            // For regular routes, redirect to login
+            return res.redirect('/login');
+        }
     } else {
-        next()
+        console.log('✅ User authenticated');
+        next();
     }
-}
+};
 app.get('/', (req, res) => {
     // Mientras este en produccion para ahorrar tiempo
     // res.redirect('/index');
@@ -364,12 +378,13 @@ function Datatime() {
 app.get('/carrito', isLogged, async (req, res) => {
     try {
         const userId = req.session.usuario_id;
+        console.log('🛒 Loading cart for user:', userId);
 
         if (!userId) {
             return res.redirect('/login');
         }
 
-        // Buscar el pedido abierto (carrito) del usuario
+        // Search for open order (cart) for the user
         let { data: pedidoAbierto, error: pedidoError } = await supabase
             .from('pedido')
             .select('*')
@@ -392,7 +407,7 @@ app.get('/carrito', isLogged, async (req, res) => {
         if (pedidoAbierto && pedidoAbierto.length > 0) {
             const id_pedido = pedidoAbierto[0].id_pedido;
 
-            // Obtener los detalles del pedido con información del paquete
+            // Get order details with package information
             let { data: detallesPedido, error: detallesError } = await supabase
                 .from('detalles_pedido')
                 .select(`
@@ -407,7 +422,7 @@ app.get('/carrito', isLogged, async (req, res) => {
             if (detallesError) {
                 console.error('Error al obtener detalles del pedido:', detallesError);
             } else {
-                // Para cada detalle, obtener información adicional del paquete
+                // For each detail, get additional package information
                 for (let detalle of detallesPedido) {
                     const { data: paqueteInfo, error: paqueteError } = await supabase
                         .from('paquete')
@@ -422,7 +437,7 @@ app.get('/carrito', isLogged, async (req, res) => {
                             descripcion: detalle.descripcion || paqueteInfo[0].descripcion,
                             precio_unitario: detalle.precio_unitario,
                             cantidad: detalle.cantidad,
-                            imagen_url: null // Agregar si tienes imágenes
+                            imagen_url: null // Add if you have images
                         });
                         
                         cartTotal += detalle.cantidad * detalle.precio_unitario;
@@ -447,21 +462,29 @@ app.get('/carrito', isLogged, async (req, res) => {
     }
 });
 
-// Agregar esta ruta POST para manejar la adición de productos al carrito
 app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
+    console.log('🛒 Cart API called');
+    console.log('📦 Request body:', req.body);
+    console.log('👤 User ID:', req.session.usuario_id);
+    
     try {
         const { id_paquete, nombre_paquete, precio_unitario, cantidad, descripcion_breve } = req.body;
         const userId = req.session.usuario_id;
 
+        // Validation
         if (!userId) {
+            console.error('❌ No user ID in session');
             return res.status(401).json({ error: 'Usuario no autenticado.' });
         }
 
         if (!id_paquete || !precio_unitario || !cantidad) {
-            return res.status(400).json({ error: 'Datos incompletos.' });
+            console.error('❌ Missing required fields:', { id_paquete, precio_unitario, cantidad });
+            return res.status(400).json({ error: 'Datos incompletos: se requiere id_paquete, precio_unitario y cantidad.' });
         }
 
-        // Buscar o crear un pedido abierto (carrito) para el usuario
+        console.log('✅ Validation passed, searching for open order...');
+
+        // Search for open order (cart) for the user
         let { data: pedidoAbierto, error: pedidoError } = await supabase
             .from('pedido')
             .select('*')
@@ -470,14 +493,18 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
             .limit(1);
 
         if (pedidoError) {
-            console.error('Error al buscar pedido:', pedidoError);
-            return res.status(500).json({ error: 'Error al procesar el pedido.' });
+            console.error('❌ Error searching for order:', pedidoError);
+            return res.status(500).json({ error: `Error al buscar pedido: ${pedidoError.message}` });
         }
+
+        console.log('📋 Found orders:', pedidoAbierto?.length || 0);
 
         let id_pedido;
 
         if (!pedidoAbierto || pedidoAbierto.length === 0) {
-            // Crear un nuevo pedido
+            console.log('🆕 Creating new order...');
+            
+            // Create new order
             const { data: nuevoPedido, error: crearError } = await supabase
                 .from('pedido')
                 .insert([{
@@ -489,16 +516,18 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
                 .select();
 
             if (crearError) {
-                console.error('Error al crear pedido:', crearError);
-                return res.status(500).json({ error: 'Error al crear el pedido.' });
+                console.error('❌ Error creating order:', crearError);
+                return res.status(500).json({ error: `Error al crear pedido: ${crearError.message}` });
             }
 
+            console.log('✅ New order created:', nuevoPedido[0]);
             id_pedido = nuevoPedido[0].id_pedido;
         } else {
             id_pedido = pedidoAbierto[0].id_pedido;
+            console.log('📋 Using existing order:', id_pedido);
         }
 
-        // Verificar si el producto ya existe en el carrito
+        // Check if product already exists in cart
         const { data: itemExistente, error: buscarError } = await supabase
             .from('detalles_pedido')
             .select('*')
@@ -507,12 +536,13 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
             .limit(1);
 
         if (buscarError) {
-            console.error('Error al buscar item existente:', buscarError);
-            return res.status(500).json({ error: 'Error al verificar el carrito.' });
+            console.error('❌ Error searching existing item:', buscarError);
+            return res.status(500).json({ error: `Error al verificar carrito: ${buscarError.message}` });
         }
 
         if (itemExistente && itemExistente.length > 0) {
-            // Si existe, actualizar la cantidad
+            console.log('➕ Updating existing item quantity...');
+            // Update quantity
             const nuevaCantidad = itemExistente[0].cantidad + parseInt(cantidad);
             
             const { error: actualizarError } = await supabase
@@ -521,11 +551,14 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
                 .eq('id_detalle', itemExistente[0].id_detalle);
 
             if (actualizarError) {
-                console.error('Error al actualizar cantidad:', actualizarError);
-                return res.status(500).json({ error: 'Error al actualizar el carrito.' });
+                console.error('❌ Error updating quantity:', actualizarError);
+                return res.status(500).json({ error: `Error al actualizar cantidad: ${actualizarError.message}` });
             }
+            
+            console.log('✅ Quantity updated to:', nuevaCantidad);
         } else {
-            // Si no existe, crear nuevo detalle
+            console.log('🆕 Creating new order detail...');
+            // Create new detail
             const { error: insertarError } = await supabase
                 .from('detalles_pedido')
                 .insert([{
@@ -533,25 +566,74 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
                     id_producto_servicio: id_paquete,
                     cantidad: parseInt(cantidad),
                     precio_unitario: parseFloat(precio_unitario),
-                    descripcion: descripcion_breve
+                    descripcion: descripcion_breve || nombre_paquete
                 }]);
 
             if (insertarError) {
-                console.error('Error al insertar detalle:', insertarError);
-                return res.status(500).json({ error: 'Error al agregar al carrito.' });
+                console.error('❌ Error inserting detail:', insertarError);
+                return res.status(500).json({ error: `Error al agregar al carrito: ${insertarError.message}` });
             }
+            
+            console.log('✅ New detail created successfully');
         }
 
-        // Recalcular el total del pedido
+        // Recalculate order total
         await recalcularTotalPedido(id_pedido);
 
-        res.json({ message: 'Producto agregado al carrito exitosamente!' });
+        console.log('🎉 Product added to cart successfully!');
+        
+        // CRITICAL: Ensure we return JSON response
+        res.setHeader('Content-Type', 'application/json');
+        res.json({ 
+            success: true,
+            message: 'Producto agregado al carrito exitosamente!',
+            id_pedido: id_pedido
+        });
 
     } catch (error) {
-        console.error('Error en agregar a carrito:', error);
-        res.status(500).json({ error: 'Error inesperado al agregar al carrito.' });
+        console.error('💥 Critical error in cart API:', error);
+        res.setHeader('Content-Type', 'application/json');
+        res.status(500).json({ error: `Error inesperado: ${error.message}` });
     }
 });
+
+// Enhanced recalcularTotalPedido function with better error handling
+async function recalcularTotalPedido(id_pedido) {
+    try {
+        console.log('🧮 Recalculando total para pedido:', id_pedido);
+        
+        const { data: detalles, error } = await supabase
+            .from('detalles_pedido')
+            .select('cantidad, precio_unitario')
+            .eq('id_pedido', id_pedido);
+
+        if (error) {
+            console.error('❌ Error al obtener detalles para recalcular:', error);
+            return;
+        }
+
+        let nuevoTotal = 0;
+        detalles.forEach(item => {
+            nuevoTotal += item.cantidad * item.precio_unitario;
+        });
+
+        console.log('💰 Nuevo total calculado:', nuevoTotal);
+
+        const { error: updateError } = await supabase
+            .from('pedido')
+            .update({ total_pedido: nuevoTotal })
+            .eq('id_pedido', id_pedido);
+
+        if (updateError) {
+            console.error('❌ Error al actualizar total del pedido:', updateError);
+        } else {
+            console.log(`✅ Total del pedido ${id_pedido} actualizado a: $${nuevoTotal}`);
+        }
+    } catch (error) {
+        console.error('💥 Error crítico al recalcular total:', error);
+    }
+}
+
 
 // Ruta para actualizar cantidad en el carrito
 app.post('/api/actualizar_cantidad_carrito', isLogged, async (req, res) => {
@@ -646,34 +728,15 @@ app.post('/api/eliminar_item_carrito', isLogged, async (req, res) => {
     }
 });
 
-// Función auxiliar para recalcular el total del pedido
-async function recalcularTotalPedido(id_pedido) {
-    try {
-        const { data: detalles, error } = await supabase
-            .from('detalles_pedido')
-            .select('cantidad, precio_unitario')
-            .eq('id_pedido', id_pedido);
-
-        if (error) {
-            console.error('Error al obtener detalles para recalcular:', error);
-            return;
-        }
-
-        let nuevoTotal = 0;
-        detalles.forEach(item => {
-            nuevoTotal += item.cantidad * item.precio_unitario;
-        });
-
-        await supabase
-            .from('pedido')
-            .update({ total_pedido: nuevoTotal })
-            .eq('id_pedido', id_pedido);
-
-        console.log(`Total del pedido ${id_pedido} recalculado: ${nuevoTotal}`);
-    } catch (error) {
-        console.error('Error al recalcular total:', error);
-    }
-}
-
 app.use('/Scripts', express.static(path.join(__dirname, '../Client/Scripts')));
 app.use('/administrador', express.static(path.join(__dirname, '../Client')));
+
+app.use((err, req, res, next) => {
+    console.error('💥 Unhandled error:', err);
+    
+    if (req.path.startsWith('/api/')) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+        res.status(500).render('error', { error: 'Error interno del servidor' });
+    }
+});
