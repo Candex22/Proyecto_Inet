@@ -4,8 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const searchInput = document.querySelector('input[name="search"]');
     const categorySelect = document.querySelector('select[name="category"]');
     const orderSelect = document.querySelector('select[name="order"]');
-    const cardsContainer = document.querySelector('.cards-container');
-    const cards = Array.from(cardsContainer.querySelectorAll('.card'));
+    const cardsContainer = document.querySelector('.lista-paquetes');
+    const cards = Array.from(cardsContainer.querySelectorAll('.tarjeta-paquete'));
 
     // Helper para obtener datos de cada tarjeta
     function getCardData(card) {

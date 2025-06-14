@@ -77,6 +77,7 @@
               <div class="opinion-package desac conts_opcs">
                 <h2>opiniones sobre este paquete</h2>
                 <!-- reseñas_data -->
+<<<<<<< HEAD
                 <% reseñas_data.forEach( reseña=> { %>
                   <% // Bucle principal para cada paquete %>
 
@@ -119,8 +120,39 @@
                         </div>
                       </div>
 
+=======
+                <% reseñas_data.forEach(reseña => { %>
+                  <div class="cont_reseña">
+                    <div class="cont_img_user">
+                      <% if (reseña.user_image) { %>
+                        <img src="<%= reseña.user_image %>" alt="<%= reseña.user_name %> profile picture">
+                      <% } else { %>
+                        <i class="fas fa-user-circle"></i> <% } %>
+>>>>>>> c27ba3250b3ee6cb8792612ad0103a4e6e9100dc
                     </div>
-                    <% }); %>
+                    <div class="cont_infor_user">
+                      <h3 class="user_name">
+                        <%= reseña.user_name %>
+                      </h3>
+                      <div class="cont_fecha">
+                        <div class="stars">
+                          <% for (let i = 0; i < Math.floor(reseña.rating); i++) { %>
+                            <i class="fas fa-star"></i>
+                          <% } %>
+                          <% if (reseña.rating % 1 !== 0) { %>
+                            <i class="fas fa-star-half-alt"></i>
+                          <% } %>
+                          <% for (let i = 0; i < (5 - Math.ceil(reseña.rating)); i++) { %>
+                            <i class="far fa-star"></i> <% } %>
+                        </div>
+                        <span><%= reseña.date_posted %></span>
+                      </div>
+                      <div class="cont_reseña">
+                        <p><%= reseña.review_text %></p>
+                      </div>
+                    </div>
+                  </div>
+                <% }); %>
               </div>
               <div class="vuelos-package desac conts_opcs">
                 <h2>Sobre el vuelo de este paquete</h2>
@@ -200,7 +232,7 @@
                 </div>
               </div>
 
-              <button class="reserve-button">Reservar ahora</button>
+              <button class="reserve-button" onclick="agregarProducto()">Reservar ahora</button>
               <p class="cancellation-policy">
                 Sin cargos de cancelación hasta 30 días antes del viaje.
               </p>
@@ -214,6 +246,7 @@
     <%- JSON.stringify(paquete) %>
   </script>
       <script src="Scripts/paquete.js"></script>
+      <script src="Scripts/carrito.js"></script>
 
 </body>
 

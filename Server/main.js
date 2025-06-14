@@ -73,12 +73,26 @@ app.listen(PORT, () => {
 
 
 const isLogged = (req, res, next) => {
-    if (req.session.user_sesion == '' || typeof req.session.user_sesion == 'undefined') {
-        res.redirect('/')
+    console.log('🔐 Checking authentication...');
+    console.log('🔐 Session user:', req.session.user_sesion);
+    console.log('🔐 User ID:', req.session.usuario_id);
+    
+    if (!req.session.user_sesion || !req.session.usuario_id) {
+        console.log('❌ User not authenticated');
+        
+        // Check if it's an API request
+        if (req.path.startsWith('/api/')) {
+            // For API routes, return JSON error instead of redirect
+            return res.status(401).json({ error: 'Usuario no autenticado. Por favor, inicia sesión.' });
+        } else {
+            // For regular routes, redirect to login
+            return res.redirect('/login');
+        }
     } else {
-        next()
+        console.log('✅ User authenticated');
+        next();
     }
-}
+};
 app.get('/', (req, res) => {
     // Mientras este en produccion para ahorrar tiempo
     // res.redirect('/index');
@@ -101,6 +115,10 @@ app.get('/register', (req, res) => {
 
 app.get('/paquetes', (req, res) => {
     res.render('paquetes', { session: req.session });
+})
+
+app.get('/carrito', (req, res) => {
+    res.render('carrito', { session: req.session });
 })
 
 
@@ -268,6 +286,16 @@ app.post('/iniciar_sesion', async (req, res) => {
     }
 })
 
+app.get('/logout', (req, res) => {
+    req.session.destroy((err) => {
+        if (err) {
+            console.error('Error al cerrar sesión:', err);
+            return res.redirect('/index');
+        }
+        res.redirect('/login');
+    });
+});
+
 app.get('/paquete', async (req, res) => {
     const id_paquete = req.query.id_paquete;
 
@@ -413,5 +441,370 @@ function Datatime() {
     return `${year}-${month}-${day}`;
 }
 
+
+// Ruta para mostrar el carrito
+app.get('/carrito', isLogged, async (req, res) => {
+    try {
+        const userId = req.session.usuario_id;
+        console.log('🛒 Loading cart for user:', userId);
+
+        if (!userId) {
+            return res.redirect('/login');
+        }
+
+        // Search for open order (cart) for the user
+        let { data: pedidoAbierto, error: pedidoError } = await supabase
+            .from('pedido')
+            .select('*')
+            .eq('id_usuario', userId)
+            .eq('estado', 'abierto')
+            .limit(1);
+
+        if (pedidoError) {
+            console.error('Error al buscar pedido:', pedidoError);
+            return res.render('carrito', { 
+                session: req.session, 
+                cartItems: [], 
+                cartTotal: 0 
+            });
+        }
+
+        let cartItems = [];
+        let cartTotal = 0;
+
+        if (pedidoAbierto && pedidoAbierto.length > 0) {
+            const id_pedido = pedidoAbierto[0].id_pedido;
+
+            // Get order details with package information
+            let { data: detallesPedido, error: detallesError } = await supabase
+                .from('detalles_pedido')
+                .select(`
+                    id_detalle,
+                    id_producto_servicio,
+                    cantidad,
+                    precio_unitario,
+                    descripcion
+                `)
+                .eq('id_pedido', id_pedido);
+
+            if (detallesError) {
+                console.error('Error al obtener detalles del pedido:', detallesError);
+            } else {
+                // For each detail, get additional package information
+                for (let detalle of detallesPedido) {
+                    const { data: paqueteInfo, error: paqueteError } = await supabase
+                        .from('paquete')
+                        .select('nombre_paquete, descripcion')
+                        .eq('id_paquete', detalle.id_producto_servicio)
+                        .limit(1);
+
+                    if (!paqueteError && paqueteInfo && paqueteInfo.length > 0) {
+                        cartItems.push({
+                            id_detalle: detalle.id_detalle,
+                            nombre_paquete: paqueteInfo[0].nombre_paquete,
+                            descripcion: detalle.descripcion || paqueteInfo[0].descripcion,
+                            precio_unitario: detalle.precio_unitario,
+                            cantidad: detalle.cantidad,
+                            imagen_url: null // Add if you have images
+                        });
+                        
+                        cartTotal += detalle.cantidad * detalle.precio_unitario;
+                    }
+                }
+            }
+        }
+
+        res.render('carrito', { 
+            session: req.session, 
+            cartItems: cartItems, 
+            cartTotal: cartTotal 
+        });
+
+    } catch (error) {
+        console.error('Error en ruta /carrito:', error);
+        res.render('carrito', { 
+            session: req.session, 
+            cartItems: [], 
+            cartTotal: 0 
+        });
+    }
+});
+
+app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
+    console.log('🛒 Cart API called');
+    console.log('📦 Request body:', req.body);
+    console.log('👤 User ID:', req.session.usuario_id);
+    
+    try {
+        const { id_paquete, nombre_paquete, precio_unitario, cantidad, descripcion_breve } = req.body;
+        const userId = req.session.usuario_id;
+
+        // Validation
+        if (!userId) {
+            console.error('❌ No user ID in session');
+            return res.status(401).json({ error: 'Usuario no autenticado.' });
+        }
+
+        if (!id_paquete || !precio_unitario || !cantidad) {
+            console.error('❌ Missing required fields:', { id_paquete, precio_unitario, cantidad });
+            return res.status(400).json({ error: 'Datos incompletos: se requiere id_paquete, precio_unitario y cantidad.' });
+        }
+
+        console.log('✅ Validation passed, searching for open order...');
+
+        // Search for open order (cart) for the user
+        let { data: pedidoAbierto, error: pedidoError } = await supabase
+            .from('pedido')
+            .select('*')
+            .eq('id_usuario', userId)
+            .eq('estado', 'abierto')
+            .limit(1);
+
+        if (pedidoError) {
+            console.error('❌ Error searching for order:', pedidoError);
+            return res.status(500).json({ error: `Error al buscar pedido: ${pedidoError.message}` });
+        }
+
+        console.log('📋 Found orders:', pedidoAbierto?.length || 0);
+
+        let id_pedido;
+
+        if (!pedidoAbierto || pedidoAbierto.length === 0) {
+            console.log('🆕 Creating new order...');
+            
+            // Create new order
+            const { data: nuevoPedido, error: crearError } = await supabase
+                .from('pedido')
+                .insert([{
+                    id_usuario: userId,
+                    fecha_pedido: new Date().toISOString(),
+                    estado: 'abierto',
+                    total_pedido: 0
+                }])
+                .select();
+
+            if (crearError) {
+                console.error('❌ Error creating order:', crearError);
+                return res.status(500).json({ error: `Error al crear pedido: ${crearError.message}` });
+            }
+
+            console.log('✅ New order created:', nuevoPedido[0]);
+            id_pedido = nuevoPedido[0].id_pedido;
+        } else {
+            id_pedido = pedidoAbierto[0].id_pedido;
+            console.log('📋 Using existing order:', id_pedido);
+        }
+
+        // Check if product already exists in cart
+        const { data: itemExistente, error: buscarError } = await supabase
+            .from('detalles_pedido')
+            .select('*')
+            .eq('id_pedido', id_pedido)
+            .eq('id_producto_servicio', id_paquete)
+            .limit(1);
+
+        if (buscarError) {
+            console.error('❌ Error searching existing item:', buscarError);
+            return res.status(500).json({ error: `Error al verificar carrito: ${buscarError.message}` });
+        }
+
+        if (itemExistente && itemExistente.length > 0) {
+            console.log('➕ Updating existing item quantity...');
+            // Update quantity
+            const nuevaCantidad = itemExistente[0].cantidad + parseInt(cantidad);
+            
+            const { error: actualizarError } = await supabase
+                .from('detalles_pedido')
+                .update({ cantidad: nuevaCantidad })
+                .eq('id_detalle', itemExistente[0].id_detalle);
+
+            if (actualizarError) {
+                console.error('❌ Error updating quantity:', actualizarError);
+                return res.status(500).json({ error: `Error al actualizar cantidad: ${actualizarError.message}` });
+            }
+            
+            console.log('✅ Quantity updated to:', nuevaCantidad);
+        } else {
+            console.log('🆕 Creating new order detail...');
+            // Create new detail
+            const { error: insertarError } = await supabase
+                .from('detalles_pedido')
+                .insert([{
+                    id_pedido: id_pedido,
+                    id_producto_servicio: id_paquete,
+                    cantidad: parseInt(cantidad),
+                    precio_unitario: parseFloat(precio_unitario),
+                    descripcion: descripcion_breve || nombre_paquete
+                }]);
+
+            if (insertarError) {
+                console.error('❌ Error inserting detail:', insertarError);
+                return res.status(500).json({ error: `Error al agregar al carrito: ${insertarError.message}` });
+            }
+            
+            console.log('✅ New detail created successfully');
+        }
+
+        // Recalculate order total
+        await recalcularTotalPedido(id_pedido);
+
+        console.log('🎉 Product added to cart successfully!');
+        
+        // CRITICAL: Ensure we return JSON response
+        res.setHeader('Content-Type', 'application/json');
+        res.json({ 
+            success: true,
+            message: 'Producto agregado al carrito exitosamente!',
+            id_pedido: id_pedido
+        });
+
+    } catch (error) {
+        console.error('💥 Critical error in cart API:', error);
+        res.setHeader('Content-Type', 'application/json');
+        res.status(500).json({ error: `Error inesperado: ${error.message}` });
+    }
+});
+
+// Enhanced recalcularTotalPedido function with better error handling
+async function recalcularTotalPedido(id_pedido) {
+    try {
+        console.log('🧮 Recalculando total para pedido:', id_pedido);
+        
+        const { data: detalles, error } = await supabase
+            .from('detalles_pedido')
+            .select('cantidad, precio_unitario')
+            .eq('id_pedido', id_pedido);
+
+        if (error) {
+            console.error('❌ Error al obtener detalles para recalcular:', error);
+            return;
+        }
+
+        let nuevoTotal = 0;
+        detalles.forEach(item => {
+            nuevoTotal += item.cantidad * item.precio_unitario;
+        });
+
+        console.log('💰 Nuevo total calculado:', nuevoTotal);
+
+        const { error: updateError } = await supabase
+            .from('pedido')
+            .update({ total_pedido: nuevoTotal })
+            .eq('id_pedido', id_pedido);
+
+        if (updateError) {
+            console.error('❌ Error al actualizar total del pedido:', updateError);
+        } else {
+            console.log(`✅ Total del pedido ${id_pedido} actualizado a: $${nuevoTotal}`);
+        }
+    } catch (error) {
+        console.error('💥 Error crítico al recalcular total:', error);
+    }
+}
+
+
+// Ruta para actualizar cantidad en el carrito
+app.post('/api/actualizar_cantidad_carrito', isLogged, async (req, res) => {
+    try {
+        const { id_detalle, cambio } = req.body;
+        const userId = req.session.usuario_id;
+
+        if (!id_detalle || !cambio) {
+            return res.status(400).json({ error: 'Datos incompletos.' });
+        }
+
+        // Obtener el detalle actual
+        const { data: detalleActual, error: getError } = await supabase
+            .from('detalles_pedido')
+            .select('cantidad, id_pedido')
+            .eq('id_detalle', id_detalle)
+            .limit(1);
+
+        if (getError || !detalleActual || detalleActual.length === 0) {
+            return res.status(404).json({ error: 'Item no encontrado.' });
+        }
+
+        const nuevaCantidad = detalleActual[0].cantidad + parseInt(cambio);
+
+        if (nuevaCantidad < 1) {
+            return res.status(400).json({ error: 'La cantidad no puede ser menor a 1.' });
+        }
+
+        // Actualizar la cantidad
+        const { error: updateError } = await supabase
+            .from('detalles_pedido')
+            .update({ cantidad: nuevaCantidad })
+            .eq('id_detalle', id_detalle);
+
+        if (updateError) {
+            console.error('Error al actualizar cantidad:', updateError);
+            return res.status(500).json({ error: 'Error al actualizar la cantidad.' });
+        }
+
+        // Recalcular total del pedido
+        await recalcularTotalPedido(detalleActual[0].id_pedido);
+
+        res.json({ message: 'Cantidad actualizada exitosamente.', nueva_cantidad: nuevaCantidad });
+
+    } catch (error) {
+        console.error('Error en actualizar cantidad:', error);
+        res.status(500).json({ error: 'Error inesperado.' });
+    }
+});
+
+// Ruta para eliminar item del carrito
+app.post('/api/eliminar_item_carrito', isLogged, async (req, res) => {
+    try {
+        const { id_detalle } = req.body;
+
+        if (!id_detalle) {
+            return res.status(400).json({ error: 'ID de detalle requerido.' });
+        }
+
+        // Obtener el id_pedido antes de eliminar
+        const { data: detalleInfo, error: getError } = await supabase
+            .from('detalles_pedido')
+            .select('id_pedido')
+            .eq('id_detalle', id_detalle)
+            .limit(1);
+
+        if (getError || !detalleInfo || detalleInfo.length === 0) {
+            return res.status(404).json({ error: 'Item no encontrado.' });
+        }
+
+        const id_pedido = detalleInfo[0].id_pedido;
+
+        // Eliminar el item
+        const { error: deleteError } = await supabase
+            .from('detalles_pedido')
+            .delete()
+            .eq('id_detalle', id_detalle);
+
+        if (deleteError) {
+            console.error('Error al eliminar item:', deleteError);
+            return res.status(500).json({ error: 'Error al eliminar el item.' });
+        }
+
+        // Recalcular total del pedido
+        await recalcularTotalPedido(id_pedido);
+
+        res.json({ message: 'Item eliminado exitosamente.' });
+
+    } catch (error) {
+        console.error('Error en eliminar item:', error);
+        res.status(500).json({ error: 'Error inesperado.' });
+    }
+});
+
 app.use('/Scripts', express.static(path.join(__dirname, '../Client/Scripts')));
 app.use('/administrador', express.static(path.join(__dirname, '../Client')));
+
+app.use((err, req, res, next) => {
+    console.error('💥 Unhandled error:', err);
+    
+    if (req.path.startsWith('/api/')) {
+        res.status(500).json({ error: 'Error interno del servidor' });
+    } else {
+        res.status(500).render('error', { error: 'Error interno del servidor' });
+    }
+});
