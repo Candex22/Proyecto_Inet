@@ -73,12 +73,10 @@ app.listen(PORT, () => {
 
 
 const isLogged = (req, res, next) => {
-    console.log('🔐 Checking authentication...');
-    console.log('🔐 Session user:', req.session.user_sesion);
-    console.log('🔐 User ID:', req.session.usuario_id);
+
 
     if (!req.session.user_sesion || !req.session.usuario_id) {
-        console.log('❌ User not authenticated');
+
 
         // Check if it's an API request
         if (req.path.startsWith('/api/')) {
@@ -89,7 +87,7 @@ const isLogged = (req, res, next) => {
             return res.redirect('/login');
         }
     } else {
-        console.log('✅ User authenticated');
+
         next();
     }
 };
@@ -105,8 +103,34 @@ app.get('/login', (req, res) => {
     res.render('login', { session: req.session });
 })
 
-app.get('/administrador', (req, res) => {
-    res.render('administrador', { session: req.session });
+app.get('/administrador', async (req, res) => {
+    let { data: vuelo, vueloError } = await supabase
+        .from('vuelo')
+        .select('*')
+
+    if (vueloError) {
+        console.error('❌ Error en Supabase (al obtener los vuelos):', vueloError);
+        if (Object.keys(vueloError).length === 0) {
+            console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
+        }
+        return res.render('login.ejs', { error: 'Error al cargar reseñas.' });
+    } else {
+        let { data: hotel, hotelError } = await supabase
+            .from('hotel')
+            .select('*')
+        if (hotelError) {
+            console.error('❌ Error en Supabase (al obtener reseñas):', hotelError);
+            if (Object.keys(hotelError).length === 0) {
+                console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
+            }
+            return res.render('login.ejs', { error: 'Error al cargar reseñas.' });
+        } else {
+            res.render('administrador', { session: req.session, data_vuelo: vuelo, data_hotel: hotel });
+        }
+
+    }
+
+
 })
 
 app.get('/register', (req, res) => {
@@ -191,14 +215,14 @@ app.get('/index', async (req, res) => {
 
 app.post('/registrar', async (req, res) => {
     try {
-        console.log('1. Solicitud de registro recibida.');
+
         const { nombre_us, apellido_us, nombre_usuario_us, email_us, password_us } = req.body;
-        console.log('2. Datos del formulario:', { nombre_us, email_us });
+
 
         const hash = await hashPassword(password_us);
-        console.log('3. Contraseña hasheada.');
 
-        console.log('4. Intentando insertar en Supabase...');
+
+
         const { data: insert_users, error } = await supabase
             .from('Usuarios') // ¡Asegúrate de que es 'Usuario' o 'usuarios' según tu tabla real!
             .insert([
@@ -222,10 +246,10 @@ app.post('/registrar', async (req, res) => {
             return res.render('login.ejs', { error: 'Error al registrar el usuario.' });
         }
 
-        console.log('5. Inserción exitosa en Supabase.');
+
         const nuevoUsuario = insert_users[0];
-        // ... (resto del código de sesión)
-        console.log('6. Sesión creada. Redirigiendo a /index.');
+
+
         return res.redirect('/index');
     } catch (err) {
         console.error('❌ Error general en /registrar:', err);
@@ -238,7 +262,7 @@ app.post('/iniciar_sesion', async (req, res) => {
     try {
 
         const { user_name, password } = req.body;
-        console.log(user_name, " y ", password)
+
         if (!user_name?.trim() || !password?.trim()) {
             return res.render('login.ejs', { error: 'Por favor, completa todos los campos.' });
         }
@@ -393,10 +417,7 @@ app.get('/paquete', async (req, res) => {
             }
         }
 
-        // Log para debugging
-        console.log("Vuelos encontrados:", vuelos[0].aerolinea);
-        console.log("Hoteles encontrados:", hoteles);
-        console.log("Autos encontrados:", autos);
+
 
         // Renderizar la vista con todos los datos
         res.render('paquete', {
@@ -673,7 +694,7 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
 // Enhanced recalcularTotalPedido function with better error handling
 async function recalcularTotalPedido(id_pedido) {
     try {
-        console.log('🧮 Recalculando total para pedido:', id_pedido);
+
 
         const { data: detalles, error } = await supabase
             .from('detalles_pedido')
@@ -690,7 +711,7 @@ async function recalcularTotalPedido(id_pedido) {
             nuevoTotal += item.cantidad * item.precio_unitario;
         });
 
-        console.log('💰 Nuevo total calculado:', nuevoTotal);
+
 
         const { error: updateError } = await supabase
             .from('pedido')
@@ -700,7 +721,7 @@ async function recalcularTotalPedido(id_pedido) {
         if (updateError) {
             console.error('❌ Error al actualizar total del pedido:', updateError);
         } else {
-            console.log(`✅ Total del pedido ${id_pedido} actualizado a: $${nuevoTotal}`);
+
         }
     } catch (error) {
         console.error('💥 Error crítico al recalcular total:', error);

@@ -1,18 +1,22 @@
 <!DOCTYPE html>
-<html lang="es">
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="shortcut icon" href="Resources/Imagenes/logo_ludi.png" type="image/x-icon">
-<script src="https://kit.fontawesome.com/1eff4537b0.js" crossorigin="anonymous"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link
-    href="https://fonts.googleapis.com/css2?family=Poetsen+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="Estilo/admin.css">
+
+<head>
+    <html lang="es">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="Resources/Imagenes/logo_ludi.png" type="image/x-icon">
+    <script src="https://kit.fontawesome.com/1eff4537b0.js" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poetsen+One&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="Estilo/admin.css">
+</head>
+
 
 <body>
     <%- include('header.ejs') %>
@@ -81,7 +85,8 @@
                                     <div class="form-grid">
                                         <div class="form-group">
                                             <label for="tipo_producto">Tipo de Producto</label>
-                                            <select id="tipo_producto" name="tipo_producto" required onchange="mostrarCamposEspecificos()">
+                                            <select id="tipo_producto" name="tipo_producto" required
+                                                onchange="mostrarCamposEspecificos()">
                                                 <option value="">Seleccione un tipo</option>
                                                 <option value="paquete">Paquete Turístico</option>
                                                 <option value="hotel">Hotel</option>
@@ -121,8 +126,30 @@
                                             <div class="form-group">
                                                 <label for="tipo_viaje">Tipo de Viaje</label>
                                                 <select id="tipo_viaje" name="tipo_viaje">
-                                                    <option value="nacional">Nacional</option>
-                                                    <option value="internacional">Internacional</option>
+                                                    <option value="Nacional">Nacional</option>
+                                                    <option value="Internacional">Internacional</option>
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="vuelo_id">Elegir Vuelo por numero</label>
+                                                <select id="vuelo_id" name="vuelo_id">
+                                                    <% data_vuelo.forEach(vuelo=> { %>
+                                                        <option value="<%= vuelo.id_vuelo%>">
+                                                            <%= vuelo.numero_vuelo%>
+                                                        </option>
+                                                        <%} )%>
+
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="hotel_id">Elegir Hotel</label>
+                                                <select id="hotel_id" name="hotel_id">
+                                                    <% data_hotel.forEach(hotel=> { %>
+                                                        <option value="<%= hotel.id_hotel%>">
+                                                            <%= hotel.nombre%>
+                                                        </option>
+                                                        <%} )%>
+
                                                 </select>
                                             </div>
                                             <div class="form-group">
@@ -159,7 +186,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="categoria_estrellas">Categoría (Estrellas)</label>
-                                                <input type="number" id="categoria_estrellas" name="categoria_estrellas" min="1" max="5">
+                                                <input type="number" id="categoria_estrellas" name="categoria_estrellas"
+                                                    min="1" max="5">
                                             </div>
                                             <div class="form-group">
                                                 <label for="precio_noche">Precio por Noche</label>
@@ -187,7 +215,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="fecha_salida_vuelo">Fecha de Salida</label>
-                                                <input type="datetime-local" id="fecha_salida_vuelo" name="fecha_salida_vuelo">
+                                                <input type="datetime-local" id="fecha_salida_vuelo"
+                                                    name="fecha_salida_vuelo">
                                             </div>
                                             <div class="form-group">
                                                 <label for="fecha_llegada">Fecha de Llegada</label>
@@ -229,7 +258,8 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="ubicacion_devolucion">Ubicación de Devolución</label>
-                                                <input type="text" id="ubicacion_devolucion" name="ubicacion_devolucion">
+                                                <input type="text" id="ubicacion_devolucion"
+                                                    name="ubicacion_devolucion">
                                             </div>
                                         </div>
                                     </div>
@@ -420,21 +450,21 @@
         <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
         <script src="Scripts/admin.js"></script>
         <script>
-        function mostrarCamposEspecificos() {
-            const tipoProducto = document.getElementById('tipo_producto').value;
-            
-            // Ocultar todos los campos específicos
-            document.getElementById('campos_paquete').style.display = 'none';
-            document.getElementById('campos_hotel').style.display = 'none';
-            document.getElementById('campos_vuelo').style.display = 'none';
-            document.getElementById('campos_alquiler').style.display = 'none';
-            
-            // Mostrar los campos correspondientes al tipo seleccionado
-            if (tipoProducto) {
-                document.getElementById('campos_' + tipoProducto).style.display = 'grid';
+            function mostrarCamposEspecificos() {
+                const tipoProducto = document.getElementById('tipo_producto').value;
+
+                // Ocultar todos los campos específicos
+                document.getElementById('campos_paquete').style.display = 'none';
+                document.getElementById('campos_hotel').style.display = 'none';
+                document.getElementById('campos_vuelo').style.display = 'none';
+                document.getElementById('campos_alquiler').style.display = 'none';
+
+                // Mostrar los campos correspondientes al tipo seleccionado
+                if (tipoProducto) {
+                    document.getElementById('campos_' + tipoProducto).style.display = 'grid';
+                }
             }
-        }
         </script>
 </body>
 
-</html> 
+</html>
