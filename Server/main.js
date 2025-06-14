@@ -273,11 +273,15 @@ app.post('/iniciar_sesion', async (req, res) => {
 })
 
 app.get('/logout', (req, res) => {
+    // Destruir la sesión
     req.session.destroy((err) => {
         if (err) {
             console.error('Error al cerrar sesión:', err);
             return res.redirect('/index');
         }
+        // Limpiar la cookie de sesión
+        res.clearCookie('connect.sid');
+        // Redirigir al login
         res.redirect('/login');
     });
 });
