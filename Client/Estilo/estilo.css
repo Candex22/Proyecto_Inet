@@ -214,7 +214,7 @@ body header nav #cont_nav_links a {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
-  gap: 3px;
+  gap: 10px;
   color: var(--azul_oscuro);
   font-weight: 600;
   text-decoration: none;
@@ -271,6 +271,7 @@ body header nav #cont_nav_links .user-menu .links.logout {
 
 body header nav #cont_nav_links .user-menu .links.logout .text_links {
   display: none;
+  
 }
 
 body header nav #cont_nav_links .user-menu .links.logout i {

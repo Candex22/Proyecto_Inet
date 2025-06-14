@@ -1382,7 +1382,7 @@ body .footer .footer-bottom p {
     margin-bottom: 2rem;
     transition: transform 0.3s ease;
     border: 1px solid #e0e6ed;
-    height: 20px;
+    height: 20%;
     min-height: fit-content;
 }
 
