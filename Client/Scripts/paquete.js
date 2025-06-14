@@ -71,7 +71,7 @@ document.getElementById("restar_persona").addEventListener("click", () => {
 
 
 const precioOriginal = parseFloat(data_paquete.precio_total);
-const porcentajeDescuento = parseFloat(data_paquete.descuento); 
+const porcentajeDescuento = parseFloat(data_paquete.descuento);
 
 let precioFinalConDescuento;
 let montoDescontado;
@@ -86,11 +86,51 @@ if (porcentajeDescuento > 0) {
 }
 
 
-const priceValueElement = document.getElementById("price-value"); 
-const finalPriceElement = document.getElementById("final-price"); 
+const priceValueElement = document.getElementById("price-value");
+const finalPriceElement = document.getElementById("final-price");
 
 if (priceValueElement) {
-    priceValueElement.textContent = `$ ${precioFinalConDescuento.toFixed(2)}`; 
+    priceValueElement.textContent = `$ ${precioFinalConDescuento.toFixed(2)}`;
     priceValueElement.style.color = porcentajeDescuento > 0 ? '#00000' : 'initial';
 }
 
+
+const opc_menu_mejorado = document.querySelectorAll(".opc_menu");
+
+opc_menu_mejorado.forEach(elemento => {
+    elemento.addEventListener("click", (e) => {
+        const elementoClickeado = e.target;
+        
+       
+        opc_menu_mejorado.forEach(el => {
+            el.classList.remove("active");
+           
+        });
+
+       
+        document.querySelectorAll(".conts_opcs").forEach(el => {
+            el.classList.add("desac");
+        });
+        
+       
+        elementoClickeado.classList.add("active");
+        elementoClickeado.classList.remove("desac");
+        
+       
+        const contenidoMap = {
+            "desc_opc": ".about-package",
+            "reseñas_pc": ".opinion-package", 
+            "vuelos_opc": ".vuelos-package",
+            "hotel_opc": ".hotel-package"
+        };
+        
+        
+        const contenidoSelector = contenidoMap[elementoClickeado.id];
+        if (contenidoSelector) {
+            const contenido = document.querySelector(contenidoSelector);
+            if (contenido) {
+                contenido.classList.remove("desac");
+            }
+        }
+    });
+});

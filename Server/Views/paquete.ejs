@@ -60,48 +60,82 @@
 
               <nav class="package-nav">
                 <ul>
-                  <li><a href="#" class="active">Descripción</a></li>
-                  <li><a href="#">Opiniones</a></li>
+                  <li><a class="active opc_menu" id="desc_opc">Descripción</a></li>
+                  <li><a class=" opc_menu" id="reseñas_pc">Opiniones</a></li>
+                  <li><a class=" opc_menu" id="vuelos_opc">Vuelos</a></li>
+                  <li><a class=" opc_menu" id="hotel_opc">Hotel</a></li>
                 </ul>
               </nav>
 
-              <div class="about-package">
+              <div class="about-package conts_opcs">
                 <h2>Sobre este paquete</h2>
                 <p>
                   <%= paquete.descripcion_amplia %>
                 </p>
 
               </div>
-              <div class="opinion-package">
+              <div class="opinion-package desac conts_opcs">
                 <h2>opiniones sobre este paquete</h2>
                 <!-- reseñas_data -->
-                <% reseñas_data.forEach(reseña=> { %>
+                <% reseñas_data.forEach( reseña=> { %>
                   <% // Bucle principal para cada paquete %>
-                  <% if()
+
                     <div class="cont_reseña">
                       <div class="cont_img_user">
-                        
+
                       </div>
                       <div class="cont_infor_user">
                         <h3 class="user_name">
                           María González</h3>
                         <div class="cont_fecha">
                           <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star-half-alt"></i>
-                          </div>
-                          <span>15 Nov 2024</span>
+                            <% 
+                            const puntajeNum = parseFloat(reseña.puntaje);
+                            const estrellasEnteras = Math.floor(puntajeNum);
+                            const hayMediaEstrella = (puntajeNum - estrellasEnteras) >= 0.5;
+                            %>
+                            
+                            <% for (let i = 0; i < estrellasEnteras; i++) { %>
+                                <i class="fas fa-star"></i>
+                            <% } %>
+                            
+                            <% if (hayMediaEstrella) { %>
+                                <i class="fas fa-star-half-alt"></i>
+                            <% } %>
+                            
+                            <% const estrellasVacias = 5 - estrellasEnteras - (hayMediaEstrella ? 1 : 0); %>
+                            <% for (let i = 0; i < estrellasVacias; i++) { %>
+                                <i class="far fa-star"></i>
+                            <% } %>
+                        </div>
+                          <span>
+                            <%=reseña.fecha %>
+                          </span>
                         </div>
                         <div class="cont_reseña">
-                          <p>¡Increíble experiencia! El resort superó todas mis expectativas. Las playas son paradisíacas y el servicio es excepcional.</p>
+                          <p>
+                            <%=reseña.cometario %>
+                          </p>
                         </div>
                       </div>
 
                     </div>
                     <% }); %>
+              </div>
+              <div class="vuelos-package desac conts_opcs">
+                <h2>Sobre el vuelo de este paquete</h2>
+                <p>
+                  <%= vuelos_data.aerolinea %>
+                </p>
+                <p></p>
+
+              </div>
+              <div class="hotel-package desac conts_opcs">
+                <h2>Sobre este paquete</h2>
+                <p>
+                  <%= paquete.descripcion_amplia %>
+                </p>
+
               </div>
             </div>
 

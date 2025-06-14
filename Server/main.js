@@ -58,13 +58,13 @@ app.use('/resources', express.static(path.join(__dirname, '../Client/Resources')
 
 // Conexión a la base de datos
 
-    // const connection = mysql.createConnection({
-    //     host: 'localhost',
-    //     user: 'root',
-    //     password: '',
-    //     database: 'BD',
-    //     port: 3306
-    // });
+// const connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '',
+//     database: 'BD',
+//     port: 3306
+// });
 
 // Encender servidor
 app.listen(PORT, () => {
@@ -271,47 +271,115 @@ app.post('/iniciar_sesion', async (req, res) => {
 app.get('/paquete', async (req, res) => {
     const id_paquete = req.query.id_paquete;
 
-    // Renombra la segunda variable de error a 'errorComponentes' o similar
-    let { data: paquete_data, error: paqueteError } = await supabase
-        .from('paquete')
-        .select("*")
-        .eq('id_paquete', id_paquete);
+    try {
+        // Obtener datos del paquete
+        let { data: paquete_data, error: paqueteError } = await supabase
+            .from('paquete')
+            .select("*")
+            .eq('id_paquete', id_paquete);
 
-    // Es buena práctica manejar los errores
-    if (paqueteError) {
-        console.error("Error al obtener datos del paquete:", paqueteError);
-        return res.status(500).send("Error interno del servidor al obtener paquete.");
+        if (paqueteError) {
+            console.error("Error al obtener datos del paquete:", paqueteError);
+            return res.status(500).send("Error interno del servidor al obtener paquete.");
+        }
+
+        // Obtener componentes del paquete
+        let { data: paquete_componentes, error: componentesError } = await supabase
+            .from('paquete_componentes')
+            .select("*")
+            .eq('id_paquete', id_paquete);
+
+        if (componentesError) {
+            console.error("Error al obtener componentes del paquete:", componentesError);
+            return res.status(500).send("Error interno del servidor al obtener componentes.");
+        }
+
+        // Obtener reseñas
+        let { data: reseñas, error: reseñasError } = await supabase
+            .from('reseñas')
+            .select("*")
+            .eq('id_paquete', id_paquete);
+
+        if (reseñasError) {
+            console.error("Error al obtener las reseñas del paquete:", reseñasError);
+            return res.status(500).send("Error interno del servidor al obtener reseñas.");
+        }
+
+        // Inicializar arrays para los componentes
+        const hoteles = [];
+        const vuelos = [];
+        const autos = [];
+
+        // CORRECCIÓN PRINCIPAL: Iterar correctamente sobre el array
+        for (let i = 0; i < paquete_componentes.length; i++) { // .length era lo que faltaba
+            const componente = paquete_componentes[i];
+
+            if (componente.tipo_componente === "Vuelo") {
+                const id_vuelo = componente.id_componente; // Usar 'componente' en lugar de paquete_componentes[i]
+
+                // CORRECCIÓN: Variable mal nombrada (id_vuelo vs vuelo_id)
+                let { data: vuelo_data, error: vueloError } = await supabase
+                    .from('vuelo')
+                    .select("*")
+                    .eq('id_vuelo', id_vuelo); // Era 'vuelo_id' pero debería ser 'id_vuelo'
+
+                if (vueloError) {
+                    console.error("Error al obtener datos del vuelo:", vueloError);
+                } else if (vuelo_data && vuelo_data.length > 0) {
+                    vuelos.push(vuelo_data[0]); // Agregar al array de vuelos
+                }
+            }
+
+            if (componente.tipo_componente === "Hotel") {
+                const id_hotel = componente.id_componente;
+
+                let { data: hotel_data, error: hotelError } = await supabase
+                    .from('hotel')
+                    .select("*")
+                    .eq('id_hotel', id_hotel);
+
+                if (hotelError) {
+                    console.error("Error al obtener datos del hotel:", hotelError);
+                } else if (hotel_data && hotel_data.length > 0) {
+                    hoteles.push(hotel_data[0]);
+                }
+            }
+
+            if (componente.tipo_componente === "Auto") {
+                const id_auto = componente.id_componente;
+
+                let { data: auto_data, error: autoError } = await supabase
+                    .from('auto')
+                    .select("*")
+                    .eq('id_auto', id_auto);
+
+                if (autoError) {
+                    console.error("Error al obtener datos del auto:", autoError);
+                } else if (auto_data && auto_data.length > 0) {
+                    autos.push(auto_data[0]);
+                }
+            }
+        }
+
+        // Log para debugging
+        console.log("Vuelos encontrados:", vuelos[0].aerolinea);
+        console.log("Hoteles encontrados:", hoteles);
+        console.log("Autos encontrados:", autos);
+
+        // Renderizar la vista con todos los datos
+        res.render('paquete', {
+            session: req.session,
+            paquete: paquete_data[0],
+            vuelos_data: vuelos[0],      // Array de vuelos
+            hoteles_data: hoteles[0],    // Array de hoteles
+            autos_data: autos[0],        // Array de autos
+            reseñas_data: reseñas
+        });
+
+    } catch (error) {
+        console.error("Error general en la ruta /paquete:", error);
+        res.status(500).send("Error interno del servidor.");
     }
-
-    let { data: paquete_componentes, error: componentesError } = await supabase
-        .from('paquete_componentes')
-        .select("*")
-        // Asegúrate de que este filtro sea correcto y relevante para tu lógica
-        .eq('id_paquete', id_paquete); // Asumo que quieres filtrar por id_paquete aquí también
-
-    if (componentesError) {
-        console.error("Error al obtener componentes del paquete:", componentesError);
-        return res.status(500).send("Error interno del servidor al obtener componentes.");
-    }
-    let { data: reseñas, reseñasError } = await supabase
-        .from('reseñas')
-        .select("*")
-
-        // Filters
-        .eq('id_paquete', id_paquete)
-    if (reseñasError) {
-        console.error("Error al obtener las reseñas del paquete:", reseñasError);
-        return res.status(500).send("Error interno del servidor al obtener componentes.");
-    }
-    console.log(reseñas[0].id_reseña)
-   
-    // Aquí puedes procesar paquete_data y paquete_componentes
-    // antes de pasarlos a tu vista, por ejemplo, combinarlos.
-    // console.log("Datos del paquete:", paquete_data);
-    // console.log("Componentes del paquete:", paquete_componentes);
-
-
-    res.render('paquete', { session: req.session, paquete: paquete_data[0], componentes: paquete_componentes, reseñas_data: reseñas });
 });
 
 // Función para comparar una contraseña con su hash
