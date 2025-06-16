@@ -1,138 +1,229 @@
+/* General body and container styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f7f6;
+    margin: 0;
+    padding: 0;
+}
 
-        .cart-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        
-        .cart-item {
-            display: flex;
-            align-items: center;
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            background: white;
-        }
-        
-        .item-image {
-            width: 100px;
-            height: 100px;
-            margin-right: 20px;
-            background: #f0f0f0;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        
-        .item-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 8px;
-        }
-        
-        .item-details {
-            flex: 1;
-        }
-        
-        .item-quantity-price {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            margin-top: 10px;
-        }
-        
-        .item-quantity {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .quantity-button {
-            background: #007bff;
-            color: white;
-            border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
-        }
-        
-        .quantity-button:hover {
-            background: #0056b3;
-        }
-        
-        .quantity-value {
-            font-weight: bold;
-            min-width: 20px;
-            text-align: center;
-        }
-        
-        .item-price {
-            font-weight: bold;
-            color: #28a745;
-            font-size: 1.1em;
-        }
-        
-        .remove-item-button {
-            background: #dc3545;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-left: 20px;
-        }
-        
-        .remove-item-button:hover {
-            background: #c82333;
-        }
-        
-        .cart-summary {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-        
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        
-        .summary-row.total {
-            font-weight: bold;
-            font-size: 1.2em;
-            border-top: 2px solid #ddd;
-            padding-top: 10px;
-        }
-        
-        .checkout-button {
-            background: #28a745;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 1.1em;
-            margin-top: 15px;
-        }
-        
-        .checkout-button:hover {
-            background: #218838;
-        }
-        
-        .empty-cart-message {
-            text-align: center;
-            padding: 50px 20px;
-        }
-        
-        .empty-cart-message p {
-            font-size: 1.2em;
-            color: #666;
-            margin-bottom: 20px;
-        }
+.cart-container {
+    max-width: 900px; /* Adjusted for a slightly narrower look to match image */
+    margin: 40px auto; /* Increased margin-top for better spacing */
+    padding: 25px; /* Slightly increased padding */
+    background-color: #ffffff; /* Explicitly set background */
+    border-radius: 10px; /* More pronounced rounded corners */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); /* Softer, more visible shadow */
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 30px; /* More space below the heading */
+    font-size: 2em; /* Slightly larger heading */
+}
+
+/* Cart item styling */
+.cart-items {
+    margin-bottom: 30px; /* Space between items and summary */
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    padding: 20px;
+    border: 1px solid #e0e0e0; /* Lighter border */
+    border-radius: 8px;
+    margin-bottom: 18px; /* Consistent margin */
+    background: #fff; /* White background for items */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); /* Subtle shadow for items */
+    transition: transform 0.2s ease-in-out; /* Add a subtle hover effect */
+}
+
+.cart-item:hover {
+    transform: translateY(-3px);
+}
+
+.item-image {
+    width: 120px; /* Slightly larger image container */
+    height: 120px; /* Maintain aspect ratio */
+    margin-right: 25px; /* More space between image and details */
+    background: #f0f0f0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden; /* Ensure image fits within bounds */
+}
+
+.item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.item-image .fas {
+    font-size: 40px; /* Larger icon for missing image */
+    color: #ccc;
+}
+
+.item-details {
+    flex: 1;
+    display: flex; /* Use flexbox for details to align title and price */
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space vertically */
+}
+
+.item-details h3 {
+    margin: 0 0 10px 0; /* Space below title */
+    color: #333;
+    font-size: 1.3em; /* Larger title */
+}
+
+.item-details p {
+    color: #666;
+    font-size: 0.95em;
+    margin-bottom: 15px; /* Space below price per person */
+}
+
+.item-quantity-price {
+    display: flex;
+    align-items: center;
+    gap: 30px; /* Increased gap */
+    margin-top: 10px;
+    justify-content: space-between; /* Pushes price to the right */
+    width: 100%; /* Ensure it takes full width */
+}
+
+.item-quantity {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden; /* Ensures buttons and span are within border-radius */
+}
+
+.quantity-button {
+    background: #e9ecef; /* Light gray background */
+    color: #495057; /* Darker text color */
+    border: none;
+    padding: 10px 15px; /* More padding for a larger button touch area */
+    cursor: pointer;
+    font-size: 1.1em; /* Larger font for +/- */
+    transition: background-color 0.2s ease;
+}
+
+.quantity-button:hover {
+    background: #dee2e6; /* Slightly darker on hover */
+}
+
+.quantity-value {
+    padding: 10px 15px;
+    background: #ffffff;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
+    font-size: 1.1em;
+    color: #333;
+    min-width: 40px; /* Ensure consistent width */
+    text-align: center;
+}
+
+.item-price {
+    font-size: 1.4em; /* Larger item total price */
+    font-weight: bold;
+    color: #28a745; /* Green color for total price */
+    margin-left: auto; /* Pushes price to the far right */
+}
+
+.remove-item-button {
+    background: #dc3545;
+    color: white;
+    border: none;
+    padding: 12px; /* Slightly more padding */
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 25px; /* Increased margin */
+    font-size: 1.1em; /* Larger icon/button */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s ease;
+}
+
+.remove-item-button:hover {
+    background: #c82333;
+}
+
+/* Cart summary styling */
+.cart-summary {
+    background: #f8f9fa;
+    padding: 25px; /* More padding */
+    border-radius: 8px;
+    margin-top: 30px;
+    border: 1px solid #e9ecef; /* Light border for summary */
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px; /* Slightly more margin */
+    font-size: 1.1em; /* Larger font for summary rows */
+    color: #555;
+}
+
+.summary-row.total {
+    font-weight: bold;
+    font-size: 1.4em; /* Larger total font */
+    border-top: 2px solid #dee2e6; /* Lighter, clearer border */
+    padding-top: 15px; /* More padding above total */
+    margin-top: 15px; /* More margin above total */
+    color: #333;
+}
+
+.checkout-button {
+    background: #007bff; /* A nice blue color for checkout */
+    color: white;
+    border: none;
+    padding: 15px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 1.2em; /* Larger font for checkout button */
+    margin-top: 20px; /* More margin */
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2); /* Subtle shadow for button */
+}
+
+.checkout-button:hover {
+    background: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Lift effect on hover */
+}
+
+/* Empty cart message */
+.empty-cart-message {
+    text-align: center;
+    padding: 50px 20px;
+    background: #fdfdfd;
+    border: 1px dashed #ced4da;
+    border-radius: 8px;
+    margin-top: 30px;
+    color: #6c757d;
+}
+
+.empty-cart-message p {
+    font-size: 1.2em;
+    margin-bottom: 25px;
+}
+
+.empty-cart-message .checkout-button { /* Reusing checkout button style for "View Packages" */
+    display: inline-block;
+    width: auto;
+    padding: 12px 25px;
+    font-size: 1em;
+    background: #6c757d; /* Different color for "View Packages" button */
+    box-shadow: 0 4px 10px rgba(108, 117, 125, 0.2);
+}
+
+.empty-cart-message .checkout-button:hover {
+    background: #5a6268;
+}

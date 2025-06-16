@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <%- include('head.ejs') %>
+    <title>TravelPortal - Pago Confirmado</title>
+</head>
+
+<body>
+    <%- include('header.ejs') %>
+    <main>
+        <div class="confirmation-container">
+            <div class="confirmation-card">
+                <div class="success-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                
+                <h1 class="confirmation-title">¡Pago Procesado Exitosamente!</h1>
+                
+                <p class="confirmation-message">
+                    Su pedido ha sido confirmado y procesado correctamente. 
+                    En breve recibirá un correo electrónico con los detalles de su compra y la factura correspondiente.
+                </p>
+                
+                <div class="email-info">
+                    <i class="fas fa-envelope"></i>
+                    <strong>Factura enviada a:</strong> <%= session.email_us %>
+                </div>
+                
+                <div class="confirmation-details">
+                    <div class="detail-row">
+                        <span><i class="fas fa-user"></i> Cliente:</span>
+                        <span><%= session.nombre_us %> <%= session.apellido_us %></span>
+                    </div>
+                    <div class="detail-row">
+                        <span><i class="fas fa-calendar"></i> Fecha de Compra:</span>
+                        <span><%= new Date().toLocaleDateString('es-AR') %></span>
+                    </div>
+                    <div class="detail-row">
+                        <span><i class="fas fa-clock"></i> Hora de Compra:</span>
+                        <span><%= new Date().toLocaleTimeString('es-AR') %></span>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <a href="/paquetes" class="btn btn-primary">
+                        <i class="fas fa-suitcase-rolling"></i>
+                        Explorar Más Paquetes
+                    </a>
+                    <a href="/perfil" class="btn btn-secondary">
+                        <i class="fas fa-user"></i>
+                        Ver Mi Perfil
+                    </a>
+                </div>
+                
+                <div style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #e9ecef;">
+                    <h3 style="color: #2c3e50; margin-bottom: 1rem;">
+                        <i class="fas fa-info-circle"></i> Información Importante
+                    </h3>
+                    <ul style="text-align: left; color: #7f8c8d; line-height: 1.8;">
+                        <li>Conserve este comprobante para sus registros</li>
+                        <li>La factura detallada fue enviada a su correo electrónico</li>
+                        <li>Para consultas, puede contactarnos a través de nuestro sistema de soporte</li>
+                        <li>¡Gracias por elegir TravelPortal para sus aventuras!</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+    <%- include('footer.ejs') %>
+    
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit-id.js" crossorigin="anonymous"></script>
+</body>
+
+</html>

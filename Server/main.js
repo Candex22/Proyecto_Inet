@@ -23,7 +23,7 @@ const app = express()
 
 const session = require('express-session')
 const mysql = require('mysql2');
-
+const nodemailer = require('nodemailer'); 
 
 const bcrypt = require('bcrypt');
 const path = require('path');
@@ -996,6 +996,231 @@ async function recalcularTotalPedido(id_pedido) {
         console.error('💥 Error crítico al recalcular total:', error);
     }
 }
+
+
+// Route to render the payment page
+app.get('/pago', isLogged, async (req, res) => {
+    try {
+        const userId = req.session.usuario_id;
+
+        // Fetch the user's open order
+        const { data: pedidoAbierto, error: pedidoError } = await supabase
+            .from('pedido')
+            .select('*')
+            .eq('id_usuario', userId)
+            .eq('estado', 'abierto')
+            .single();
+
+        if (pedidoError && pedidoError.code !== 'PGRST116') {
+            console.error('❌ Error al buscar pedido para pago:', pedidoError);
+            return res.render('pago', { session: req.session, cartItems: [], cartTotal: 0, error: 'Error al cargar los detalles del pago.' });
+        }
+
+        if (!pedidoAbierto) {
+            return res.render('carrito', { session: req.session, cartItems: [], cartTotal: 0, error: 'No hay un pedido abierto para procesar.' });
+        }
+
+        const id_pedido = pedidoAbierto.id_pedido;
+
+        // Fetch order details
+        const { data: detallesPedido, error: detallesError } = await supabase
+            .from('detalles_pedido')
+            .select(`
+                id_detalle,
+                id_producto_servicio,
+                cantidad,
+                precio_unitario,
+                descripcion,
+                paquete:id_producto_servicio (
+                    nombre_paquete
+                )
+            `)
+            .eq('id_pedido', id_pedido);
+
+        if (detallesError) {
+            console.error('❌ Error al obtener detalles del pedido para pago:', detallesError);
+            return res.render('pago', { session: req.session, cartItems: [], cartTotal: 0, error: 'Error al cargar los detalles del pago.' });
+        }
+
+        const cartItems = detallesPedido.map(detalle => ({
+            id_detalle: detalle.id_detalle,
+            nombre_paquete: detalle.paquete?.nombre_paquete || detalle.descripcion,
+            precio_unitario: parseFloat(detalle.precio_unitario) || 0,
+            cantidad: parseInt(detalle.cantidad) || 1,
+            subtotal: (parseFloat(detalle.precio_unitario) || 0) * (parseInt(detalle.cantidad) || 1)
+        }));
+
+        res.render('pago', {
+            session: req.session,
+            cartItems: cartItems,
+            cartTotal: pedidoAbierto.total_pedido || 0
+        });
+
+    } catch (error) {
+        console.error('💥 Error en la ruta /pago:', error);
+        res.status(500).render('error', { error: 'Ocurrió un error inesperado al cargar la página de pago.' });
+    }
+});
+
+
+// API endpoint to process the payment
+app.post('/api/procesar_pago', isLogged, async (req, res) => {
+    const { dni, address, phone } = req.body;
+    const userId = req.session.usuario_id;
+    const userEmail = req.session.email_us; // Get user email from session
+
+    if (!dni || !address || !phone) {
+        return res.status(400).json({ error: 'Todos los campos de facturación son requeridos.' });
+    }
+
+    if (!/^\d{7,8}$/.test(dni)) {
+        return res.status(400).json({ error: 'El DNI debe contener 7 u 8 dígitos numéricos.' });
+    }
+    
+    if (!/^\d{10,}$/.test(phone)) {
+        return res.status(400).json({ error: 'El teléfono debe contener al menos 10 dígitos numéricos.' });
+    }
+
+    try {
+        // 1. Get the current open order for the user
+        const { data: pedidoAbierto, error: pedidoError } = await supabase
+            .from('pedido')
+            .select('*')
+            .eq('id_usuario', userId)
+            .eq('estado', 'abierto')
+            .single();
+
+        if (pedidoError || !pedidoAbierto) {
+            console.error('Error finding open order for payment:', pedidoError);
+            return res.status(404).json({ error: 'No se encontró un pedido abierto para procesar el pago.' });
+        }
+
+        const id_pedido = pedidoAbierto.id_pedido;
+        const total_pedido = pedidoAbierto.total_pedido;
+
+        // 2. Fetch order details to include in the invoice
+        const { data: detallesPedido, error: detallesError } = await supabase
+            .from('detalles_pedido')
+            .select(`
+                cantidad,
+                precio_unitario,
+                descripcion,
+                paquete:id_producto_servicio (
+                    nombre_paquete
+                )
+            `)
+            .eq('id_pedido', id_pedido);
+
+        if (detallesError) {
+            console.error('Error fetching order details for invoice:', detallesError);
+            return res.status(500).json({ error: 'Error al obtener los detalles del pedido para la factura.' });
+        }
+
+        // 3. Update the order status to 'cerrado' (closed) and add billing info
+        const { error: updateOrderError } = await supabase
+            .from('pedido')
+            .update({
+                estado: 'cerrado',
+                dni_facturacion: dni,
+                direccion_facturacion: address,
+                telefono_facturacion: phone,
+                fecha_cierre: new Date().toISOString() // Or specific payment date
+            })
+            .eq('id_pedido', id_pedido);
+
+        if (updateOrderError) {
+            console.error('Error updating order status:', updateOrderError);
+            return res.status(500).json({ error: 'Error al finalizar el pedido.' });
+        }
+
+        // 4. Generate invoice content
+        let invoiceHtml = `
+            <h1>Factura de Compra</h1>
+            <p><strong>Pedido ID:</strong> ${id_pedido}</p>
+            <p><strong>Fecha de Compra:</strong> ${new Date().toLocaleDateString('es-AR')}</p>
+            <p><strong>Cliente:</strong> ${req.session.nombre_us} ${req.session.apellido_us}</p>
+            <p><strong>Email:</strong> ${req.session.email_us}</p>
+            <p><strong>DNI:</strong> ${dni}</p>
+            <p><strong>Dirección de Facturación:</strong> ${address}</p>
+            <p><strong>Teléfono:</strong> ${phone}</p>
+            <hr>
+            <h2>Detalles del Pedido:</h2>
+            <table border="1" cellpadding="5" cellspacing="0" style="width:100%;">
+                <thead>
+                    <tr>
+                        <th>Descripción</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        detallesPedido.forEach(item => {
+            const itemName = item.paquete?.nombre_paquete || item.descripcion;
+            invoiceHtml += `
+                <tr>
+                    <td>${itemName}</td>
+                    <td>${item.cantidad}</td>
+                    <td>$${parseFloat(item.precio_unitario).toFixed(2)}</td>
+                    <td>$${(item.cantidad * parseFloat(item.precio_unitario)).toFixed(2)}</td>
+                </tr>
+            `;
+        });
+
+        invoiceHtml += `
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3" style="text-align:right;"><strong>Total:</strong></td>
+                        <td><strong>$${total_pedido.toFixed(2)}</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <p>¡Gracias por tu compra!</p>
+        `;
+
+        // 5. Send email with invoice
+        const transporter = nodemailer.createTransport({
+            host: process.env.EMAIL_HOST, // e.g., 'smtp.gmail.com'
+            port: process.env.EMAIL_PORT, // e.g., 587 or 465
+            secure: process.env.EMAIL_SECURE === 'true', // true for 465, false for other ports
+            auth: {
+                user: process.env.EMAIL_USER, // Your email address
+                pass: process.env.EMAIL_PASS, // Your email password or app-specific password
+            },
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER, // Sender address
+            to: userEmail, // List of recipients
+            subject: 'Confirmación de Compra y Factura - TravelPortal',
+            html: invoiceHtml,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.error('Error sending email:', error);
+                // Don't block the user, just log the error
+            } else {
+                console.log('Email sent: ' + info.response);
+            }
+        });
+
+        res.json({ success: true, message: 'Pago procesado y factura enviada a su correo.' });
+
+    } catch (error) {
+        console.error('💥 Error en /api/procesar_pago:', error);
+        res.status(500).json({ error: 'Error interno del servidor al procesar el pago.' });
+    }
+});
+
+// Route for payment confirmation page
+app.get('/confirmacion_pago', (req, res) => {
+    res.render('confirmacion_pago', { session: req.session });
+});
+
 
 app.use('/Scripts', express.static(path.join(__dirname, '../Client/Scripts')));
 app.use('/administrador', express.static(path.join(__dirname, '../Client')));

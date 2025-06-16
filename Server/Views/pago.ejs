@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <%- include('head.ejs') %>
+    <title>TravelPortal - Procesar Pago</title>
+</head>
+
+<body>
+    <%- include('header.ejs') %>
+    <main>
+        <div class="payment-container">
+            <% if (cartItems && cartItems.length > 0) { %>
+                <!-- Formulario de Pago -->
+                <div class="payment-form-section">
+                    <h2><i class="fas fa-credit-card"></i> Datos de Facturación</h2>
+                    <form id="payment-form">
+                        <div class="form-group">
+                            <label for="dni">DNI *</label>
+                            <input type="text" id="dni" name="dni" placeholder="Ej: 12345678" maxlength="8" required>
+                            <div class="error-message" id="dni-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="address">Dirección de Facturación *</label>
+                            <input type="text" id="address" name="address" placeholder="Ej: Av. Corrientes 1234, CABA" required>
+                            <div class="error-message" id="address-error"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="phone">Teléfono *</label>
+                            <input type="text" id="phone" name="phone" placeholder="Ej: 1123456789" maxlength="15" required>
+                            <div class="error-message" id="phone-error"></div>
+                        </div>
+                        
+                        <div class="loading" id="loading">
+                            <i class="fas fa-spinner"></i>
+                            <p>Procesando pago...</p>
+                        </div>
+                        
+                        <button type="button" class="submit-button" id="submit-payment" onclick="procesarPago()">
+                            <i class="fas fa-credit-card"></i> Confirmar Pago
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Resumen del Pedido -->
+                <div class="order-summary-section">
+                    <h2><i class="fas fa-shopping-cart"></i> Resumen del Pedido</h2>
+                    
+                    <div class="order-items">
+                        <% cartItems.forEach(item => { %>
+                            <div class="order-item">
+                                <div class="item-info">
+                                    <h4><%= item.nombre_paquete %></h4>
+                                    <p>Cantidad: <%= item.cantidad %> | Precio unitario: $<%= item.precio_unitario.toFixed(2) %></p>
+                                </div>
+                                <div class="item-price">
+                                    $<%= item.subtotal.toFixed(2) %>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                    
+                    <div class="order-total">
+                        <div class="total-row">
+                            <span>Total a Pagar:</span>
+                            <span>$<%= cartTotal.toFixed(2) %></span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 1.5rem; padding: 1rem; background: #ecf0f1; border-radius: 8px;">
+                        <h4 style="margin: 0 0 0.5rem 0; color: #2c3e50;">
+                            <i class="fas fa-info-circle"></i> Información del Pago
+                        </h4>
+                        <p style="margin: 0; font-size: 0.875rem; color: #7f8c8d;">
+                            Al confirmar el pago, recibirá una factura detallada en su correo electrónico registrado.
+                            El pedido se procesará inmediatamente.
+                        </p>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="empty-cart">
+                    <i class="fas fa-shopping-cart"></i>
+                    <h2>No hay items para procesar</h2>
+                    <p>Su carrito está vacío. Agregue algunos paquetes antes de proceder al pago.</p>
+                    <a href="/paquetes" class="submit-button" style="display: inline-block; text-decoration: none; width: auto; padding: 0.75rem 2rem;">
+                        Ver Paquetes Disponibles
+                    </a>
+                </div>
+            <% } %>
+        </div>
+    </main>
+    <%- include('footer.ejs') %>
+    
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit-id.js" crossorigin="anonymous"></script>
+    <script src="/Scripts/pago.js"></script>
+</body>
+
+</html>
