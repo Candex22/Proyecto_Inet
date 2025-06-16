@@ -138,9 +138,71 @@ app.get('/register', (req, res) => {
     res.render('register', { session: req.session });
 })
 
-app.get('/paquetes', (req, res) => {
-    res.render('paquetes', { session: req.session });
-})
+app.get('/paquetes', async (req, res) => {
+    try {
+        // Obtener reseñas
+        let { data: reseñas, error: reseñasError } = await supabase
+            .from('reseñas')
+            .select('*');
+
+        if (reseñasError) {
+            console.error('❌ Error en Supabase (al obtener reseñas):', reseñasError);
+            if (Object.keys(reseñasError).length === 0) {
+                console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
+            }
+            return res.render('login.ejs', { error: 'Error al cargar reseñas.' });
+        }
+
+        // Objeto para almacenar el resumen por paquete
+        let resumenPaquetes = {};
+
+        // Iterar sobre cada reseña para acumular los datos
+        for (let i = 0; i < reseñas.length; i++) {
+            const reseña = reseñas[i];
+            const idPaquete = reseña.id_paquete;
+            // Asegurarse de convertir el puntaje a número para la suma
+            const puntajeNumerico = parseFloat(reseña.puntaje);
+
+            // Si el paquete aún no está en nuestro objeto resumenPaquetes, inicializarlo
+            if (!resumenPaquetes[idPaquete]) {
+                resumenPaquetes[idPaquete] = {
+                    id_paquete: idPaquete,
+                    total_puntaje_sumado: 0,
+                    cantidad_reseñas: 0
+                };
+            }
+
+            // Sumar el puntaje y contar la reseña
+            resumenPaquetes[idPaquete].total_puntaje_sumado += puntajeNumerico;
+            resumenPaquetes[idPaquete].cantidad_reseñas += 1;
+        }
+
+        // Obtener paquetes
+        let { data: paquetes, error: paquetesError } = await supabase
+            .from('paquete')
+            .select('*');
+
+        if (paquetesError) {
+            console.error('❌ Error en Supabase (al obtener paquetes):', paquetesError);
+            if (Object.keys(paquetesError).length === 0) {
+                console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
+            }
+            return res.render('login.ejs', { error: 'Error al cargar paquetes.' });
+        }
+
+        // Si todo va bien, renderizar la vista 'paquetes'
+        res.render('paquetes', {
+            session: req.session,
+            paquetes: paquetes,
+            reseñas: reseñas, // Aunque 'reseñas' se procesa en resumenPaquetes, se pasa por si se necesita directamente en la vista.
+            resumenReseñas: resumenPaquetes
+        });
+
+    } catch (err) {
+        console.error('Error general en la ruta /paquetes:', err);
+        return res.render('login.ejs', { error: 'Ocurrió un error inesperado al cargar la página.' });
+    }
+});
 
 
 app.get('/logout', (req, res) => {
@@ -218,7 +280,6 @@ app.get('/index', async (req, res) => {
                 }
                 return res.render('login.ejs', { error: 'Error al cargar paquetes.' });
             } else {
-
 
                 res.render('index', { session: req.session, paquetes: paquetes, reseñas: reseñas, resumenReseñas: resumenPaquetes });
             }
@@ -453,7 +514,7 @@ app.post("/enviar_opinion", async (req, res) => {
                 {
                     id_paquete: id_paquete,
                     id_usuario: userId,
-                    puntaje:rating,
+                    puntaje: rating,
                     cometario: comment,
                     fecha: new Date().toISOString().slice(0, 10)
                 }
@@ -464,7 +525,7 @@ app.post("/enviar_opinion", async (req, res) => {
             return res.status(500).json({ success: false, message: "Error al guardar la sugerencia.", error: error.message });
         }
 
-    
+
 
         res.redirect(`/paquete?id_paquete=${id_paquete}`);
 
@@ -682,8 +743,8 @@ app.post('/api/actualizar_cantidad_carrito', isLogged, async (req, res) => {
         // Recalcular total del pedido
         await recalcularTotalPedido(detalleActual.id_pedido);
 
-        res.json({ 
-            message: 'Cantidad actualizada exitosamente.', 
+        res.json({
+            message: 'Cantidad actualizada exitosamente.',
             nueva_cantidad: nuevaCantidadFinal,
             precio_total_item: nuevaCantidadFinal * parseFloat(detalleActual.precio_unitario)
         });
@@ -754,7 +815,7 @@ app.delete('/api/eliminar_item_carrito/:id_detalle', isLogged, async (req, res) 
 
         // Recalcular total del pedido
         // Asegúrate de que recalcularTotalPedido esté definida y accesible
-        await recalcularTotalPedido(id_pedido); 
+        await recalcularTotalPedido(id_pedido);
 
         res.json({ message: 'Item eliminado exitosamente.' });
 

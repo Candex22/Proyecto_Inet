@@ -3,144 +3,134 @@
 
 <head>
     <%- include('head.ejs') %>
-    <title>Paquetes - TravelPortal</title>
+        <title>Paquetes - TravelPortal</title>
 </head>
 
 <body>
     <%- include('header.ejs') %>
-    <main id="index_main">
-        <section class="featured-destinations">
-            <div class="section-header">
-                <span class="badge">Nuestros paquetes</span>
-                <h2>Destinos Increíbles</h2>
-                <p>Descubre destinos increíbles con nuestros paquetes cuidadosamente seleccionados</p>
-            </div>
-        </section>
+        <main id="index_main">
+            <section class="featured-destinations">
+                <div class="section-header">
+                    <span class="badge">Nuestros paquetes</span>
+                    <h2>Destinos Increíbles</h2>
+                    <p>Descubre destinos increíbles con nuestros paquetes cuidadosamente seleccionados</p>
+                </div>
+            </section>
 
-        <section class="filtros">
-            <div class="title">
-                <h2><i class="fa-solid fa-filter"></i> Filtros de búsqueda</h2>
-            </div>
+            <section class="filtros">
+                <div class="title">
+                    <h2><i class="fa-solid fa-filter"></i> Filtros de búsqueda</h2>
+                </div>
 
-            <div class="inputs">
-                <div class="input-container">
-                    <i class="fa-solid fa-magnifying-glass"></i>
-                    <input type="text" class="input" name="search" placeholder="Buscar destinos...">
+                <div class="inputs">
+                    <div class="input-container">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" class="input" name="search" placeholder="Buscar destinos...">
+                    </div>
+                    <div class="input-container">
+                        <i class="fa-solid fa-globe"></i>
+                        <select class="input" name="category">
+                            <option value="" selected>Todas las categorías</option>
+                            <option value="Nacional">Nacional</option>
+                            <option value="Internacional">Internacional</option>
+                        </select>
+                    </div>
+                    <div class="input-container">
+                        <i class="fa-solid fa-sort"></i>
+                        <select class="input" name="order">
+                            <option value="" disabled selected>Ordenar por</option>
+                            <option value="precio-asc">Precio: Menor a Mayor</option>
+                            <option value="precio-desc">Precio: Mayor a Menor</option>
+                            <option value="rating">Mejor Valorados</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="input-container">
-                    <i class="fa-solid fa-globe"></i>
-                    <select class="input" name="category">
-                        <option value="" selected>Todas las categorías</option>
-                        <option value="Nacional">Nacional</option>
-                        <option value="Internacional">Internacional</option>
-                    </select>
-                </div>
-                <div class="input-container">
-                    <i class="fa-solid fa-sort"></i>
-                    <select class="input" name="order">
-                        <option value="" disabled selected>Ordenar por</option>
-                        <option value="precio-asc">Precio: Menor a Mayor</option>
-                        <option value="precio-desc">Precio: Mayor a Menor</option>
-                        <option value="rating">Mejor Valorados</option>
-                    </select>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <div class="lista-paquetes">
-            <!-- Ejemplo de tarjeta 1 -->
-            <div class="tarjeta-paquete">
-                <div class="tarjeta-paquete-etiquetas">
-                    <span class="tag international">Internacional</span>
-                    <span class="tag featured">⭐ Destacado</span>
-                </div>
-                <span class="discount">-20%</span>
-                <div class="image-placeholder">
-                    <i class="fas fa-image"></i>
-                </div>
-                <div class="tarjeta-paquete-cuerpo">
-                    <h3>Tour por París</h3>
-                    <p>Descubre la ciudad del amor con nuestro paquete especial que incluye visitas a la Torre Eiffel, el Louvre y más.</p>
-                    <div class="info">
-                        <span><i class="fas fa-calendar"></i> 7 Días</span>
-                        <span><i class="fas fa-users"></i> 2 personas</span>
+        
+            <div class="lista-paquetes">
+                <% paquetes.forEach(paquete => { %>
+                    <%
+                        // Inicialización de variables para cada paquete
+                        let estrellas_prom = 0;
+                        let cantidad_reseñas = 0;
+            
+                        // Obtener el resumen de reseñas para este paquete específico
+                        const resumenDeEstePaquete = resumenReseñas[paquete.id_paquete];
+            
+                        if (resumenDeEstePaquete) {
+                            // Si encontramos reseñas para este paquete, calculamos el promedio
+                            estrellas_prom = resumenDeEstePaquete.total_puntaje_sumado / resumenDeEstePaquete.cantidad_reseñas;
+                            cantidad_reseñas = resumenDeEstePaquete.cantidad_reseñas;
+                        }
+            
+                        const precioOriginal = parseFloat(paquete.precio_total);
+                        const porcentajeDescuento = parseFloat(paquete.descuento);
+            
+                        let precioFinalConDescuento;
+                        let hayDescuento = porcentajeDescuento > 0;
+            
+                        if (hayDescuento) {
+                            const montoDescontado = (precioOriginal * porcentajeDescuento) / 100;
+                            precioFinalConDescuento = precioOriginal - montoDescontado;
+                        } else {
+                            precioFinalConDescuento = precioOriginal;
+                        }
+                    %>
+            
+                    <div class="tarjeta-paquete">
+                        <div class="tarjeta-paquete-etiquetas">
+                            <% if (paquete.tipo_viaje == "Internacional") { %>
+                                <span class="tag international">Internacional</span>
+                            <% } %>
+                            <% if (paquete.tipo_viaje == "Nacional") { %>
+                                <span class="tag national">Nacional</span>
+                            <% } %>
+                            <span class="tag featured">⭐ Destacado</span>
+                        </div>
+                        <% if (hayDescuento) { %>
+                            <span class="discount">- <%= porcentajeDescuento %>%</span>
+                        <% } %>
+                        <div class="image-placeholder">
+                            <i class="fas fa-image"></i>
+                        </div>
+                        <div class="tarjeta-paquete-cuerpo">
+                            <h3><%= paquete.nombre_paquete %></h3>
+                            <p><%= paquete.descripcion %></p>
+                            <div class="info">
+                                <span><i class="fas fa-calendar"></i> <%= paquete.Dias %> Días</span>
+                                <span><i class="fas fa-users"></i> <%= paquete.Personas %> personas</span>
+                            </div>
+                            <div class="rating">
+                                <% if (cantidad_reseñas > 0) { %>
+                                    <p>Estrellas: <%= estrellas_prom.toFixed(1) %> (<%= cantidad_reseñas %> reseñas)</p>
+                                    <% for (let i = 1; i <= 5; i++) { %>
+                                        <% if (i <= Math.round(estrellas_prom)) { %>
+                                            ⭐
+                                        <% } else { %>
+                                            ☆
+                                        <% } %>
+                                    <% } %>
+                                <% } else { %>
+                                    <p>Sin reseñas aún.</p>
+                                <% } %>
+                            </div>
+                            <div class="prices">
+                                <% if (hayDescuento) { %>
+                                    <span class="old">$ <%= precioOriginal.toFixed(2) %></span>
+                                <% } %>
+                                <span class="current">$ <%= precioFinalConDescuento.toFixed(2) %></span>
+                            </div>
+                            <div class="cont_btn">
+                                <a class="ver_detalles" href="/paquete?id_paquete=<%= paquete.id_paquete %>">Ver Detalles</a>
+                            </div>
+                        </div>
                     </div>
-                    <div class="rating">
-                        <p>Estrellas: 4.5 (12 reseñas)</p>
-                        ⭐⭐⭐⭐☆
-                    </div>
-                    <div class="prices">
-                        <span class="old">$2,500</span>
-                        <span class="current">$2,000</span>
-                    </div>
-                    <div class="cont_btn">
-                        <a href="#" class="ver_detalles">Ver Detalles</a>
-                    </div>
-                </div>
+                <% }); %>
             </div>
-
-            <!-- Ejemplo de tarjeta 2 -->
-            <div class="tarjeta-paquete">
-                <div class="tarjeta-paquete-etiquetas">
-                    <span class="tag national">Nacional</span>
-                    <span class="tag featured">⭐ Destacado</span>
-                </div>
-                <div class="image-placeholder">
-                    <i class="fas fa-image"></i>
-                </div>
-                <div class="tarjeta-paquete-cuerpo">
-                    <h3>Ruta del Vino</h3>
-                    <p>Recorre las mejores bodegas de Mendoza con degustaciones y alojamiento en hoteles boutique.</p>
-                    <div class="info">
-                        <span><i class="fas fa-calendar"></i> 5 Días</span>
-                        <span><i class="fas fa-users"></i> 4 personas</span>
-                    </div>
-                    <div class="rating">
-                        <p>Estrellas: 4.8 (8 reseñas)</p>
-                        ⭐⭐⭐⭐⭐
-                    </div>
-                    <div class="prices">
-                        <span class="current">$1,800</span>
-                    </div>
-                    <div class="cont_btn">
-                        <a href="#" class="ver_detalles">Ver Detalles</a>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Ejemplo de tarjeta 3 -->
-            <div class="tarjeta-paquete">
-                <div class="tarjeta-paquete-etiquetas">
-                    <span class="tag international">Internacional</span>
-                    <span class="tag featured">⭐ Destacado</span>
-                </div>
-                <span class="discount">-15%</span>
-                <div class="image-placeholder">
-                    <i class="fas fa-image"></i>
-                </div>
-                <div class="tarjeta-paquete-cuerpo">
-                    <h3>Roma Antigua</h3>
-                    <p>Explora la historia de Roma con visitas guiadas al Coliseo, el Vaticano y las ruinas antiguas.</p>
-                    <div class="info">
-                        <span><i class="fas fa-calendar"></i> 6 Días</span>
-                        <span><i class="fas fa-users"></i> 2 personas</span>
-                    </div>
-                    <div class="rating">
-                        <p>Estrellas: 4.2 (15 reseñas)</p>
-                        ⭐⭐⭐⭐☆
-                    </div>
-                    <div class="prices">
-                        <span class="old">$2,800</span>
-                        <span class="current">$2,380</span>
-                    </div>
-                    <div class="cont_btn">
-                        <a href="#" class="ver_detalles">Ver Detalles</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <%- include('footer.ejs') %>
+        </main>
+        <%- include('footer.ejs') %>
 </body>
-    <script src="Scripts/sec-paquetes.js"></script>
+<script src="Scripts/sec-paquetes.js"></script>
+
 </html>

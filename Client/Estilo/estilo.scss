@@ -51,31 +51,16 @@ $border-color: #33334d;
     --Fondo_principal: #ffffff;
     --Texto_principal: #333333;
     --Texto_secundario: #616161;
-    --Encabezados_botones_y_primarios: #3e86d3;
-    --Botones_secundarios_o_hover_azul: #7ab8ff;
-    --Botones_secundarios_o_hover_verde: #a8d08d;
-    --fondo_azul_claro: rgba(165, 190, 245, 0.336);
-    --fondo_azul_claro_hv: rgba(152, 176, 228, 0.336);
-    --hover_card: #e0f0ff;
-    --box_shadow: #c5c5c5;
-    --box_shadow_2: #ffffff;
-    --back_card: #e0f0ff17;
+
 }
 
 :root[data-tema="oscuro"] {
     --color-fondo: #121212;
     --color-texto: #f0f0f0;
-    --Fondo_principal: #1e1e1e;
+    --Fondo_principal: #11121d;
     --Texto_principal: #dddddd;
     --Texto_secundario: #b6b6b6;
-    --Encabezados_botones_y_primarios: #3e86d3;
-    --Botones_secundarios_o_hover_azul: #7ab8ff;
-    --Botones_secundarios_o_hover_verde: #c1e7aa;
-    --fondo_azul_claro: rgba(93, 113, 155, 0.336);
-    --box_shadow: rgba(0, 0, 0, 0.7);
-    --box_shadow_2: rgba(0, 0, 0, 0.7);
-    --hover_card: rgb(26, 26, 26);
-    --back_card: #2e2e2e32;
+ 
 }
 
 body {
@@ -222,7 +207,7 @@ body {
         justify-content: flex-start;
         align-items: flex-start;
         flex-direction: column;
-
+        background-color: var(--Fondo_principal);
         #cont_presentacion {
             height: 100vh;
             width: 100%;
@@ -305,7 +290,7 @@ body {
 
             width: 100%;
             padding: 80px;
-            background-color: #f9fafd;
+            background-color: var(--Fondo_principal);
             border: 1px solid #e0e6ed;
 
             .stat-item {
@@ -337,7 +322,7 @@ body {
 
         .featured-destinations {
 
-            background-color: #f9fbff;
+            background-color: var(--Fondo_principal);
             padding: 3rem 2rem;
             text-align: center;
             width: 100%;
@@ -527,7 +512,7 @@ body {
         .servicios {
             text-align: center;
             padding: 4rem 2rem;
-            background-color: #f8fbff;
+            background-color: var(--Fondo_principal);
 
             width: 100%;
 

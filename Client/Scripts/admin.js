@@ -147,6 +147,7 @@ async function agregarPaquete(formData, res) { // Asegúrate de pasar 'res' si l
             tipo_viaje: formData.get('tipo_viaje'),
             Dias: parseInt(formData.get('dias')),
             Personas: parseInt(formData.get('personas')),
+            descripcion_amplia: formData.get('descripcion_amplia'),
             descuento: parseInt(formData.get('descuento')),
             fecha_salida: formData.get('fecha_salida')
         };
@@ -545,6 +546,7 @@ async function editarProducto(id) {
                 document.getElementById('fecha_fin').value = producto.fecha_fin_validez || '';
                 document.getElementById('tipo_viaje').value = producto.tipo_viaje || '';
                 document.getElementById('dias').value = producto.Dias || '';
+                document.getElementById('descripcion_amplia').value = producto.descripcion_amplia || '';
                 document.getElementById('personas').value = producto.Personas || '';
                 document.getElementById('descuento').value = producto.descuento || '';
                 document.getElementById('fecha_salida').value = producto.fecha_salida || '';
