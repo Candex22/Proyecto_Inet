@@ -655,15 +655,17 @@ app.post('/api/actualizar_cantidad_carrito', isLogged, async (req, res) => {
     }
 });
 
-// Función para eliminar item (CORREGIDA)
-app.post('/api/eliminar_item_carrito', isLogged, async (req, res) => {
+app.delete('/api/eliminar_item_carrito/:id_detalle', isLogged, async (req, res) => {
     try {
-        const { id_detalle } = req.body;
+        // En peticiones DELETE, los parámetros a menudo van en la URL, por eso usamos req.params
+        // Si tu frontend envía el id en el body, mantén req.body, pero es más común en DELETE que vaya en la URL.
+        const { id_detalle } = req.params; // Cambiado de req.body a req.params
         const userId = req.session.usuario_id;
 
         console.log('🗑️ Eliminando item - User:', userId, 'Detalle:', id_detalle);
 
         if (!id_detalle) {
+            // Aunque venga de req.params, sigue siendo buena práctica validar
             return res.status(400).json({ error: 'ID de detalle requerido.' });
         }
 
@@ -712,7 +714,8 @@ app.post('/api/eliminar_item_carrito', isLogged, async (req, res) => {
         console.log('✅ Item eliminado exitosamente');
 
         // Recalcular total del pedido
-        await recalcularTotalPedido(id_pedido);
+        // Asegúrate de que recalcularTotalPedido esté definida y accesible
+        await recalcularTotalPedido(id_pedido); 
 
         res.json({ message: 'Item eliminado exitosamente.' });
 
@@ -721,7 +724,6 @@ app.post('/api/eliminar_item_carrito', isLogged, async (req, res) => {
         res.status(500).json({ error: 'Error inesperado.' });
     }
 });
-
 // Función para agregar al carrito (ya corregida en tu código)
 app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
     console.log('🛒 Cart API called');
