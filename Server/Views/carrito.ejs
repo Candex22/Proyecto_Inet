@@ -15,7 +15,7 @@
             <% if (cartItems && cartItems.length > 0) { %>
                 <div class="cart-items">
                     <% cartItems.forEach(item => { %>
-                        <div class="cart-item">
+                        <div class="cart-item" data-item-id="<%= item.id_detalle %>" data-precio-unitario="<%= item.precio_unitario %>">
                             <div class="item-image">
                                 <% if (item.imagen_url) { %>
                                     <img src="<%= item.imagen_url %>" alt="<%= item.nombre_paquete %>">
@@ -51,12 +51,12 @@
                         <span>Total del Carrito</span>
                         <span>$<%= cartTotal.toFixed(2) %></span>
                     </div>
-                    <button class="checkout-button">Proceder al Pago</button>
+                    <button class="checkout-button" onclick="procederAlPago()">Proceder al Pago</button>
                 </div>
             <% } else { %>
                 <div class="empty-cart-message">
                     <p>Tu carrito está vacío. ¡Explora nuestros paquetes y agrega algo increíble!</p>
-                    <a href="/paquetes" class="checkout-button" style="text-decoration: none;">Ver Paquetes</a>
+                    <a href="/paquetes" class="checkout-button" style="text-decoration: none; display: inline-block;">Ver Paquetes</a>
                 </div>
             <% } %>
         </div>
@@ -64,6 +64,12 @@
     <%- include('footer.ejs') %>
     <script src="https://kit.fontawesome.com/your-font-awesome-kit-id.js" crossorigin="anonymous"></script>
     <script src="/Scripts/carrito.js"></script>
+    <script>
+        function procederAlPago() {
+            // Aquí puedes implementar la lógica para proceder al pago
+            alert('Funcionalidad de pago en desarrollo');
+        }
+    </script>
 </body>
 
 </html>

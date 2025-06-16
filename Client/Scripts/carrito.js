@@ -1,3 +1,137 @@
+// Función para actualizar la cantidad de un item en el carrito
+async function updateCartItemQuantity(id_detalle, cambio) {
+    try {
+        const quantityElement = document.querySelector(`[data-item-id="${id_detalle}"] .quantity-value`);
+        if (!quantityElement) {
+            console.error('Elemento de cantidad no encontrado');
+            return;
+        }
+
+        const cantidadActual = parseInt(quantityElement.textContent);
+        const nuevaCantidad = cantidadActual + cambio;
+
+        if (nuevaCantidad < 1) {
+            mostrarMensaje('La cantidad mínima es 1', 'warning');
+            return;
+        }
+
+        // Mostrar loading
+        mostrarMensaje('Actualizando cantidad...', 'info');
+
+        const response = await fetch('/api/actualizar_cantidad_carrito', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                id_detalle: id_detalle,
+                nueva_cantidad: nuevaCantidad
+            }),
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            // Actualizar la cantidad en la interfaz
+            quantityElement.textContent = nuevaCantidad;
+            
+            // Actualizar el precio del item
+            const itemElement = document.querySelector(`[data-item-id="${id_detalle}"]`);
+            const precioUnitario = parseFloat(itemElement.dataset.precioUnitario);
+            const precioElement = itemElement.querySelector('.item-price');
+            precioElement.textContent = `$${(nuevaCantidad * precioUnitario).toFixed(2)}`;
+
+            // Recalcular total del carrito
+            recalcularTotalCarrito();
+
+            mostrarMensaje(result.message || 'Cantidad actualizada', 'success');
+        } else {
+            mostrarMensaje(result.error || 'Error al actualizar cantidad', 'error');
+        }
+
+    } catch (error) {
+        console.error('Error al actualizar cantidad:', error);
+        mostrarMensaje('Error inesperado al actualizar cantidad', 'error');
+    }
+}
+
+// Función para eliminar un item del carrito
+async function removeCartItem(id_detalle) {
+    try {
+        const confirmacion = confirm('¿Estás seguro de que quieres eliminar este item del carrito?');
+        if (!confirmacion) return;
+
+        // Mostrar loading
+        mostrarMensaje('Eliminando item...', 'info');
+
+        const response = await fetch(`/api/eliminar_item_carrito/${id_detalle}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            // Eliminar el elemento de la interfaz
+            const itemElement = document.querySelector(`[data-item-id="${id_detalle}"]`);
+            if (itemElement) {
+                itemElement.remove();
+            }
+
+            // Recalcular total del carrito
+            recalcularTotalCarrito();
+
+            // Verificar si el carrito está vacío
+            const remainingItems = document.querySelectorAll('.cart-item');
+            if (remainingItems.length === 0) {
+                // Mostrar mensaje de carrito vacío
+                const cartContainer = document.querySelector('.cart-items');
+                cartContainer.innerHTML = `
+                    <div class="empty-cart-message">
+                        <p>Tu carrito está vacío. ¡Explora nuestros paquetes y agrega algo increíble!</p>
+                        <a href="/paquetes" class="checkout-button" style="text-decoration: none;">Ver Paquetes</a>
+                    </div>
+                `;
+                
+                // Ocultar resumen del carrito
+                const cartSummary = document.querySelector('.cart-summary');
+                if (cartSummary) {
+                    cartSummary.style.display = 'none';
+                }
+            }
+
+            mostrarMensaje(result.message || 'Item eliminado del carrito', 'success');
+        } else {
+            mostrarMensaje(result.error || 'Error al eliminar item', 'error');
+        }
+
+    } catch (error) {
+        console.error('Error al eliminar item:', error);
+        mostrarMensaje('Error inesperado al eliminar item', 'error');
+    }
+}
+
+// Función para recalcular el total del carrito
+function recalcularTotalCarrito() {
+    const itemElements = document.querySelectorAll('.cart-item');
+    let total = 0;
+
+    itemElements.forEach(item => {
+        const cantidad = parseInt(item.querySelector('.quantity-value').textContent);
+        const precioUnitario = parseFloat(item.dataset.precioUnitario);
+        total += cantidad * precioUnitario;
+    });
+
+    // Actualizar el total en la interfaz
+    const totalElements = document.querySelectorAll('.cart-summary .summary-row span:last-child');
+    totalElements.forEach(element => {
+        element.textContent = `$${total.toFixed(2)}`;
+    });
+}
+
+// Función existente para agregar producto (ya estaba en tu código)
 async function agregarProducto() {
     console.log('🛒 Iniciando proceso de agregar producto...');
     
@@ -62,7 +196,6 @@ async function agregarProducto() {
         });
 
         console.log('📡 Response status:', response.status);
-        console.log('📡 Response headers:', Object.fromEntries(response.headers));
         
         // Check if response is actually JSON
         const contentType = response.headers.get('content-type');
@@ -102,9 +235,9 @@ async function agregarProducto() {
             console.log('✅ Producto agregado exitosamente');
             mostrarMensaje(result.message || 'Producto agregado al carrito exitosamente!', 'success');
             
-            // Optional: Update cart counter or redirect
+            // Opcional: Redirigir al carrito después de un tiempo
             setTimeout(() => {
-                // window.location.href = '/carrito';
+                window.location.href = '/carrito';
             }, 1500);
             
         } else {
@@ -118,7 +251,7 @@ async function agregarProducto() {
     }
 }
 
-// Enhanced message display function
+// Enhanced message display function (ya existía en tu código)
 function mostrarMensaje(mensaje, tipo = 'info') {
     // Remove existing messages first
     const existingMessages = document.querySelectorAll('.message-box');
@@ -163,25 +296,3 @@ function mostrarMensaje(mensaje, tipo = 'info') {
         }, 300);
     }, 4000);
 }
-
-// Debug function to check session and user data
-function debugUserSession() {
-    fetch('/api/debug_session')
-        .then(response => response.json())
-        .then(data => console.log('🔍 Session debug:', data))
-        .catch(error => console.error('❌ Session debug error:', error));
-}
-
-// Add debug endpoint to server (optional)
-app.get('/api/debug_session', isLogged, (req, res) => {
-    res.json({
-        session_exists: !!req.session,
-        user_id: req.session.usuario_id,
-        user_session: req.session.user_sesion,
-        session_data: {
-            nombre: req.session.nombre_us,
-            email: req.session.email_us,
-            rol: req.session.rol_us
-        }
-    });
-});

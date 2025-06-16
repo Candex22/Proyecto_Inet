@@ -143,9 +143,6 @@ app.get('/paquetes', (req, res) => {
     res.render('paquetes', { session: req.session });
 })
 
-app.get('/carrito', (req, res) => {
-    res.render('carrito', { session: req.session });
-})
 
 app.get('/logout', (req, res) => {
     console.log('🚪 Usuario cerrando sesión:', req.session.nombre_usuario_us);
@@ -839,4 +836,17 @@ app.use((err, req, res, next) => {
     } else {
         res.status(500).render('error', { error: 'Error interno del servidor' });
     }
+});
+
+app.get('/api/debug_session', isLogged, (req, res) => {
+    res.json({
+        session_exists: !!req.session,
+        user_id: req.session.usuario_id,
+        user_session: req.session.user_sesion,
+        session_data: {
+            nombre: req.session.nombre_us,
+            email: req.session.email_us,
+            rol: req.session.rol_us
+        }
+    });
 });
