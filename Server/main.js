@@ -516,19 +516,20 @@ app.get('/carrito', isLogged, async (req, res) => {
         console.log('🛒 Loading cart for user:', userId);
 
         if (!userId) {
+            console.log('❌ No user ID found in session');
             return res.redirect('/login');
         }
 
-        // Search for open order (cart) for the user
+        // Buscar pedido abierto específico del usuario
         let { data: pedidoAbierto, error: pedidoError } = await supabase
             .from('pedido')
             .select('*')
             .eq('id_usuario', userId)
             .eq('estado', 'abierto')
-            .limit(1);
+            .single();
 
-        if (pedidoError) {
-            console.error('Error al buscar pedido:', pedidoError);
+        if (pedidoError && pedidoError.code !== 'PGRST116') {
+            console.error('❌ Error al buscar pedido:', pedidoError);
             return res.render('carrito', {
                 session: req.session,
                 cartItems: [],
@@ -536,50 +537,60 @@ app.get('/carrito', isLogged, async (req, res) => {
             });
         }
 
+        console.log('📋 Pedido encontrado:', pedidoAbierto);
+
         let cartItems = [];
         let cartTotal = 0;
 
-        if (pedidoAbierto && pedidoAbierto.length > 0) {
-            const id_pedido = pedidoAbierto[0].id_pedido;
+        if (pedidoAbierto) {
+            const id_pedido = pedidoAbierto.id_pedido;
+            console.log('📦 Procesando pedido ID:', id_pedido);
 
-            // Get order details with package information
+            // CORRECCIÓN: Obtener detalles del pedido SIN la columna imagen_url que no existe
             let { data: detallesPedido, error: detallesError } = await supabase
                 .from('detalles_pedido')
                 .select(`
                     id_detalle,
+                    id_pedido,
                     id_producto_servicio,
                     cantidad,
                     precio_unitario,
-                    descripcion
+                    descripcion,
+                    paquete:id_producto_servicio (
+                        nombre_paquete,
+                        descripcion
+                    )
                 `)
                 .eq('id_pedido', id_pedido);
 
             if (detallesError) {
-                console.error('Error al obtener detalles del pedido:', detallesError);
+                console.error('❌ Error al obtener detalles del pedido:', detallesError);
             } else {
-                // For each detail, get additional package information
-                for (let detalle of detallesPedido) {
-                    const { data: paqueteInfo, error: paqueteError } = await supabase
-                        .from('paquete')
-                        .select('nombre_paquete, descripcion')
-                        .eq('id_paquete', detalle.id_producto_servicio)
-                        .limit(1);
+                console.log('📝 Detalles encontrados:', detallesPedido?.length || 0);
 
-                    if (!paqueteError && paqueteInfo && paqueteInfo.length > 0) {
-                        cartItems.push({
-                            id_detalle: detalle.id_detalle,
-                            nombre_paquete: paqueteInfo[0].nombre_paquete,
-                            descripcion: detalle.descripcion || paqueteInfo[0].descripcion,
-                            precio_unitario: detalle.precio_unitario,
-                            cantidad: detalle.cantidad,
-                            imagen_url: null // Add if you have images
-                        });
+                // Procesar cada detalle
+                cartItems = detallesPedido.map(detalle => {
+                    const itemTotal = (parseFloat(detalle.precio_unitario) || 0) * (parseInt(detalle.cantidad) || 1);
+                    cartTotal += itemTotal;
 
-                        cartTotal += detalle.cantidad * detalle.precio_unitario;
-                    }
-                }
+                    return {
+                        id_detalle: detalle.id_detalle,
+                        id_producto_servicio: detalle.id_producto_servicio,
+                        nombre_paquete: detalle.paquete?.nombre_paquete || `Paquete ID: ${detalle.id_producto_servicio}`,
+                        descripcion: detalle.descripcion || detalle.paquete?.descripcion || 'Descripción no disponible',
+                        precio_unitario: parseFloat(detalle.precio_unitario) || 0,
+                        cantidad: parseInt(detalle.cantidad) || 1,
+                        // imagen_url: null, // Removido ya que no existe en la BD
+                        subtotal: itemTotal
+                    };
+                });
             }
+        } else {
+            console.log('📭 No se encontraron pedidos abiertos para el usuario');
         }
+
+        console.log('🛒 Items finales del carrito:', cartItems.length);
+        console.log('💰 Total final:', cartTotal);
 
         res.render('carrito', {
             session: req.session,
@@ -588,15 +599,171 @@ app.get('/carrito', isLogged, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Error en ruta /carrito:', error);
+        console.error('💥 Error crítico en ruta /carrito:', error);
         res.render('carrito', {
             session: req.session,
             cartItems: [],
-            cartTotal: 0
+            cartTotal: 0,
+            error: 'Ocurrió un error al cargar el carrito'
         });
     }
 });
 
+// Función para actualizar cantidad (CORREGIDA)
+app.post('/api/actualizar_cantidad_carrito', isLogged, async (req, res) => {
+    try {
+        const { id_detalle, cambio, nueva_cantidad } = req.body;
+        const userId = req.session.usuario_id;
+
+        console.log('🔄 Actualizando cantidad - User:', userId, 'Detalle:', id_detalle, 'Cambio:', cambio, 'Nueva cantidad:', nueva_cantidad);
+
+        if (!id_detalle) {
+            return res.status(400).json({ error: 'ID de detalle requerido.' });
+        }
+
+        // VERIFICACIÓN DE SEGURIDAD: Asegurar que el detalle pertenece al usuario
+        const { data: detalleActual, error: getError } = await supabase
+            .from('detalles_pedido')
+            .select(`
+                cantidad, 
+                id_pedido, 
+                precio_unitario,
+                pedido:id_pedido (
+                    id_usuario,
+                    estado
+                )
+            `)
+            .eq('id_detalle', id_detalle)
+            .single();
+
+        if (getError || !detalleActual) {
+            console.error('❌ Error obteniendo detalle actual:', getError);
+            return res.status(404).json({ error: 'Item no encontrado.' });
+        }
+
+        // VERIFICAR que el pedido pertenece al usuario logueado
+        if (detalleActual.pedido.id_usuario !== userId) {
+            console.error('❌ Usuario no autorizado para modificar este item');
+            return res.status(403).json({ error: 'No autorizado.' });
+        }
+
+        // VERIFICAR que el pedido está abierto
+        if (detalleActual.pedido.estado !== 'abierto') {
+            return res.status(400).json({ error: 'No se puede modificar un pedido cerrado.' });
+        }
+
+        // Calcular nueva cantidad
+        let nuevaCantidadFinal;
+        if (nueva_cantidad !== undefined) {
+            nuevaCantidadFinal = parseInt(nueva_cantidad);
+        } else if (cambio !== undefined) {
+            nuevaCantidadFinal = detalleActual.cantidad + parseInt(cambio);
+        } else {
+            return res.status(400).json({ error: 'Debe proporcionar cambio o nueva_cantidad.' });
+        }
+
+        if (nuevaCantidadFinal < 1) {
+            return res.status(400).json({ error: 'La cantidad no puede ser menor a 1.' });
+        }
+
+        console.log('✅ Nueva cantidad calculada:', nuevaCantidadFinal);
+
+        // Actualizar la cantidad
+        const { error: updateError } = await supabase
+            .from('detalles_pedido')
+            .update({ cantidad: nuevaCantidadFinal })
+            .eq('id_detalle', id_detalle);
+
+        if (updateError) {
+            console.error('❌ Error al actualizar cantidad:', updateError);
+            return res.status(500).json({ error: 'Error al actualizar la cantidad.' });
+        }
+
+        // Recalcular total del pedido
+        await recalcularTotalPedido(detalleActual.id_pedido);
+
+        res.json({ 
+            message: 'Cantidad actualizada exitosamente.', 
+            nueva_cantidad: nuevaCantidadFinal,
+            precio_total_item: nuevaCantidadFinal * parseFloat(detalleActual.precio_unitario)
+        });
+
+    } catch (error) {
+        console.error('💥 Error en actualizar cantidad:', error);
+        res.status(500).json({ error: 'Error inesperado.' });
+    }
+});
+
+app.delete('/api/eliminar_item_carrito/:id_detalle', isLogged, async (req, res) => {
+    try {
+        // En peticiones DELETE, los parámetros a menudo van en la URL, por eso usamos req.params
+        // Si tu frontend envía el id en el body, mantén req.body, pero es más común en DELETE que vaya en la URL.
+        const { id_detalle } = req.params; // Cambiado de req.body a req.params
+        const userId = req.session.usuario_id;
+
+        console.log('🗑️ Eliminando item - User:', userId, 'Detalle:', id_detalle);
+
+        if (!id_detalle) {
+            // Aunque venga de req.params, sigue siendo buena práctica validar
+            return res.status(400).json({ error: 'ID de detalle requerido.' });
+        }
+
+        // VERIFICACIÓN DE SEGURIDAD: Obtener info del detalle y verificar ownership
+        const { data: detalleInfo, error: getError } = await supabase
+            .from('detalles_pedido')
+            .select(`
+                id_pedido,
+                pedido:id_pedido (
+                    id_usuario,
+                    estado
+                )
+            `)
+            .eq('id_detalle', id_detalle)
+            .single();
+
+        if (getError || !detalleInfo) {
+            console.error('❌ Error obteniendo info del detalle:', getError);
+            return res.status(404).json({ error: 'Item no encontrado.' });
+        }
+
+        // VERIFICAR que el pedido pertenece al usuario logueado
+        if (detalleInfo.pedido.id_usuario !== userId) {
+            console.error('❌ Usuario no autorizado para eliminar este item');
+            return res.status(403).json({ error: 'No autorizado.' });
+        }
+
+        // VERIFICAR que el pedido está abierto
+        if (detalleInfo.pedido.estado !== 'abierto') {
+            return res.status(400).json({ error: 'No se puede modificar un pedido cerrado.' });
+        }
+
+        const id_pedido = detalleInfo.id_pedido;
+
+        // Eliminar el item
+        const { error: deleteError } = await supabase
+            .from('detalles_pedido')
+            .delete()
+            .eq('id_detalle', id_detalle);
+
+        if (deleteError) {
+            console.error('❌ Error al eliminar item:', deleteError);
+            return res.status(500).json({ error: 'Error al eliminar el item.' });
+        }
+
+        console.log('✅ Item eliminado exitosamente');
+
+        // Recalcular total del pedido
+        // Asegúrate de que recalcularTotalPedido esté definida y accesible
+        await recalcularTotalPedido(id_pedido); 
+
+        res.json({ message: 'Item eliminado exitosamente.' });
+
+    } catch (error) {
+        console.error('💥 Error en eliminar item:', error);
+        res.status(500).json({ error: 'Error inesperado.' });
+    }
+});
+// Función para agregar al carrito (ya corregida en tu código)
 app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
     console.log('🛒 Cart API called');
     console.log('📦 Request body:', req.body);
@@ -619,27 +786,27 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
 
         console.log('✅ Validation passed, searching for open order...');
 
-        // Search for open order (cart) for the user
+        // Buscar pedido abierto del usuario
         let { data: pedidoAbierto, error: pedidoError } = await supabase
             .from('pedido')
             .select('*')
             .eq('id_usuario', userId)
             .eq('estado', 'abierto')
-            .limit(1);
+            .single();
 
-        if (pedidoError) {
+        if (pedidoError && pedidoError.code !== 'PGRST116') {
             console.error('❌ Error searching for order:', pedidoError);
             return res.status(500).json({ error: `Error al buscar pedido: ${pedidoError.message}` });
         }
 
-        console.log('📋 Found orders:', pedidoAbierto?.length || 0);
+        console.log('📋 Found order:', pedidoAbierto || 'None');
 
         let id_pedido;
 
-        if (!pedidoAbierto || pedidoAbierto.length === 0) {
+        if (!pedidoAbierto) {
             console.log('🆕 Creating new order...');
 
-            // Create new order
+            // Crear nuevo pedido
             const { data: nuevoPedido, error: crearError } = await supabase
                 .from('pedido')
                 .insert([{
@@ -648,42 +815,43 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
                     estado: 'abierto',
                     total_pedido: 0
                 }])
-                .select();
+                .select()
+                .single();
 
             if (crearError) {
                 console.error('❌ Error creating order:', crearError);
                 return res.status(500).json({ error: `Error al crear pedido: ${crearError.message}` });
             }
 
-            console.log('✅ New order created:', nuevoPedido[0]);
-            id_pedido = nuevoPedido[0].id_pedido;
+            console.log('✅ New order created:', nuevoPedido);
+            id_pedido = nuevoPedido.id_pedido;
         } else {
-            id_pedido = pedidoAbierto[0].id_pedido;
+            id_pedido = pedidoAbierto.id_pedido;
             console.log('📋 Using existing order:', id_pedido);
         }
 
-        // Check if product already exists in cart
+        // Verificar si el producto ya existe en el carrito
         const { data: itemExistente, error: buscarError } = await supabase
             .from('detalles_pedido')
             .select('*')
             .eq('id_pedido', id_pedido)
             .eq('id_producto_servicio', id_paquete)
-            .limit(1);
+            .single();
 
-        if (buscarError) {
+        if (buscarError && buscarError.code !== 'PGRST116') {
             console.error('❌ Error searching existing item:', buscarError);
             return res.status(500).json({ error: `Error al verificar carrito: ${buscarError.message}` });
         }
 
-        if (itemExistente && itemExistente.length > 0) {
+        if (itemExistente) {
             console.log('➕ Updating existing item quantity...');
-            // Update quantity
-            const nuevaCantidad = itemExistente[0].cantidad + parseInt(cantidad);
+            // Actualizar cantidad
+            const nuevaCantidad = itemExistente.cantidad + parseInt(cantidad);
 
             const { error: actualizarError } = await supabase
                 .from('detalles_pedido')
                 .update({ cantidad: nuevaCantidad })
-                .eq('id_detalle', itemExistente[0].id_detalle);
+                .eq('id_detalle', itemExistente.id_detalle);
 
             if (actualizarError) {
                 console.error('❌ Error updating quantity:', actualizarError);
@@ -693,7 +861,7 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
             console.log('✅ Quantity updated to:', nuevaCantidad);
         } else {
             console.log('🆕 Creating new order detail...');
-            // Create new detail
+            // Crear nuevo detalle
             const { error: insertarError } = await supabase
                 .from('detalles_pedido')
                 .insert([{
@@ -712,12 +880,11 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
             console.log('✅ New detail created successfully');
         }
 
-        // Recalculate order total
+        // Recalcular total del pedido
         await recalcularTotalPedido(id_pedido);
 
         console.log('🎉 Product added to cart successfully!');
 
-        // CRITICAL: Ensure we return JSON response
         res.setHeader('Content-Type', 'application/json');
         res.json({
             success: true,
@@ -732,11 +899,10 @@ app.post('/api/agregar_a_carrito', isLogged, async (req, res) => {
     }
 });
 
-
-// Enhanced recalcularTotalPedido function with better error handling
+// Función mejorada para recalcular total
 async function recalcularTotalPedido(id_pedido) {
     try {
-
+        console.log('🔢 Recalculando total para pedido:', id_pedido);
 
         const { data: detalles, error } = await supabase
             .from('detalles_pedido')
@@ -753,7 +919,7 @@ async function recalcularTotalPedido(id_pedido) {
             nuevoTotal += item.cantidad * item.precio_unitario;
         });
 
-
+        console.log('💰 Nuevo total calculado:', nuevoTotal);
 
         const { error: updateError } = await supabase
             .from('pedido')
@@ -763,106 +929,12 @@ async function recalcularTotalPedido(id_pedido) {
         if (updateError) {
             console.error('❌ Error al actualizar total del pedido:', updateError);
         } else {
-
+            console.log('✅ Total del pedido actualizado exitosamente');
         }
     } catch (error) {
         console.error('💥 Error crítico al recalcular total:', error);
     }
 }
-
-
-// Ruta para actualizar cantidad en el carrito
-app.post('/api/actualizar_cantidad_carrito', isLogged, async (req, res) => {
-    try {
-        const { id_detalle, cambio } = req.body;
-        const userId = req.session.usuario_id;
-
-        if (!id_detalle || !cambio) {
-            return res.status(400).json({ error: 'Datos incompletos.' });
-        }
-
-        // Obtener el detalle actual
-        const { data: detalleActual, error: getError } = await supabase
-            .from('detalles_pedido')
-            .select('cantidad, id_pedido')
-            .eq('id_detalle', id_detalle)
-            .limit(1);
-
-        if (getError || !detalleActual || detalleActual.length === 0) {
-            return res.status(404).json({ error: 'Item no encontrado.' });
-        }
-
-        const nuevaCantidad = detalleActual[0].cantidad + parseInt(cambio);
-
-        if (nuevaCantidad < 1) {
-            return res.status(400).json({ error: 'La cantidad no puede ser menor a 1.' });
-        }
-
-        // Actualizar la cantidad
-        const { error: updateError } = await supabase
-            .from('detalles_pedido')
-            .update({ cantidad: nuevaCantidad })
-            .eq('id_detalle', id_detalle);
-
-        if (updateError) {
-            console.error('Error al actualizar cantidad:', updateError);
-            return res.status(500).json({ error: 'Error al actualizar la cantidad.' });
-        }
-
-        // Recalcular total del pedido
-        await recalcularTotalPedido(detalleActual[0].id_pedido);
-
-        res.json({ message: 'Cantidad actualizada exitosamente.', nueva_cantidad: nuevaCantidad });
-
-    } catch (error) {
-        console.error('Error en actualizar cantidad:', error);
-        res.status(500).json({ error: 'Error inesperado.' });
-    }
-});
-
-// Ruta para eliminar item del carrito
-app.post('/api/eliminar_item_carrito', isLogged, async (req, res) => {
-    try {
-        const { id_detalle } = req.body;
-
-        if (!id_detalle) {
-            return res.status(400).json({ error: 'ID de detalle requerido.' });
-        }
-
-        // Obtener el id_pedido antes de eliminar
-        const { data: detalleInfo, error: getError } = await supabase
-            .from('detalles_pedido')
-            .select('id_pedido')
-            .eq('id_detalle', id_detalle)
-            .limit(1);
-
-        if (getError || !detalleInfo || detalleInfo.length === 0) {
-            return res.status(404).json({ error: 'Item no encontrado.' });
-        }
-
-        const id_pedido = detalleInfo[0].id_pedido;
-
-        // Eliminar el item
-        const { error: deleteError } = await supabase
-            .from('detalles_pedido')
-            .delete()
-            .eq('id_detalle', id_detalle);
-
-        if (deleteError) {
-            console.error('Error al eliminar item:', deleteError);
-            return res.status(500).json({ error: 'Error al eliminar el item.' });
-        }
-
-        // Recalcular total del pedido
-        await recalcularTotalPedido(id_pedido);
-
-        res.json({ message: 'Item eliminado exitosamente.' });
-
-    } catch (error) {
-        console.error('Error en eliminar item:', error);
-        res.status(500).json({ error: 'Error inesperado.' });
-    }
-});
 
 app.use('/Scripts', express.static(path.join(__dirname, '../Client/Scripts')));
 app.use('/administrador', express.static(path.join(__dirname, '../Client')));
