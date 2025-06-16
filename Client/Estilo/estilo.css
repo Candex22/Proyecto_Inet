@@ -18,8 +18,13 @@
   --color-texto: #000000;
   --azul_oscuro: #2B476C;
   --Fondo_principal: #ffffff;
-  --Texto_principal: #333333;
-  --Texto_secundario: #616161;
+  --Texto_principal: #1e3a5f;
+  --Texto_secundario: #5c6e7f;
+  --back_btn:#ffff;
+  --linea_separadora:#e0e6ed;
+  --card_destacado_deg1:#f1f5f9;
+  --card_destacado_deg2:#f1f5f9;
+  --card_comun:#e2e8f0;
 }
 
 :root[data-tema=oscuro] {
@@ -28,6 +33,11 @@
   --Fondo_principal: #11121d;
   --Texto_principal: #dddddd;
   --Texto_secundario: #b6b6b6;
+  --back_btn:#11121d;
+  --linea_separadora:#1c1d29;
+  --card_destacado_deg1:#f1f5f9;
+  --card_destacado_deg2:#f1f5f9;
+  --card_comun:#e2e8f0;
 }
 
 body {
@@ -64,7 +74,7 @@ body header nav {
   flex-direction: row;
   height: 100%;
   width: 100%;
-  border-bottom: 1px solid #e0e6ed;
+  border-bottom: 1px solid var(--linea_separadora);
 }
 body header nav #cont_nav_tit {
   display: flex;
@@ -93,7 +103,7 @@ body header nav #cont_nav_tit i {
 body header nav #cont_nav_tit h3 {
   text-decoration: none;
   font-size: 2em;
-  color: var(--azul_oscuro);
+  color: var(--Texto_principal);
 }
 body header nav .secciones_nav {
   width: 40%;
@@ -107,7 +117,7 @@ body header nav .secciones_nav {
 body header nav .secciones_nav a {
   font-weight: 500;
   font-size: 1.2rem;
-  color: var(--azul_oscuro);
+  color: var(--Texto_principal);
   text-decoration: none;
 }
 body header nav #cont_nav_links {
@@ -129,23 +139,22 @@ body header nav #cont_nav_links a {
   justify-content: center;
   align-items: center;
   gap: 3px;
-  color: var(--azul_oscuro);
+  color: var(--Texto_principal);
   font-weight: 600;
   text-decoration: none;
-  background-color: white;
-  border: 1px solid var(--azul_oscuro);
+  background-color: transparent;
+  border: 1px solid var(--Texto_principal);
   transition: all 0.2s ease-in-out;
 }
 body header nav #cont_nav_links a#admin_btn {
-  background-color: var(--azul_oscuro);
+  background-color: transparent;
   color: white;
 }
 body header nav #cont_nav_links a .desac {
   display: none;
 }
 body header nav #cont_nav_links a:hover {
-  background-color: var(--azul_oscuro);
-  color: white;
+  transform: scale(1.05);
 }
 body main {
   height: auto;
@@ -156,6 +165,14 @@ body main {
   align-items: flex-start;
   flex-direction: column;
   background-color: var(--Fondo_principal);
+}
+body main .badge {
+  background-color: #e3eaf6;
+  color: #1e2f4b;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 body main #cont_presentacion {
   height: 100vh;
@@ -223,19 +240,19 @@ body main .stats-section {
   width: 100%;
   padding: 80px;
   background-color: var(--Fondo_principal);
-  border: 1px solid #e0e6ed;
+  border: 1px solid var(--linea_separadora);
 }
 body main .stats-section .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  color: #2b3e51;
+  color: var(--Texto_principal);
   width: 100%;
 }
 body main .stats-section .stat-item i {
   font-size: 2rem;
-  color: #1e3a5f;
+  color: var(--Texto_principal);
   margin-bottom: 0.5rem;
 }
 body main .stats-section .stat-item h3 {
@@ -256,23 +273,15 @@ body main .featured-destinations {
 body main .featured-destinations .section-header {
   margin-bottom: 2rem;
 }
-body main .featured-destinations .section-header .badge {
-  background-color: #e3eaf6;
-  color: #355179;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
-}
 body main .featured-destinations .section-header h2 {
   font-size: 3.2em;
   font-weight: 700;
-  color: #1b2d4f;
+  color: var(--Texto_principal);
   margin: 0.5rem 0;
   text-align: center;
 }
 body main .featured-destinations .section-header p {
-  color: #5c6e7f;
+  color: var(--Texto_secundario);
   font-size: 1.4em;
   max-width: 600px;
   width: 60%;
@@ -286,8 +295,8 @@ body main .featured-destinations .cards-container {
   gap: 1.5rem;
 }
 body main .featured-destinations .card {
-  background: #fff;
-  border: 1px solid #cfd8e3;
+  background: var(--Fondo_principal);
+  border: 1px solid var(--linea_separadora);
   border-radius: 12px;
   padding: 1rem;
   width: 320px;
@@ -343,19 +352,19 @@ body main .featured-destinations .card .card-body {
 body main .featured-destinations .card .card-body h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: #1e2a38;
+  color: var(--Texto_principal);
   margin: 0.5rem 0;
 }
 body main .featured-destinations .card .card-body p {
   font-size: 0.9rem;
-  color: #5d6e7e;
+  color: var(--Texto_secundario);
   margin-bottom: 0.5rem;
 }
 body main .featured-destinations .card .card-body .info {
   display: flex;
   gap: 1rem;
   font-size: 0.85rem;
-  color: #445566;
+  color: var(--Texto_secundario);
   margin-bottom: 0.3rem;
 }
 body main .featured-destinations .card .card-body .rating {
@@ -413,23 +422,15 @@ body main .servicios {
   background-color: var(--Fondo_principal);
   width: 100%;
 }
-body main .servicios .section-label {
-  display: inline-block;
-  font-size: 0.8rem;
-  background-color: #e2e8f0;
-  color: #475569;
-  padding: 4px 12px;
-  border-radius: 12px;
-  margin-bottom: 1rem;
-}
 body main .servicios .section-title {
+  margin-top: 10px;
   font-size: 2.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--Texto_principal);
   margin-bottom: 0.5rem;
 }
 body main .servicios .section-subtitle {
-  color: #475569;
+  color: var(--Texto_secundario);
   margin-bottom: 2rem;
   font-size: 1.1rem;
 }
@@ -491,11 +492,12 @@ body main .hero-section {
   align-items: center;
   flex-direction: column;
 }
-body main .hero-section h1 {
+body main .hero-section h2 {
   font-weight: 700;
   font-size: 3rem;
   width: 60%;
   margin-bottom: 0.5rem;
+  color: white;
 }
 body main .hero-section p {
   font-weight: 400;
@@ -517,6 +519,7 @@ body main .hero-section .buttons button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   min-width: 140px;
+  transition: all 0.2s ease-in-out;
 }
 body main .hero-section .buttons .btn-primary {
   background-color: white;
@@ -534,7 +537,7 @@ body main .hero-section .buttons .btn-secondary {
   min-width: 140px;
 }
 body .footer {
-  background-color: #1a1a2e;
+  background-color: #11121d;
   color: #ffffff;
   padding: 40px 20px;
   width: 100%;
