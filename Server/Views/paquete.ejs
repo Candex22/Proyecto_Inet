@@ -75,51 +75,82 @@
 
               </div>
               <div class="opinion-package desac conts_opcs">
-                <h2>opiniones sobre este paquete</h2>
-                <!-- reseñas_data -->
-                <% reseñas_data.forEach( reseña=> { %>
-                  <% // Bucle principal para cada paquete %>
-
-                    <div class="cont_reseña">
-                      <div class="cont_img_user">
-
-                      </div>
-                      <div class="cont_infor_user">
-                        <h3 class="user_name">
-                          María González</h3>
-                        <div class="cont_fecha">
-                          <div class="stars">
-                            <% const puntajeNum=parseFloat(reseña.puntaje); const
-                              estrellasEnteras=Math.floor(puntajeNum); const hayMediaEstrella=(puntajeNum -
-                              estrellasEnteras)>= 0.5;
-                              %>
-
-                              <% for (let i=0; i < estrellasEnteras; i++) { %>
-                                <i class="fas fa-star"></i>
-                                <% } %>
-
-                                  <% if (hayMediaEstrella) { %>
-                                    <i class="fas fa-star-half-alt"></i>
-                                    <% } %>
-
-                                      <% const estrellasVacias=5 - estrellasEnteras - (hayMediaEstrella ? 1 : 0); %>
-                                        <% for (let i=0; i < estrellasVacias; i++) { %>
-                                          <i class="far fa-star"></i>
-                                          <% } %>
+                <h2>Opiniones sobre este paquete</h2>
+            
+                <div class="add-suggestion-section">
+                    <h3>Agrega tu sugerencia u opinión</h3>
+                    <form class="suggestion-form" method="post" action="/enviar_opinion?id_paquete=<%=paquete.id_paquete%>">            
+                        <div class="form-group">
+                            <label for="suggestionRating">Tu Puntuación:</label>
+                            <div class="rating-input">
+                              <input type="radio" id="star5" name="rating" value="5.0" required><label for="star5" class="fas fa-star"></label>
+                              <input type="radio" id="star4-half" name="rating" value="4.5"><label for="star4-half" class="fas fa-star-half-alt"></label>
+                          
+                              <input type="radio" id="star4" name="rating" value="4.0"><label for="star4" class="fas fa-star"></label>
+                              <input type="radio" id="star3-half" name="rating" value="3.5"><label for="star3-half" class="fas fa-star-half-alt"></label>
+                          
+                              <input type="radio" id="star3" name="rating" value="3.0"><label for="star3" class="fas fa-star"></label>
+                              <input type="radio" id="star2-half" name="rating" value="2.5"><label for="star2-half" class="fas fa-star-half-alt"></label>
+                          
+                              <input type="radio" id="star2" name="rating" value="2.0"><label for="star2" class="fas fa-star"></label>
+                              <input type="radio" id="star1-half" name="rating" value="1.5"><label for="star1-half" class="fas fa-star-half-alt"></label>
+                          
+                              <input type="radio" id="star1" name="rating" value="1.0"><label for="star1" class="fas fa-star"></label>
+                              <input type="radio" id="star0-half" name="rating" value="0.5"><label for="star0-half" class="fas fa-star-half-alt"></label>
                           </div>
-                          <span>
-                            <%=reseña.fecha %>
-                          </span>
                         </div>
-                        <div class="cont_reseña">
-                          <p>
-                            <%=reseña.cometario %>
-                          </p>
+            
+                        <div class="form-group">
+                            <label for="comment">Tu Comentario:</label>
+                            <textarea id="comment" name="comment" rows="5" placeholder="Escribe tu opinión aquí..." required></textarea>
                         </div>
-                      </div>
+            
+                        <button type="submit" class="submit-suggestion-btn">Enviar opinión</button>
+                    </form>
+                </div>
+                <% reseñas_data.forEach( reseña=> { %>
+                    <% // Bucle principal para cada paquete %>
+            
+                    <div class="cont_reseña">
+                        <div class="cont_img_user">
+                            <i class="fas fa-user-circle"></i>
+                        </div>
+                        <div class="cont_infor_user">
+                            <h3 class="user_name">
+                               <%= reseña.user_name%></h3>
+                            <div class="cont_fecha">
+                                <div class="stars">
+                                    <% const puntajeNum=parseFloat(reseña.puntaje); const
+                                    estrellasEnteras=Math.floor(puntajeNum); const hayMediaEstrella=(puntajeNum -
+                                    estrellasEnteras)>= 0.5;
+                                    %>
+            
+                                    <% for (let i=0; i < estrellasEnteras; i++) { %>
+                                        <i class="fas fa-star"></i>
+                                    <% } %>
+            
+                                    <% if (hayMediaEstrella) { %>
+                                        <i class="fas fa-star-half-alt"></i>
+                                    <% } %>
+            
+                                    <% const estrellasVacias=5 - estrellasEnteras - (hayMediaEstrella ? 1 : 0); %>
+                                    <% for (let i=0; i < estrellasVacias; i++) { %>
+                                        <i class="far fa-star"></i>
+                                    <% } %>
+                                </div>
+                                <span>
+                                    <%=reseña.fecha %>
+                                </span>
+                            </div>
+                            <div class="cont_reseña_texto">
+                                <p>
+                                    <%=reseña.cometario %>
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <% }); %>
-              </div>
+                <% }); %>
+            </div>
               <div class="vuelos-package desac conts_opcs" id="vuelos_content">
                 <h2>Detalles del Vuelo</h2>
             

@@ -306,7 +306,7 @@ body main .featured-destinations .card {
   border: 1px solid #cfd8e3;
   border-radius: 12px;
   padding: 1rem;
-  width: 250px;
+  width: 320px;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
   display: flex;
@@ -343,8 +343,8 @@ body main .featured-destinations .card .image-placeholder {
 }
 body main .featured-destinations .card .discount {
   position: absolute;
-  top: 155px;
-  left: 170px;
+  top: 150px;
+  left: 25px;
   background-color: #e74c3c;
   color: #fff;
   width: 20%;
@@ -400,17 +400,25 @@ body main .featured-destinations .card .card-body .prices .current {
 }
 body main .featured-destinations .card .card-body .cont_btn {
   padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 body main .featured-destinations .card .card-body .cont_btn .ver_detalles {
+  width: 100%;
+  height: 45px;
   background-color: #1e3a5f;
   color: white;
   text-decoration: none;
   padding: 0.6rem;
   border: none;
   border-radius: 8px;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 body main .featured-destinations .card .card-body .cont_btn .ver_detalles:hover {
   background-color: #162d47;
@@ -828,7 +836,6 @@ body .footer .footer-bottom p {
 body {
   font-family: "Inter", sans-serif;
   background-color: #f8f9fa;
-  /* Color de fondo general, similar al de la imagen */
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -1265,6 +1272,113 @@ header h1 {
   margin-bottom: 25px;
   font-weight: 600;
 }
+#cont_paquete .opinion-package .add-suggestion-section {
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  padding: 25px;
+  margin-bottom: 30px;
+}
+#cont_paquete .opinion-package .add-suggestion-section h3 {
+  font-size: 1.5em;
+  color: #333333;
+  margin-bottom: 20px;
+  font-weight: 600;
+  border-bottom: 1px solid #F0F0F0;
+  padding-bottom: 10px;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group {
+  display: flex;
+  flex-direction: column;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group label {
+  font-size: 1em;
+  color: #555555;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group input[type=text],
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group textarea {
+  padding: 12px;
+  border: 1px solid #CCCCCC;
+  border-radius: 5px;
+  font-size: 1em;
+  color: #333333;
+  width: 100%;
+  box-sizing: border-box;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group input[type=text]:focus,
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group .rating-input {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  position: relative;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group .rating-input input[type=radio] {
+  display: none;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group .rating-input label {
+  cursor: pointer;
+  font-size: 2.2em;
+  color: #E0E0E0;
+  transition: color 0.2s ease-in-out;
+  margin: 0 2px;
+  padding: 0;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group .rating-input label.fas.fa-star-half-alt {
+  position: relative;
+  width: 1.1em;
+  overflow: hidden;
+  direction: ltr;
+  text-align: right;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group .rating-input label.fas.fa-star-half-alt:before {
+  content: "\f089";
+  position: absolute;
+  width: 1em;
+  left: 0;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group .rating-input label:hover, #cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group .rating-input label:hover ~ label {
+  color: #FFD700;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group .rating-input input[type=radio]:checked ~ label {
+  color: #FFC107;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group .rating-input input[type=radio]:checked + label {
+  color: #FFC107;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .submit-suggestion-btn {
+  background-color: #007bff;
+  color: #FFFFFF;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1.1em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  align-self: flex-start;
+}
+#cont_paquete .opinion-package .add-suggestion-section .suggestion-form .submit-suggestion-btn:hover {
+  background-color: #0056b3;
+}
 #cont_paquete .opinion-package .cont_reseña {
   display: flex;
   align-items: flex-start;
@@ -1281,7 +1395,6 @@ header h1 {
   width: 60px;
   height: 60px;
   border-radius: 50%;
-  background-color: #E0E0E0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1660,34 +1773,4 @@ header h1 {
   color: #6c757d;
   text-align: center;
   margin-top: 15px;
-}
-
-.user-menu {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.user-menu .links {
-    display: flex;
-    align-items: center;
-    gap: 0.2rem;
-    text-decoration: none;
-    color: inherit;
-}
-
-.user-menu .logout {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.2rem;
-    border-radius: 50%;
-    transition: background-color 0.3s ease;
-    width: 1rem;
-    height: 1rem;
-}
-
-.user-menu .logout:hover {
-    background-color: rgba(0, 0, 0, 0.1);
 }/*# sourceMappingURL=estilo.css.map */

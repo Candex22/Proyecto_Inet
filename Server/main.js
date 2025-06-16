@@ -132,7 +132,6 @@ app.get('/administrador', async (req, res) => {
 
     }
 
-
 })
 
 app.get('/register', (req, res) => {
@@ -146,18 +145,18 @@ app.get('/paquetes', (req, res) => {
 
 app.get('/logout', (req, res) => {
     console.log('🚪 Usuario cerrando sesión:', req.session.nombre_usuario_us);
-    
+
     // Destruir la sesión inmediatamente
     req.session.destroy((err) => {
         if (err) {
             console.error('❌ Error al cerrar sesión:', err);
             return res.redirect('/login');
         }
-        
+
         console.log('✅ Sesión cerrada exitosamente');
         // Limpiar la cookie de sesión
         res.clearCookie('connect.sid');
-        
+
         // Redirigir al login
         res.redirect('/login');
     });
@@ -326,7 +325,6 @@ app.post('/iniciar_sesion', async (req, res) => {
         return res.render('login.ejs', { error: 'Error al verificar los datos' });
     }
 })
-
 app.get('/paquete', async (req, res) => {
     const id_paquete = req.query.id_paquete;
 
@@ -353,10 +351,11 @@ app.get('/paquete', async (req, res) => {
             return res.status(500).send("Error interno del servidor al obtener componentes.");
         }
 
-        // Obtener reseñas
-        let { data: reseñas, error: reseñasError } = await supabase
+        // Obtener reseñas y solo el nombre del usuario relacionado
+        // CAMBIO CLAVE AQUÍ: Solo solicitamos 'Usuarios(nombre)'
+        let { data: reseñasRaw, error: reseñasError } = await supabase
             .from('reseñas')
-            .select("*")
+            .select('*, Usuarios(nombre)') // <-- MODIFICADO: Solo trae 'nombre'
             .eq('id_paquete', id_paquete);
 
         if (reseñasError) {
@@ -364,28 +363,34 @@ app.get('/paquete', async (req, res) => {
             return res.status(500).send("Error interno del servidor al obtener reseñas.");
         }
 
+        // Mapear las reseñas para incluir solo el nombre del usuario directamente
+        const reseñas_data = reseñasRaw.map(reseña => ({
+            ...reseña,
+            user_name: reseña.Usuarios ? reseña.Usuarios.nombre : 'Usuario Desconocido'
+        }));
+
+
         // Inicializar arrays para los componentes
         const hoteles = [];
         const vuelos = [];
         const autos = [];
 
-        // CORRECCIÓN PRINCIPAL: Iterar correctamente sobre el array
-        for (let i = 0; i < paquete_componentes.length; i++) { // .length era lo que faltaba
+        // Iterar sobre los componentes del paquete para obtener sus detalles
+        for (let i = 0; i < paquete_componentes.length; i++) {
             const componente = paquete_componentes[i];
 
             if (componente.tipo_componente === "Vuelo") {
-                const id_vuelo = componente.id_componente; // Usar 'componente' en lugar de paquete_componentes[i]
+                const id_vuelo = componente.id_componente;
 
-                // CORRECCIÓN: Variable mal nombrada (id_vuelo vs vuelo_id)
                 let { data: vuelo_data, error: vueloError } = await supabase
                     .from('vuelo')
                     .select("*")
-                    .eq('id_vuelo', id_vuelo); // Era 'vuelo_id' pero debería ser 'id_vuelo'
+                    .eq('id_vuelo', id_vuelo);
 
                 if (vueloError) {
                     console.error("Error al obtener datos del vuelo:", vueloError);
                 } else if (vuelo_data && vuelo_data.length > 0) {
-                    vuelos.push(vuelo_data[0]); // Agregar al array de vuelos
+                    vuelos.push(vuelo_data[0]);
                 }
             }
 
@@ -420,16 +425,14 @@ app.get('/paquete', async (req, res) => {
             }
         }
 
-
-
         // Renderizar la vista con todos los datos
         res.render('paquete', {
             session: req.session,
             paquete: paquete_data[0],
-            vuelos_data: vuelos[0],      // Array de vuelos
-            hoteles_data: hoteles[0],    // Array de hoteles
-            autos_data: autos[0],        // Array de autos
-            reseñas_data: reseñas
+            vuelos_data: vuelos[0],
+            hoteles_data: hoteles[0],
+            autos_data: autos[0],
+            reseñas_data: reseñas_data
         });
 
     } catch (error) {
@@ -437,6 +440,42 @@ app.get('/paquete', async (req, res) => {
         res.status(500).send("Error interno del servidor.");
     }
 });
+app.post("/enviar_opinion", async (req, res) => {
+    const userId = req.session.usuario_id;
+    const id_paquete = req.query.id_paquete;
+    const rating = req.body.rating;
+    const comment = req.body.comment;
+
+    try {
+        const { data, error } = await supabase
+            .from('reseñas')
+            .insert([
+                {
+                    id_paquete: id_paquete,
+                    id_usuario: userId,
+                    puntaje:rating,
+                    cometario: comment,
+                    fecha: new Date().toISOString().slice(0, 10)
+                }
+            ]);
+
+        if (error) {
+            console.error("Error al insertar la reseña:", error);
+            return res.status(500).json({ success: false, message: "Error al guardar la sugerencia.", error: error.message });
+        }
+
+    
+
+        res.redirect(`/paquete?id_paquete=${id_paquete}`);
+
+    } catch (dbError) {
+        console.error("Error al interactuar con Supabase:", dbError);
+        res.status(500).json({ success: false, message: "Error interno del servidor al procesar la sugerencia." });
+    }
+});
+
+
+
 
 // Función para comparar una contraseña con su hash
 async function verifyPassword(plainPassword, hashedPassword) {

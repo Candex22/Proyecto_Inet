@@ -68,7 +68,7 @@ $border-color: #33334d;
     --Fondo_principal: #1e1e1e;
     --Texto_principal: #dddddd;
     --Texto_secundario: #b6b6b6;
-    --Encabezados_botones_y_primarios: #3e86d3; // un azul más claro
+    --Encabezados_botones_y_primarios: #3e86d3;
     --Botones_secundarios_o_hover_azul: #7ab8ff;
     --Botones_secundarios_o_hover_verde: #c1e7aa;
     --fondo_azul_claro: rgba(93, 113, 155, 0.336);
@@ -336,6 +336,7 @@ body {
         }
 
         .featured-destinations {
+
             background-color: #f9fbff;
             padding: 3rem 2rem;
             text-align: center;
@@ -383,7 +384,8 @@ body {
                 border: 1px solid #cfd8e3;
                 border-radius: 12px;
                 padding: 1rem;
-                width: 250px;
+                width: 320px;
+
                 position: relative;
                 box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
                 display: flex;
@@ -426,8 +428,8 @@ body {
 
                 .discount {
                     position: absolute;
-                    top: 155px;
-                    left: 170px;
+                    top: 150px;
+                    left: 25px;
                     background-color: #e74c3c;
                     color: #fff;
                     width: 20%;
@@ -493,18 +495,25 @@ body {
                     .cont_btn {
                         padding-top: 20px;
 
-                        .ver_detalles {
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
 
+                        .ver_detalles {
+                            width: 100%;
+                            height: 45px;
                             background-color: #1e3a5f;
                             color: white;
                             text-decoration: none;
                             padding: 0.6rem;
                             border: none;
                             border-radius: 8px;
-                            font-size: 0.9rem;
+                            font-size: 1.1rem;
                             cursor: pointer;
                             transition: background-color 0.2s ease;
-
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
 
                             &:hover {
                                 background-color: #162d47;
@@ -669,7 +678,7 @@ body {
         padding: 40px 20px;
         width: 100%;
         position: relative;
-        margin-top: auto; // Pushes the footer to the bottom
+        margin-top: auto; 
 
         .footer-container {
             display: flex;
@@ -677,16 +686,16 @@ body {
             justify-content: space-between;
             max-width: 1200px;
             margin: 0 auto;
-            gap: 30px; // Space between columns
+            gap: 30px; 
         }
 
         .footer-section {
             flex: 1;
-            min-width: 200px; // Ensures columns don't get too narrow
+            min-width: 200px; 
             margin-bottom: 20px;
 
             &.about {
-                flex-basis: 300px; // Larger width for the about section
+                flex-basis: 300px; 
 
                 p {
                     @include text-style(14px);
@@ -712,7 +721,7 @@ body {
             .footer-title {
                 @include text-style(18px, bold, $title-color);
                 margin-bottom: 15px;
-                white-space: nowrap; // Prevents title from wrapping
+                white-space: nowrap; 
             }
 
             ul {
@@ -755,23 +764,23 @@ body {
 
     }
 
-    // Responsive adjustments
+  
     @media (max-width: 992px) {
         .footer {
             .footer-container {
-                justify-content: center; // Center sections when they wrap
+                justify-content: center;
             }
 
             .footer-section {
-                flex-basis: 45%; // Two columns per row
-                text-align: center; // Center text in smaller viewports
+                flex-basis: 45%;
+                text-align: center; 
 
                 ul {
-                    align-items: center; // Center list items
+                    align-items: center; 
                 }
 
                 &.about {
-                    flex-basis: 90%; // Full width for about section on smaller screens
+                    flex-basis: 90%; 
                     text-align: center;
 
                     .footer-contact-info {
@@ -787,13 +796,13 @@ body {
             padding: 30px 15px;
 
             .footer-container {
-                flex-direction: column; // Stack sections vertically
+                flex-direction: column;
                 align-items: center;
             }
 
             .footer-section {
                 width: 100%;
-                max-width: 300px; // Limit max width of sections
+                max-width: 300px;
                 text-align: center;
 
                 ul {
@@ -1016,7 +1025,7 @@ body {
 body {
     font-family: 'Inter', sans-serif;
     background-color: #f8f9fa;
-    /* Color de fondo general, similar al de la imagen */
+
     margin: 0;
     padding: 0;
     box-sizing: border-box;
@@ -1174,19 +1183,19 @@ header h1 {
     }
 }
 
-$primary-color: #007bff; // Example blue, adjust as needed
-$secondary-color: #6c757d; // Gray for text
-$success-color: #28a745; // Green for discount
-$warning-color: #ffc107; // Yellow for stars
-$light-gray: #f8f9fa; // Background for some sections
+$primary-color: #007bff;
+$secondary-color: #6c757d; 
+$success-color: #28a745; 
+$warning-color: #ffc107; 
+$light-gray: #f8f9fa; 
 $border-color: #dee2e6;
 $text-color: #343a40;
 $dark-text: #212529;
-$button-dark: #212529; // Dark button background
+$button-dark: #212529; 
 $button-dark-hover: #000;
-$background-page: #f0f2f5; // A subtle background for the package detail page itself
+$background-page: #f0f2f5; 
 
-// Mixins
+
 @mixin flex-center {
     display: flex;
     justify-content: center;
@@ -1212,9 +1221,8 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
 
 
 #cont_paquete {
-    // This ID would typically wrap the entire package detail section.
-    // We can apply specific page-level background or padding here if needed.
-    background-color: $background-page; // Example: slightly different background for the page
+   
+    background-color: $background-page; 
 
     width: 100%;
     margin-top: 10px;
@@ -1226,14 +1234,14 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
     .container {
         padding: 100px;
         width: 100%;
-        margin: 20px auto; // Already centered by 'auto' margins
+        margin: 20px auto; 
 
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 
         @media (max-width: 992px) {
-            margin: 15px; // Less margin on smaller screens
+            margin: 15px; 
             padding: 15px;
         }
     }
@@ -1283,10 +1291,10 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
 
     .package-main-content {
         flex: 2;
-        min-width: 60%; // Ensures it takes more space initially
+        min-width: 60%; 
 
         @media (max-width: 992px) {
-            min-width: unset; // Reset min-width when stacking
+            min-width: unset;
             width: 100%;
         }
     }
@@ -1504,13 +1512,141 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
     }
 
     .opinion-package {
+
         h2 {
             font-size: 1.8em;
             color: #333333;
             margin-bottom: 25px;
             font-weight: 600;
         }
+
     
+        .add-suggestion-section {
+            background-color: #FFFFFF;
+            border: 1px solid #E0E0E0;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            padding: 25px;
+            margin-bottom: 30px; 
+
+            h3 {
+                font-size: 1.5em;
+                color: #333333;
+                margin-bottom: 20px;
+                font-weight: 600;
+                border-bottom: 1px solid #F0F0F0;
+                padding-bottom: 10px;
+            }
+
+            .suggestion-form {
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+
+                .form-group {
+                    display: flex;
+                    flex-direction: column;
+
+                    label {
+                        font-size: 1em;
+                        color: #555555;
+                        margin-bottom: 8px;
+                        font-weight: 500;
+                    }
+
+                    input[type="text"],
+                    textarea {
+                        padding: 12px;
+                        border: 1px solid #CCCCCC;
+                        border-radius: 5px;
+                        font-size: 1em;
+                        color: #333333;
+                        width: 100%;
+                        box-sizing: border-box;
+
+                        &:focus {
+                            border-color: #007bff;
+                            outline: none;
+                            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+                        }
+                    }
+
+                    textarea {
+                        resize: vertical;
+                        min-height: 80px;
+                    }
+
+                    .rating-input {
+                        display: flex;
+                        flex-direction: row-reverse;
+                        justify-content: flex-end;
+                        position: relative;
+                        width: fit-content;
+
+                        input[type="radio"] {
+                            display: none;
+                        }
+
+                        label {
+                            cursor: pointer;
+                            font-size: 2.2em; 
+                            color: #E0E0E0;
+                            transition: color 0.2s ease-in-out;
+                            margin: 0 2px; 
+                            padding: 0;
+                            &.fas.fa-star-half-alt {
+                                position: relative;
+                                width: 1.1em;
+                                overflow: hidden;
+                                direction: ltr;
+                                text-align: right; 
+
+                                &:before {
+                                    content: "\f089";
+                                    position: absolute;
+                                    width: 1em;
+                                    left: 0;
+                                }
+                            }
+
+                            &:hover,
+                            &:hover~label {
+                                color: #FFD700; 
+                            }
+                        }
+
+                        input[type="radio"]:checked~label {
+                            color: #FFC107; 
+                        }
+
+                     
+                        input[type="radio"]:checked+label {
+                            color: #FFC107; 
+                        }
+                    }
+                }
+
+                .submit-suggestion-btn {
+                    background-color: #007bff;
+                    color: #FFFFFF;
+                    padding: 12px 25px;
+                    border: none;
+                    border-radius: 5px;
+                    font-size: 1.1em;
+                    font-weight: 600;
+                    cursor: pointer;
+                    transition: background-color 0.3s ease;
+                    align-self: flex-start;
+
+                    &:hover {
+                        background-color: #0056b3;
+                    }
+                }
+            }
+        }
+
+    
+
         .cont_reseña {
             display: flex;
             align-items: flex-start;
@@ -1521,33 +1657,33 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
             border: 1px solid #E0E0E0;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    
+
             .cont_img_user {
                 flex-shrink: 0;
                 width: 60px;
                 height: 60px;
                 border-radius: 50%;
-                background-color: #E0E0E0;
+
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 overflow: hidden;
-    
+
                 img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                 }
-    
+
                 .fas.fa-user-circle {
                     font-size: 3em;
                     color: #666666;
                 }
             }
-    
+
             .cont_infor_user {
                 flex-grow: 1;
-    
+
                 .user_name {
                     font-size: 1.2em;
                     color: #333333;
@@ -1555,29 +1691,29 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
                     margin-bottom: 5px;
                     font-weight: 600;
                 }
-    
+
                 .cont_fecha {
                     display: flex;
                     align-items: center;
                     margin-bottom: 10px;
-    
+
                     .stars {
                         color: #FFC107;
                         font-size: 1.1em;
                         margin-right: 10px;
-    
+
                         .far.fa-star {
                             color: #FFD966;
                         }
                     }
-    
+
                     span {
                         font-size: 0.9em;
                         color: #666666;
                     }
                 }
             }
-    
+
             p {
                 font-size: 1em;
                 color: #333333;
@@ -1589,7 +1725,7 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
 
     .vuelos-package {
         padding: 25px 0;
-        
+
         h2 {
             font-size: 1.8em;
             color: #333333;
@@ -1597,12 +1733,12 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
             font-weight: 600;
             text-align: left;
         }
-    
+
         .flight-details-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 25px;
-    
+
             .flight-detail-card {
                 background-color: #FFFFFF;
                 border: 1px solid #E0E0E0;
@@ -1612,7 +1748,7 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
                 display: flex;
                 flex-direction: column;
                 justify-content: space-between;
-    
+
                 h3 {
                     font-size: 1.4em;
                     color: #333333;
@@ -1622,14 +1758,14 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
                     border-bottom: 1px solid #F0F0F0;
                     padding-bottom: 10px;
                 }
-    
+
                 .detail-item {
                     display: flex;
                     align-items: center;
                     margin-bottom: 15px;
                     font-size: 1em;
                     color: #555555;
-    
+
                     i {
                         color: #007bff;
                         margin-right: 12px;
@@ -1637,28 +1773,28 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
                         width: 25px;
                         text-align: center;
                     }
-    
+
                     span {
                         font-weight: 400;
                         margin-right: 5px;
                     }
-    
+
                     strong {
                         color: #333333;
                         font-weight: 500;
                     }
-    
+
                     &:last-child {
                         margin-bottom: 0;
                     }
                 }
-    
+
                 .price-item {
                     justify-content: space-between;
                     padding-top: 10px;
                     border-top: 1px dashed #E0E0E0;
                     margin-top: 15px;
-    
+
                     .price-value {
                         color: #007bff;
                         font-size: 1.5em;
@@ -1668,33 +1804,33 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
             }
         }
     }
-    
+
 
     .hotel-package {
-        padding: 25px 0; 
+        padding: 25px 0;
 
         h2 {
             font-size: 1.8em;
-            color: #333333; 
+            color: #333333;
             margin-bottom: 25px;
             font-weight: 600;
-            text-align: left; 
+            text-align: left;
         }
 
         .hotel-details-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
-            gap: 25px; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
 
             .hotel-detail-card {
                 background-color: #FFFFFF;
                 border: 1px solid #E0E0E0;
                 border-radius: 8px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05); 
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
                 padding: 25px;
                 display: flex;
                 flex-direction: column;
-                justify-content: space-between; 
+                justify-content: space-between;
 
                 h3 {
                     font-size: 1.4em;
@@ -1702,61 +1838,62 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
                     margin-top: 0;
                     margin-bottom: 20px;
                     font-weight: 600;
-                    border-bottom: 1px solid #F0F0F0; 
+                    border-bottom: 1px solid #F0F0F0;
                     padding-bottom: 10px;
                 }
 
                 .detail-item {
                     display: flex;
-                    align-items: center; 
-                    margin-bottom: 15px; 
+                    align-items: center;
+                    margin-bottom: 15px;
                     font-size: 1em;
-                    color: #555555; 
+                    color: #555555;
 
                     i {
-                        color: #007bff; 
-                        margin-right: 12px; 
-                        font-size: 1.15em; 
+                        color: #007bff;
+                        margin-right: 12px;
+                        font-size: 1.15em;
                         width: 25px;
                         text-align: center;
                     }
 
                     span {
                         font-weight: 400;
-                        margin-right: 5px; 
+                        margin-right: 5px;
                     }
 
                     strong {
-                        color: #333333; 
-                        font-weight: 500; 
+                        color: #333333;
+                        font-weight: 500;
                     }
 
                     .hotel-stars {
-                        color: #FFC107; 
-                        font-size: 1em; 
-                        margin-left: auto; 
+                        color: #FFC107;
+                        font-size: 1em;
+                        margin-left: auto;
 
                         .far.fa-star {
-                            color: #FFD966; 
+                            color: #FFD966;
                         }
                     }
 
                     &:last-child {
-                        margin-bottom: 0; 
+                        margin-bottom: 0;
                     }
                 }
 
-           
+
                 &.price-card {
                     .price-item {
-                        justify-content: space-between; 
-                        padding-top: 10px; 
+                        justify-content: space-between;
+                        padding-top: 10px;
                         border-top: 1px dashed #E0E0E0;
-                        margin-top: 15px; 
+                        margin-top: 15px;
+
                         .price-value {
-                            color: #007bff; 
-                            font-size: 1.5em; 
-                            font-weight: 700; 
+                            color: #007bff;
+                            font-size: 1.5em;
+                            font-weight: 700;
                         }
                     }
                 }
@@ -1766,7 +1903,7 @@ $background-page: #f0f2f5; // A subtle background for the package detail page it
 
 
 
-    // Sidebar Styles
+
     .price-box {
         display: flex;
         justify-content: space-between;
