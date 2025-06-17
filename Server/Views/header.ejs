@@ -12,40 +12,45 @@
                 </a>
                 <% } %>
 
-                    <div class="secciones_nav">
-                        <a href="/index" class="links_prins">Inicio</a>
-                        <a href="/paquetes" class="links_prins">Paquetes</a>
-                    </div>
+        <button class="hamburger-menu" id="hamburger-menu">
+            <i class="fa-solid fa-bars"></i>
+        </button>
 
+        <div class="nav-content">
+            <div class="secciones_nav">
+                <a href="/index" class="links_prins">Inicio</a>
+                <a href="/paquetes" class="links_prins">Paquetes</a>
+            </div>
 
-                    <div class="container_nav" id="cont_nav_links">
-                        <a href="#" class="link" id="icon_tema">
-                            <i class="fa-solid icon_theme" id="icon_tema_tema"></i>
+            <div class="container_nav" id="cont_nav_links">
+                <a href="#" class="link" id="icon_tema">
+                    <i class="fa-solid icon_theme" id="icon_tema_tema"></i>
+                </a>
+
+                <a href="/carrito" class="links_prins">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span class="text_links">Carrito</span>
+
+                </a>
+
+                <% if (session.user_sesion) { %>
+                    <div class="user-menu">
+                        <a href="#" class="links">
+                            <i class="fa-solid fa-user"></i>
+                            <span class="text_links"><%= session.nombre_usuario_us %></span>
                         </a>
-
-                        <a href="/carrito" class="links_prins">
-                            <i class="fa-solid fa-cart-shopping"></i>
-                            <span class="text_links">Carrito</span>
-
+                        <a href="/logout" class="links logout logout-icon-only" title="Cerrar sesión">
+                            <i class="fa-solid fa-sign-out-alt"></i>
                         </a>
-
-                        <% if (session.user_sesion) { %>
-                            <div class="user-menu">
-                                <a href="#" class="links">
-                                    <i class="fa-solid fa-user"></i>
-                                    <span class="text_links"><%= session.nombre_usuario_us %></span>
-                                </a>
-                                <a href="/logout" class="links logout" title="Cerrar sesión">
-                                    <i class="fa-solid fa-sign-out-alt"></i>
-                                </a>
-                            </div>
-                        <% } else { %>
-                            <a href="/login" class="links">
-                                <i class="fa-solid fa-user"></i>
-                                <span class="text_links">Ingresar</span>
-                            </a>
-                        <% } %>
                     </div>
+                <% } else { %>
+                    <a href="/login" class="links">
+                        <i class="fa-solid fa-user"></i>
+                        <span class="text_links">Ingresar</span>
+                    </a>
+                <% } %>
+            </div>
+        </div>
     </nav>
 </header>
 
