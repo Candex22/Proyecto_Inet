@@ -2,6 +2,31 @@ let scrolledPast = false;
 const header = document.querySelector("header")
 const icons_links = document.querySelectorAll(".icons_links")
 const text_links = document.querySelectorAll(".text_links")
+const hamburgerMenu = document.getElementById('hamburger-menu');
+const navContent = document.querySelector('.nav-content');
+
+// Toggle mobile menu
+hamburgerMenu.addEventListener('click', () => {
+    navContent.classList.toggle('active');
+    hamburgerMenu.classList.toggle('active');
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (!hamburgerMenu.contains(e.target) && !navContent.contains(e.target)) {
+        navContent.classList.remove('active');
+        hamburgerMenu.classList.remove('active');
+    }
+});
+
+// Close menu when clicking on a link
+document.querySelectorAll('.nav-content a').forEach(link => {
+    link.addEventListener('click', () => {
+        navContent.classList.remove('active');
+        hamburgerMenu.classList.remove('active');
+    });
+});
+
 function handleScroll() {
     if (window.scrollY > 200 && !scrolledPast) {
         header.classList.toggle("reducir")
