@@ -1285,6 +1285,7 @@ body .footer .footer-bottom p {
   grid-template-columns: repeat(2, 850px);
   grid-column-gap: 50px;
   grid-row-gap: 0px;
+  min-height: fit-content;
   }
 
   .dashboard-section {
@@ -1293,6 +1294,7 @@ body .footer .footer-bottom p {
     justify-content: space-between;
     align-items: center;
     gap: 50px;
+    
   }
 .dashboard-section .agregar-producto { 
   width: 100%;
@@ -1304,7 +1306,6 @@ body .footer .footer-bottom p {
   .dashboard-content {
     grid-template-columns: 1fr;
     grid-row-gap: 50px;
-    height: 60%;
   }
   
   .dashboard-section {
@@ -1383,7 +1384,7 @@ body .footer .footer-bottom p {
     transition: transform 0.3s ease;
     border: 1px solid #e0e6ed;
     min-height: 20%;
-    height: auto;
+    height: 20%;
     min-height: fit-content;
 }
 

@@ -60,10 +60,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Conexión a la base de datos
 
-// const connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: '',
+//  const connection = mysql.createConnection({
+//      host: 'localhost',
+//      user: 'root',
+//      password: '',
 //     database: 'BD',
 //     port: 3306
 // });
