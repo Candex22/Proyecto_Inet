@@ -1,8 +1,37 @@
+/* variables para el DOM en general.<-----------------------------------------------------------> */
+:root {
+    --color-fondo: #ffffff;
+    --color-texto: #000000;
+    --azul_oscuro: #2B476C;
+    --Fondo_principal: #ffffff;
+    --Texto_principal: #1e3a5f;
+    --Texto_secundario: #5c6e7f;
+    --back_btn:#ffff;
+    --linea_separadora:#e0e6ed;
+    --card_destacado_deg1:#f1f5f9;
+    --card_destacado_deg2:#f1f5f9;
+    --card_comun:#e2e8f0;
+  }
+  
+  :root[data-tema=oscuro] {
+    --color-fondo: #121212;
+    --color-texto: #f0f0f0;
+    --Fondo_principal: #11121d;
+    --Texto_principal: #dddddd;
+    --Texto_secundario: #b6b6b6;
+    --back_btn:#11121d;
+    --linea_separadora:#1c1d29;
+    --card_destacado_deg1:#191a25;
+    --card_destacado_deg2:rgb(38, 40, 59);
+    --card_comun:#1b1c2c;
+  }
+
+
 .featured-destinations {
     padding: 3rem 2rem;
     text-align: center;
     width: 100%;
-    margin-top: 4%;
+    margin-top: 100px;
 }
 
 .section-header {
@@ -36,12 +65,12 @@
 }
 
 .filtros {
-    background-color: #f9fbff;
+    background-color: var(--Fondo_principal);
     padding: 2rem;
     width: 86%;
     height: auto;
     border-radius: 12px;
-    border: 1px solid #e0e6ed;
+    border: 1px solid var(--linea_separadora);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     display: flex;
     flex-direction: column;
@@ -54,7 +83,7 @@
 }
 
 .filtros .title h2 {
-    color: #1b2d4f;
+    color: var(--Texto_principal);
     font-size: 1.5rem;
     display: flex;
     align-items: center;
@@ -79,12 +108,13 @@
     flex: 1;
     min-width: 200px;
     position: relative;
-    background-color: white;
-    border: 1px solid #e0e6ed;
+    background-color: transparent;
+    border: 1px solid var(--linea_separadora);
     border-radius: 8px;
     padding: 0.5rem 1rem;
     transition: all 0.3s ease;
     margin-top: 0;
+    color: var(--Texto_principal);
 }
 
 .input-container:hover {
@@ -151,11 +181,12 @@
 }
 
 .tarjeta-paquete {
-    background: white;
+    background: var(--Fondo_principal);
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: transform 0.3s ease;
+    border:  1px solid var(--linea_separadora);
     position: relative;
 }
 
@@ -222,13 +253,13 @@
 }
 
 .tarjeta-paquete-cuerpo h3 {
-    color: #1b2d4f;
+    color: var(--Texto_principal);
     font-size: 1.25rem;
     margin-bottom: 0.5rem;
 }
 
 .tarjeta-paquete-cuerpo p {
-    color: #5c6e7f;
+    color: var(--Texto_secundario);
     font-size: 0.95rem;
     margin-bottom: 1rem;
     line-height: 1.5;
@@ -241,7 +272,7 @@
 }
 
 .info span {
-    color: #5c6e7f;
+    color: var(--Texto_secundario);
     font-size: 0.9rem;
     display: flex;
     align-items: center;
@@ -253,7 +284,7 @@
 }
 
 .rating p {
-    color: #5c6e7f;
+    color: var(--Texto_secundario);
     font-size: 0.9rem;
     margin-bottom: 0.3rem;
 }
@@ -272,7 +303,7 @@
 }
 
 .prices .current {
-    color: #1b2d4f;
+    color: var(--Texto_principal);
     font-size: 1.5rem;
     font-weight: 700;
 }
