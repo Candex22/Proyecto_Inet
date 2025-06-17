@@ -1,41 +1,54 @@
 const helpData = [
-    {
-        "id": "registro_cliente",
-        "keywords": ["registro", "alta", "crear cuenta", "nuevo cliente", "registrarse"],
-        "question_phrases": ["¿Cómo me registro como nuevo cliente?", "Quiero crear una cuenta", "Alta de clientes", "¿cómo registrarme?"],
-        "answer": "Para registrarte como nuevo cliente en TravelPortal, debes acceder a la opción 'Registro' y completar tus datos personales. El proceso es rápido y sencillo."
-    },
-    {
-        "id": "seleccion_paquetes",
-        "keywords": ["seleccionar paquetes", "paquetes", "viajes", "destinos", "reservar"],
-        "question_phrases": ["¿Cómo selecciono paquetes turísticos?", "Quiero reservar un viaje", "¿cómo reservo un paquete?"],
-        "answer": "Puedes explorar nuestros paquetes turísticos desde la página principal, seleccionar el que más te guste y seguir el proceso de reserva."
-    },
-    {
-        "id": "ver_reservas",
-        "keywords": ["reservas", "mis viajes", "consultar", "modificar reservas", "eliminar reservas"],
-        "question_phrases": ["¿Dónde puedo ver mis reservas?", "¿Cómo modifico una reserva?", "¿puedo cancelar una reserva?"],
-        "answer": "Puedes acceder a tus reservas desde tu perfil de usuario. Allí podrás ver, modificar o cancelar tus paquetes turísticos reservados."
-    },
-    {
-        "id": "destinos_populares",
-        "keywords": ["destinos populares", "lugares", "recomendaciones", "mejores destinos"],
-        "question_phrases": ["¿Cuáles son los destinos más populares?", "¿Qué lugares recomiendan?"],
-        "answer": "Ofrecemos una gran variedad de destinos nacionales e internacionales. Puedes ver los destinos más populares en nuestra sección principal."
-    },
-    {
-        "id": "formas_pago",
-        "keywords": ["pago", "formas de pago", "tarjeta", "efectivo", "financiación"],
-        "question_phrases": ["¿Qué formas de pago aceptan?", "¿Puedo pagar en cuotas?"],
-        "answer": "Aceptamos diversas formas de pago: tarjetas de crédito, débito, transferencias bancarias y opciones de financiación. Consulta las opciones disponibles al momento de la reserva."
-    },
-    {
-        "id": "contacto",
-        "keywords": ["contacto", "teléfono", "email", "consultas", "ayuda"],
-        "question_phrases": ["¿Cómo puedo contactarlos?", "Necesito ayuda", "¿tienen teléfono de contacto?"],
-        "answer": "Puedes contactarnos a través de este chat, por email o teléfono. También puedes visitar nuestra sección de 'Contacto' para más información."
-    }
+  {
+    "id": "registro_cliente",
+    "keywords": ["registro", "alta", "crear cuenta", "nuevo cliente", "registrarse", "crear usuario", "nueva cuenta"],
+    "question_phrases": ["¿Cómo me registro como nuevo cliente?", "Quiero crear una cuenta", "Alta de clientes", "¿cómo registrarme?", "¿cómo creo un usuario?", "¿puedo registrarme?"],
+    "answer": "Para registrarte como nuevo cliente en TravelPortal, debes acceder a la opción 'Registrarse' y completar tus datos personales. Luego podrás iniciar sesión y comenzar a reservar tus viajes."
+  },
+  {
+    "id": "iniciar_sesion",
+    "keywords": ["iniciar sesión", "login", "acceder", "entrar", "cuenta"],
+    "question_phrases": ["¿Cómo inicio sesión?", "¿Dónde ingreso a mi cuenta?", "No puedo acceder a mi cuenta", "¿cómo entrar a mi perfil?"],
+    "answer": "Puedes iniciar sesión desde la página de 'Iniciar sesión', ingresando tu nombre de usuario y contraseña. Si aún no tienes cuenta, selecciona '¿No tienes cuenta todavía?' para registrarte."
+  },
+  {
+    "id": "seleccion_paquetes",
+    "keywords": ["seleccionar paquetes", "paquetes", "viajes", "destinos", "reservar", "buscar", "filtrar", "ver"],
+    "question_phrases": ["¿Cómo selecciono paquetes turísticos?", "Quiero reservar un viaje", "¿cómo reservo un paquete?", "¿cómo veo los destinos?", "¿cómo uso los filtros?", "¿cómo buscar un viaje?"],
+    "answer": "Desde la sección de 'Paquetes', puedes explorar todos los destinos disponibles, aplicar filtros por categoría o precio, y acceder a los detalles de cada paquete para reservar el que más te guste."
+  },
+  {
+    "id": "detalle_paquete",
+    "keywords": ["detalles", "información", "vuelos", "hotel", "reseñas", "opiniones", "paquete"],
+    "question_phrases": ["¿Qué incluye un paquete?", "¿Dónde veo los detalles del viaje?", "¿tiene opiniones?", "¿cómo son los hoteles?", "¿cómo son los vuelos incluidos?"],
+    "answer": "Cada paquete turístico incluye información detallada sobre vuelos, alojamiento, duración, precio por persona y opiniones de otros usuarios. Haz clic en 'Ver Detalles' para acceder a toda esta información."
+  },
+  {
+    "id": "carrito",
+    "keywords": ["carrito", "compras", "eliminar", "cantidad", "resumen", "ver carrito"],
+    "question_phrases": ["¿Cómo veo mi carrito?", "¿Cómo modifico la cantidad?", "¿Puedo eliminar un paquete del carrito?", "¿Cómo veo el resumen de compra?"],
+    "answer": "Desde la sección 'Carrito', puedes ver todos los paquetes agregados, modificar la cantidad de personas, eliminar paquetes y ver el resumen del total con impuestos incluidos."
+  },
+  {
+    "id": "procesar_pago",
+    "keywords": ["pago", "facturación", "confirmar", "pagar", "datos de pago", "finalizar compra"],
+    "question_phrases": ["¿Cómo confirmo el pago?", "¿Qué datos se requieren para pagar?", "¿Dónde ingreso mi DNI?", "¿Es seguro el pago?", "¿cómo finalizo la compra?"],
+    "answer": "En la sección de 'Pago', debes ingresar tus datos de facturación y confirmar la compra. El proceso es seguro y recibirás la factura por correo electrónico."
+  },
+  {
+    "id": "confirmacion_pago",
+    "keywords": ["confirmación", "pago exitoso", "factura", "pedido procesado", "compra", "correo"],
+    "question_phrases": ["¿Cómo sé que se procesó mi compra?", "¿Dónde está mi factura?", "¿me envían el comprobante?", "¿ya se pagó el paquete?"],
+    "answer": "Luego de confirmar tu pago, verás una pantalla de éxito con los detalles de tu pedido. También recibirás la factura por correo electrónico registrado."
+  },
+  {
+    "id": "reseñas_opiniones",
+    "keywords": ["reseñas", "opiniones", "comentarios", "puntajes", "calificaciones"],
+    "question_phrases": ["¿Dónde veo las opiniones de otros usuarios?", "¿Puedo dejar una reseña?", "¿Cómo se califica un paquete?", "¿Hay comentarios de otros viajeros?"],
+    "answer": "Cada paquete incluye una sección con opiniones y puntuaciones de otros usuarios. También podés dejar tu propia reseña luego de viajar."
+  },
 ];
+
 
 // Variables globales para los elementos del DOM
 let chatToggle, chatWindow, chatClose, chatInput, sendBtn, chatMessages;
