@@ -18,13 +18,8 @@
   --color-texto: #000000;
   --azul_oscuro: #2B476C;
   --Fondo_principal: #ffffff;
-  --Texto_principal: #1e3a5f;
-  --Texto_secundario: #5c6e7f;
-  --back_btn: #ffff;
-  --linea_separadora: #e0e6ed;
-  --card_destacado_deg1: #f1f5f9;
-  --card_destacado_deg2: #f1f5f9;
-  --card_comun: #e2e8f0;
+  --Texto_principal: #333333;
+  --Texto_secundario: #616161;
 }
 
 :root[data-tema=oscuro] {
@@ -33,11 +28,6 @@
   --Fondo_principal: #11121d;
   --Texto_principal: #dddddd;
   --Texto_secundario: #b6b6b6;
-  --back_btn: #11121d;
-  --linea_separadora: #1c1d29;
-  --card_destacado_deg1: #191a25;
-  --card_destacado_deg2: rgb(38, 40, 59);
-  --card_comun: #1b1c2c;
 }
 
 body {
@@ -74,7 +64,7 @@ body header nav {
   flex-direction: row;
   height: 100%;
   width: 100%;
-  border-bottom: 1px solid var(--linea_separadora);
+  border-bottom: 1px solid #e0e6ed;
 }
 body header nav #cont_nav_tit {
   display: flex;
@@ -103,7 +93,7 @@ body header nav #cont_nav_tit i {
 body header nav #cont_nav_tit h3 {
   text-decoration: none;
   font-size: 2em;
-  color: var(--Texto_principal);
+  color: var(--azul_oscuro);
 }
 body header nav .secciones_nav {
   width: 40%;
@@ -117,7 +107,7 @@ body header nav .secciones_nav {
 body header nav .secciones_nav a {
   font-weight: 500;
   font-size: 1.2rem;
-  color: var(--Texto_principal);
+  color: var(--azul_oscuro);
   text-decoration: none;
 }
 body header nav #cont_nav_links {
@@ -139,22 +129,23 @@ body header nav #cont_nav_links a {
   justify-content: center;
   align-items: center;
   gap: 3px;
-  color: var(--Texto_principal);
+  color: var(--azul_oscuro);
   font-weight: 600;
   text-decoration: none;
-  background-color: transparent;
-  border: 1px solid var(--Texto_principal);
+  background-color: white;
+  border: 1px solid var(--azul_oscuro);
   transition: all 0.2s ease-in-out;
 }
 body header nav #cont_nav_links a#admin_btn {
-  background-color: transparent;
+  background-color: var(--azul_oscuro);
   color: white;
 }
 body header nav #cont_nav_links a .desac {
   display: none;
 }
 body header nav #cont_nav_links a:hover {
-  transform: scale(1.05);
+  background-color: var(--azul_oscuro);
+  color: white;
 }
 body main {
   height: auto;
@@ -165,14 +156,6 @@ body main {
   align-items: flex-start;
   flex-direction: column;
   background-color: var(--Fondo_principal);
-}
-body main .badge {
-  background-color: #e3eaf6;
-  color: #1e2f4b;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
 }
 body main #cont_presentacion {
   height: 100vh;
@@ -240,19 +223,19 @@ body main .stats-section {
   width: 100%;
   padding: 80px;
   background-color: var(--Fondo_principal);
-  border: 1px solid var(--linea_separadora);
+  border: 1px solid #e0e6ed;
 }
 body main .stats-section .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  color: var(--Texto_principal);
+  color: #2b3e51;
   width: 100%;
 }
 body main .stats-section .stat-item i {
   font-size: 2rem;
-  color: var(--Texto_principal);
+  color: #1e3a5f;
   margin-bottom: 0.5rem;
 }
 body main .stats-section .stat-item h3 {
@@ -273,15 +256,23 @@ body main .featured-destinations {
 body main .featured-destinations .section-header {
   margin-bottom: 2rem;
 }
+body main .featured-destinations .section-header .badge {
+  background-color: #e3eaf6;
+  color: #355179;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
 body main .featured-destinations .section-header h2 {
   font-size: 3.2em;
   font-weight: 700;
-  color: var(--Texto_principal);
+  color: #1b2d4f;
   margin: 0.5rem 0;
   text-align: center;
 }
 body main .featured-destinations .section-header p {
-  color: var(--Texto_secundario);
+  color: #5c6e7f;
   font-size: 1.4em;
   max-width: 600px;
   width: 60%;
@@ -295,8 +286,8 @@ body main .featured-destinations .cards-container {
   gap: 1.5rem;
 }
 body main .featured-destinations .card {
-  background: var(--Fondo_principal);
-  border: 1px solid var(--linea_separadora);
+  background: #fff;
+  border: 1px solid #cfd8e3;
   border-radius: 12px;
   padding: 1rem;
   width: 320px;
@@ -352,19 +343,19 @@ body main .featured-destinations .card .card-body {
 body main .featured-destinations .card .card-body h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--Texto_principal);
+  color: #1e2a38;
   margin: 0.5rem 0;
 }
 body main .featured-destinations .card .card-body p {
   font-size: 0.9rem;
-  color: var(--Texto_secundario);
+  color: #5d6e7e;
   margin-bottom: 0.5rem;
 }
 body main .featured-destinations .card .card-body .info {
   display: flex;
   gap: 1rem;
   font-size: 0.85rem;
-  color: var(--Texto_secundario);
+  color: #445566;
   margin-bottom: 0.3rem;
 }
 body main .featured-destinations .card .card-body .rating {
@@ -422,15 +413,23 @@ body main .servicios {
   background-color: var(--Fondo_principal);
   width: 100%;
 }
+body main .servicios .section-label {
+  display: inline-block;
+  font-size: 0.8rem;
+  background-color: #e2e8f0;
+  color: #475569;
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
 body main .servicios .section-title {
-  margin-top: 10px;
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--Texto_principal);
+  color: #1e293b;
   margin-bottom: 0.5rem;
 }
 body main .servicios .section-subtitle {
-  color: var(--Texto_secundario);
+  color: #475569;
   margin-bottom: 2rem;
   font-size: 1.1rem;
 }
@@ -441,7 +440,7 @@ body main .servicios .servicios-grid {
   justify-content: center;
 }
 body main .servicios .servicio-card {
-  background: var(--card_comun);
+  background: #f1f5f9;
   padding: 2rem 1rem;
   border-radius: 16px;
   transition: all 0.3s ease;
@@ -465,16 +464,16 @@ body main .servicios .servicio-card .icono {
 }
 body main .servicios .servicio-card h3 {
   font-size: 1rem;
-  color: var(--Texto_principal);
+  color: #1e293b;
   margin: 0;
 }
 body main .servicios .servicio-card .texto-servicio {
   font: 0.9rem;
-  color: var(--Texto_secundario);
+  color: #616161;
   margin-top: 2%;
 }
 body main .servicios .servicio-card.destacado {
-  background: linear-gradient(to bottom right, var(--card_destacado_deg1), var(--card_destacado_deg2));
+  background: linear-gradient(to bottom right, #e2e8f0, #cbd5e1);
 }
 body main .servicios .servicio-card.destacado .icono {
   background-color: #1e293b;
@@ -492,12 +491,11 @@ body main .hero-section {
   align-items: center;
   flex-direction: column;
 }
-body main .hero-section h2 {
+body main .hero-section h1 {
   font-weight: 700;
   font-size: 3rem;
   width: 60%;
   margin-bottom: 0.5rem;
-  color: white;
 }
 body main .hero-section p {
   font-weight: 400;
@@ -519,7 +517,6 @@ body main .hero-section .buttons button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   min-width: 140px;
-  transition: all 0.2s ease-in-out;
 }
 body main .hero-section .buttons .btn-primary {
   background-color: white;
@@ -537,7 +534,7 @@ body main .hero-section .buttons .btn-secondary {
   min-width: 140px;
 }
 body .footer {
-  background-color: #11121d;
+  background-color: #1a1a2e;
   color: #ffffff;
   padding: 40px 20px;
   width: 100%;
@@ -976,7 +973,7 @@ header h1 {
   }
 }
 #cont_paquete {
-  background-color: var(--Fondo_principal);
+  background-color: #f0f2f5;
   width: 100%;
   margin-top: 10px;
 }
@@ -989,7 +986,7 @@ header h1 {
   padding: 100px;
   width: 100%;
   margin: 20px auto;
-  background-color: var(--Fondo_principal);
+  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
@@ -1044,9 +1041,6 @@ header h1 {
   flex: 2;
   min-width: 60%;
 }
-#cont_paquete .package-main-content h1 {
-  color: var(--Texto_principal);
-}
 @media (max-width: 992px) {
   #cont_paquete .package-main-content {
     min-width: unset;
@@ -1057,11 +1051,11 @@ header h1 {
   flex: 1;
   max-height: 600px;
   min-width: 300px;
-  background-color: var(--card_destacado_deg1);
+  background-color: #ffffff;
   padding: 25px;
   height: auto !important;
   border-radius: 8px;
-  border: 1px solid var(--linea_separadora);
+  border: 1px solid #dee2e6;
 }
 @media (max-width: 992px) {
   #cont_paquete .package-sidebar {
@@ -1099,10 +1093,7 @@ header h1 {
   background-color: #ff8c00;
 }
 #cont_paquete .package-header-info .badges .badge.internacional {
-  background-color: rgb(41, 39, 155);
-}
-#cont_paquete .package-header-info .badges .badge.national {
-  background-color: rgb(74, 72, 187);
+  background-color: #007bff;
 }
 #cont_paquete .package-header-info .actions {
   display: flex;
@@ -1252,22 +1243,22 @@ header h1 {
 }
 #cont_paquete .about-package h2 {
   font-size: 1.5rem;
-  color: var(--Texto_principal);
+  color: #212529;
   margin-bottom: 15px;
 }
 #cont_paquete .about-package p {
   margin-bottom: 10px;
-  color: var(--Texto_secundario);
+  color: #343a40;
 }
 #cont_paquete .opinion-package h2 {
   font-size: 1.8em;
-  color: var(--Texto_principal);
+  color: #333333;
   margin-bottom: 25px;
   font-weight: 600;
 }
 #cont_paquete .opinion-package .add-suggestion-section {
-  background-color: var(--Fondo_principal);
-  border: 1px solid var(--linea_separadora);
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   padding: 25px;
@@ -1275,10 +1266,10 @@ header h1 {
 }
 #cont_paquete .opinion-package .add-suggestion-section h3 {
   font-size: 1.5em;
-  color: var(--Texto_principal);
+  color: #333333;
   margin-bottom: 20px;
   font-weight: 600;
-  border-bottom: 1px solid var(--linea_separadora);
+  border-bottom: 1px solid #F0F0F0;
   padding-bottom: 10px;
 }
 #cont_paquete .opinion-package .add-suggestion-section .suggestion-form {
@@ -1292,18 +1283,17 @@ header h1 {
 }
 #cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group label {
   font-size: 1em;
-  color: var(--Texto_secundario);
+  color: #555555;
   margin-bottom: 8px;
   font-weight: 500;
 }
 #cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group input[type=text],
 #cont_paquete .opinion-package .add-suggestion-section .suggestion-form .form-group textarea {
   padding: 12px;
-  border: 1px solid var(--linea_separadora);
+  border: 1px solid #CCCCCC;
   border-radius: 5px;
-  background-color: var(--card_destacado_deg1);
   font-size: 1em;
-  color: var(--Texto_principal);
+  color: #333333;
   width: 100%;
   box-sizing: border-box;
 }
@@ -1379,8 +1369,8 @@ header h1 {
   gap: 20px;
   padding: 20px;
   margin-bottom: 20px;
-  background-color: var(--Fondo_principal);
-  border: 1px solid var(--linea_separadora);
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
@@ -1409,7 +1399,7 @@ header h1 {
 }
 #cont_paquete .opinion-package .cont_reseña .cont_infor_user .user_name {
   font-size: 1.2em;
-  color: var(--Texto_principal);
+  color: #333333;
   margin-top: 0;
   margin-bottom: 5px;
   font-weight: 600;
@@ -1429,11 +1419,11 @@ header h1 {
 }
 #cont_paquete .opinion-package .cont_reseña .cont_infor_user .cont_fecha span {
   font-size: 0.9em;
-  color: var(--Texto_secundario);
+  color: #666666;
 }
 #cont_paquete .opinion-package .cont_reseña p {
   font-size: 1em;
-  color: var(--Texto_secundario);
+  color: #333333;
   line-height: 1.6;
   margin-top: 0;
 }
@@ -1442,7 +1432,7 @@ header h1 {
 }
 #cont_paquete .vuelos-package h2 {
   font-size: 1.8em;
-  color: var(--Texto_principal);
+  color: #333333;
   margin-bottom: 25px;
   font-weight: 600;
   text-align: left;
@@ -1453,8 +1443,8 @@ header h1 {
   gap: 25px;
 }
 #cont_paquete .vuelos-package .flight-details-container .flight-detail-card {
-  background-color: var(--card_destacado_deg1);
-  border: 1px solid var(--linea_separadora);
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   padding: 25px;
@@ -1464,11 +1454,11 @@ header h1 {
 }
 #cont_paquete .vuelos-package .flight-details-container .flight-detail-card h3 {
   font-size: 1.4em;
-  color: var(--Texto_principal);
+  color: #333333;
   margin-top: 0;
   margin-bottom: 20px;
   font-weight: 600;
-  border-bottom: 1px solid var(--linea_separadora);
+  border-bottom: 1px solid #F0F0F0;
   padding-bottom: 10px;
 }
 #cont_paquete .vuelos-package .flight-details-container .flight-detail-card .detail-item {
@@ -1476,7 +1466,7 @@ header h1 {
   align-items: center;
   margin-bottom: 15px;
   font-size: 1em;
-  color: var(--Texto_secundario);
+  color: #555555;
 }
 #cont_paquete .vuelos-package .flight-details-container .flight-detail-card .detail-item i {
   color: #007bff;
@@ -1488,10 +1478,9 @@ header h1 {
 #cont_paquete .vuelos-package .flight-details-container .flight-detail-card .detail-item span {
   font-weight: 400;
   margin-right: 5px;
-  color: var(--Texto_secundario);
 }
 #cont_paquete .vuelos-package .flight-details-container .flight-detail-card .detail-item strong {
-  color: var(--Texto_secundario);
+  color: #333333;
   font-weight: 500;
 }
 #cont_paquete .vuelos-package .flight-details-container .flight-detail-card .detail-item:last-child {
@@ -1513,7 +1502,7 @@ header h1 {
 }
 #cont_paquete .hotel-package h2 {
   font-size: 1.8em;
-  color: var(--Texto_principal);
+  color: #333333;
   margin-bottom: 25px;
   font-weight: 600;
   text-align: left;
@@ -1524,8 +1513,8 @@ header h1 {
   gap: 25px;
 }
 #cont_paquete .hotel-package .hotel-details-container .hotel-detail-card {
-  background-color: var(--card_destacado_deg1);
-  border: 1px solid var(--linea_separadora);
+  background-color: #FFFFFF;
+  border: 1px solid #E0E0E0;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   padding: 25px;
@@ -1535,11 +1524,11 @@ header h1 {
 }
 #cont_paquete .hotel-package .hotel-details-container .hotel-detail-card h3 {
   font-size: 1.4em;
-  color: var(--Texto_principal);
+  color: #333333;
   margin-top: 0;
   margin-bottom: 20px;
   font-weight: 600;
-  border-bottom: 1px solid var(--linea_separadora);
+  border-bottom: 1px solid #F0F0F0;
   padding-bottom: 10px;
 }
 #cont_paquete .hotel-package .hotel-details-container .hotel-detail-card .detail-item {
@@ -1547,7 +1536,7 @@ header h1 {
   align-items: center;
   margin-bottom: 15px;
   font-size: 1em;
-  color: var(--Texto_secundario);
+  color: #555555;
 }
 #cont_paquete .hotel-package .hotel-details-container .hotel-detail-card .detail-item i {
   color: #007bff;
@@ -1561,7 +1550,7 @@ header h1 {
   margin-right: 5px;
 }
 #cont_paquete .hotel-package .hotel-details-container .hotel-detail-card .detail-item strong {
-  color: var(--Texto_secundario);
+  color: #333333;
   font-weight: 500;
 }
 #cont_paquete .hotel-package .hotel-details-container .hotel-detail-card .detail-item .hotel-stars {
@@ -1613,7 +1602,7 @@ header h1 {
 #cont_paquete .price-box .current-price .price-value {
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--Texto_principal);
+  color: #212529;
 }
 @media (max-width: 992px) {
   #cont_paquete .price-box .current-price .price-value {
@@ -1675,8 +1664,8 @@ header h1 {
 }
 #cont_paquete .package-info-item .info-details .label {
   font-size: 0.9rem;
+  color: #6c757d;
   margin-bottom: 3px;
-  color: var(--Texto_secundario);
 }
 @media (max-width: 576px) {
   #cont_paquete .package-info-item .info-details .label {
@@ -1686,7 +1675,7 @@ header h1 {
 #cont_paquete .package-info-item .info-details .value {
   font-size: 1.1rem;
   font-weight: 500;
-  color: var(--Texto_principal);
+  color: #212529;
 }
 @media (max-width: 576px) {
   #cont_paquete .package-info-item .info-details .value {
@@ -1707,18 +1696,21 @@ header h1 {
   font: inherit;
   cursor: pointer;
   outline: inherit;
-  background-color: var(--Fondo_principal);
+  background-color: #f1f3f5;
   padding: 8px 12px;
   font-size: 1rem;
-  color: var(--Texto_secundario);
+  color: #212529;
   transition: background-color 0.3s ease;
+}
+#cont_paquete .package-info-item .quantity-selector .quantity-button:hover {
+  background-color: #dee2e6;
 }
 #cont_paquete .package-info-item .quantity-selector span {
   padding: 8px 15px;
-  border-left: 1px solid var(--linea_separadora);
-  border-right: 1px solid var(--linea_separadora);
+  border-left: 1px solid #dee2e6;
+  border-right: 1px solid #dee2e6;
   font-weight: 500;
-  color: var(--Texto_principal);
+  color: #212529;
 }
 #cont_paquete .price-summary {
   border-top: 1px solid #dee2e6;
@@ -1731,12 +1723,12 @@ header h1 {
   justify-content: space-between;
   margin-bottom: 10px;
   font-size: 1rem;
-  color: var(--Texto_secundario);
+  color: #343a40;
 }
 #cont_paquete .price-summary .summary-row.total-price {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--Texto_secundario);
+  color: #212529;
 }
 #cont_paquete .price-summary .summary-row .summary-value {
   font-weight: 600;
@@ -1750,8 +1742,8 @@ header h1 {
   outline: inherit;
   width: 100%;
   padding: 15px;
-  background-color: #1a2a4a;
-  color: white;
+  background-color: #212529;
+  color: #fff;
   border-radius: 5px;
   font-size: 1.1rem;
   font-weight: 600;
