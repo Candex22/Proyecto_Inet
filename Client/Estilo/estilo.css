@@ -135,21 +135,22 @@ body header nav #cont_nav_links a {
   justify-content: center;
   align-items: center;
   gap: 3px;
-  color: var(--Texto_principal);
+  color: var(--azul_oscuro);
   font-weight: 600;
   text-decoration: none;
   background-color: transparent;
   border: 1px solid var(--Texto_principal);
 }
 body header nav #cont_nav_links a#admin_btn {
-  background-color: transparent;
+  background-color: var(--azul_oscuro);
   color: white;
 }
 body header nav #cont_nav_links a .desac {
   display: none;
 }
 body header nav #cont_nav_links a:hover {
-  transform: scale(1.05);
+  background-color: var(--azul_oscuro);
+  color: white;
 }
 body main {
   height: auto;
@@ -160,14 +161,6 @@ body main {
   align-items: flex-start;
   flex-direction: column;
   background-color: var(--Fondo_principal);
-}
-body main .badge {
-  background-color: #e3eaf6;
-  color: #1e2f4b;
-  padding: 0.4rem 1rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 600;
 }
 body main #cont_presentacion {
   height: 100vh;
@@ -235,19 +228,19 @@ body main .stats-section {
   width: 100%;
   padding: 80px;
   background-color: var(--Fondo_principal);
-  border: 1px solid var(--linea_separadora);
+  border: 1px solid #e0e6ed;
 }
 body main .stats-section .stat-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  color: var(--Texto_principal);
+  color: #2b3e51;
   width: 100%;
 }
 body main .stats-section .stat-item i {
   font-size: 2rem;
-  color: var(--Texto_principal);
+  color: #1e3a5f;
   margin-bottom: 0.5rem;
 }
 body main .stats-section .stat-item h3 {
@@ -268,15 +261,23 @@ body main .featured-destinations {
 body main .featured-destinations .section-header {
   margin-bottom: 2rem;
 }
+body main .featured-destinations .section-header .badge {
+  background-color: #e3eaf6;
+  color: #355179;
+  padding: 0.4rem 1rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
 body main .featured-destinations .section-header h2 {
   font-size: 3.2em;
   font-weight: 700;
-  color: var(--Texto_principal);
+  color: #1b2d4f;
   margin: 0.5rem 0;
   text-align: center;
 }
 body main .featured-destinations .section-header p {
-  color: var(--Texto_secundario);
+  color: #5c6e7f;
   font-size: 1.4em;
   max-width: 600px;
   width: 60%;
@@ -290,8 +291,8 @@ body main .featured-destinations .cards-container {
   gap: 1.5rem;
 }
 body main .featured-destinations .card {
-  background: var(--Fondo_principal);
-  border: 1px solid var(--linea_separadora);
+  background: #fff;
+  border: 1px solid #cfd8e3;
   border-radius: 12px;
   padding: 1rem;
   width: 320px;
@@ -347,19 +348,19 @@ body main .featured-destinations .card .card-body {
 body main .featured-destinations .card .card-body h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--Texto_principal);
+  color: #1e2a38;
   margin: 0.5rem 0;
 }
 body main .featured-destinations .card .card-body p {
   font-size: 0.9rem;
-  color: var(--Texto_secundario);
+  color: #5d6e7e;
   margin-bottom: 0.5rem;
 }
 body main .featured-destinations .card .card-body .info {
   display: flex;
   gap: 1rem;
   font-size: 0.85rem;
-  color: var(--Texto_secundario);
+  color: #445566;
   margin-bottom: 0.3rem;
 }
 body main .featured-destinations .card .card-body .rating {
@@ -417,15 +418,23 @@ body main .servicios {
   background-color: var(--Fondo_principal);
   width: 100%;
 }
+body main .servicios .section-label {
+  display: inline-block;
+  font-size: 0.8rem;
+  background-color: #e2e8f0;
+  color: #475569;
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
 body main .servicios .section-title {
-  margin-top: 10px;
   font-size: 2.5rem;
   font-weight: 700;
-  color: var(--Texto_principal);
+  color: #1e293b;
   margin-bottom: 0.5rem;
 }
 body main .servicios .section-subtitle {
-  color: var(--Texto_secundario);
+  color: #475569;
   margin-bottom: 2rem;
   font-size: 1.1rem;
 }
@@ -487,12 +496,11 @@ body main .hero-section {
   align-items: center;
   flex-direction: column;
 }
-body main .hero-section h2 {
+body main .hero-section h1 {
   font-weight: 700;
   font-size: 3rem;
   width: 60%;
   margin-bottom: 0.5rem;
-  color: white;
 }
 body main .hero-section p {
   font-weight: 400;
@@ -514,7 +522,6 @@ body main .hero-section .buttons button {
   cursor: pointer;
   transition: background-color 0.3s ease;
   min-width: 140px;
-  transition: all 0.2s ease-in-out;
 }
 body main .hero-section .buttons .btn-primary {
   background-color: white;
@@ -532,7 +539,7 @@ body main .hero-section .buttons .btn-secondary {
   min-width: 140px;
 }
 body .footer {
-  background-color: #11121d;
+  background-color: #1a1a2e;
   color: #ffffff;
   padding: 40px 20px;
   width: 100%;
