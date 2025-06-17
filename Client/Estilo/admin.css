@@ -1341,17 +1341,16 @@ body .footer .footer-bottom p {
   grid-template-columns: repeat(2, 850px);
   grid-column-gap: 50px;
   grid-row-gap: 0px;
-}
+  }
 
-.dashboard-section {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  gap: 50px;
-}
-
-.dashboard-section .agregar-producto {
+  .dashboard-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 50px;
+  }
+.dashboard-section .agregar-producto { 
   width: 100%;
   min-height: fit-content;
   background-color: var(--color-fondo);
@@ -1361,7 +1360,6 @@ body .footer .footer-bottom p {
   .dashboard-content {
     grid-template-columns: 1fr;
     grid-row-gap: 50px;
-    height: 60%;
   }
 
   .dashboard-section {
@@ -1449,16 +1447,16 @@ body .footer .footer-bottom p {
 
 /* Estilos para el formulario de productos */
 .agregar-producto {
-  background: var(--Fondo_principal);
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin-bottom: 2rem;
-  transition: transform 0.3s ease;
-  border: 1px solid #e0e6ed;
-  min-height: 20%;
-  height: auto;
-  min-height: fit-content;
+    background: var(--Fondo_principal);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+    transition: transform 0.3s ease;
+    border: 1px solid #e0e6ed;
+    min-height: 20%;
+    height: auto;
+    min-height: fit-content;
 }
 
 .agregar-producto:hover {
