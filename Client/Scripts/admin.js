@@ -75,9 +75,11 @@ document.getElementById('productForm').addEventListener('submit', async (e) => {
                 case 'vuelo':
                     response = await actualizarVuelo(editId, formData);
                     break;
-                case 'alquiler':
+                case 'alquiler_auto':
                     response = await actualizarAlquilerAuto(editId, formData);
                     break;
+                default:
+                    throw new Error('Tipo de producto no válido para actualizar');
             }
         } else {
             // Agregar nuevo producto

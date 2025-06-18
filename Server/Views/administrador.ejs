@@ -91,7 +91,7 @@
                                                 <option value="paquete">Paquete Turístico</option>
                                                 <option value="hotel">Hotel</option>
                                                 <option value="vuelo">Vuelo</option>
-                                                <option value="alquiler">Alquiler de Auto</option>
+                                                <option value="alquiler_auto">Alquiler de Auto</option>
                                             </select>
                                         </div>
 
@@ -238,7 +238,7 @@
                                         </div>
 
                                         <!-- Campos específicos para Alquiler de Auto -->
-                                        <div id="campos_alquiler" style="display: none;">
+                                        <div id="campos_alquiler_auto" style="display: none;">
                                             <div class="form-group">
                                                 <label for="marca">Marca</label>
                                                 <input type="text" id="marca" name="marca">
@@ -461,7 +461,7 @@
                 document.getElementById('campos_paquete').style.display = 'none';
                 document.getElementById('campos_hotel').style.display = 'none';
                 document.getElementById('campos_vuelo').style.display = 'none';
-                document.getElementById('campos_alquiler').style.display = 'none';
+                document.getElementById('campos_alquiler_auto').style.display = 'none';
 
                 // Mostrar los campos correspondientes al tipo seleccionado
                 if (tipoProducto) {
