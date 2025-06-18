@@ -421,34 +421,35 @@ function actualizarTablaProductos(productos) {
     }
 
     productos.forEach(producto => {
-        console.log('Procesando producto:', producto);
-        const tr = document.createElement('tr');
-
-        // Determinar el tipo de producto y sus campos específicos
-        let nombre, categoria, precio, id;
+        let nombre, categoria, precio, id, tipo;
 
         if ('nombre_paquete' in producto) {
             nombre = producto.nombre_paquete;
             categoria = 'Paquete';
             precio = producto.precio_total;
             id = producto.id_paquete;
-        } else if ('nombre' in producto) {
+            tipo = 'paquete';
+        } else if ('nombre' in producto && 'precio_noche' in producto) {
             nombre = producto.nombre;
             categoria = 'Hotel';
             precio = producto.precio_noche;
             id = producto.id_hotel;
+            tipo = 'hotel';
         } else if ('numero_vuelo' in producto) {
             nombre = producto.numero_vuelo;
             categoria = 'Vuelo';
             precio = producto.precio_base;
             id = producto.id_vuelo;
+            tipo = 'vuelo';
         } else {
             nombre = `${producto.marca} ${producto.modelo}`;
             categoria = 'Alquiler';
             precio = producto.precio_total;
             id = producto.id_alquiler_auto;
+            tipo = 'alquiler_auto';
         }
 
+        const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>
                 <label class="checkbox-container">
@@ -475,13 +476,13 @@ function actualizarTablaProductos(productos) {
             </td>
             <td>
                 <div class="action-buttons">
-                    <button class="btn-editar" onclick="editarProducto('${id}')" title="Editar">
+                    <button class="btn-editar" onclick="editarProducto('${id}', '${tipo}')" title="Editar">
                         <i class="fas fa-edit"></i>
                     </button>
-                    <button class="btn-eliminar" onclick="eliminarProducto('${id}')" title="Eliminar">
+                    <button class="btn-eliminar" onclick="eliminarProducto('${id}', '${tipo}')" title="Eliminar">
                         <i class="fas fa-trash-alt"></i>
                     </button>
-                    <button class="btn-view" onclick="verProducto('${id}')" title="Vista previa">
+                    <button class="btn-view" onclick="verProducto('${id}', '${tipo}')" title="Vista previa">
                         <i class="fas fa-eye"></i>
                     </button>
                 </div>
@@ -499,39 +500,19 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Función para editar un producto
-async function editarProducto(id) {
+async function editarProducto(id, tipo) {
     try {
-        // Determinar el tipo de producto basado en el ID
-        let tipoProducto, tabla, idField;
-        if (id.startsWith('PAQ')) {
-            tipoProducto = 'paquete';
-            tabla = 'paquete';
-            idField = 'id_paquete';
-        } else if (id.startsWith('HOT')) {
-            tipoProducto = 'hotel';
-            tabla = 'hotel';
-            idField = 'id_hotel';
-        } else if (id.startsWith('VUE')) {
-            tipoProducto = 'vuelo';
-            tabla = 'vuelo';
-            idField = 'id_vuelo';
-        } else if (id.startsWith('ALQ')) {
-            tipoProducto = 'alquiler';
-            tabla = 'alquiler_auto';
-            idField = 'id_alquiler_auto';
-        }
-
         // Obtener los datos del producto
         const { data: producto, error } = await supabase
-            .from(tabla)
+            .from(tipo)
             .select('*')
-            .eq(idField, id)
+            .eq('id_' + tipo, id)
             .single();
 
         if (error) throw error;
 
         // Llenar el formulario con los datos del producto
-        document.getElementById('tipo_producto').value = tipoProducto;
+        document.getElementById('tipo_producto').value = tipo;
         mostrarCamposEspecificos();
 
         // Llenar campos comunes
@@ -539,7 +520,7 @@ async function editarProducto(id) {
         document.getElementById('precio').value = producto.precio_total || producto.precio_noche || producto.precio_base;
 
         // Llenar campos específicos según el tipo
-        switch (tipoProducto) {
+        switch (tipo) {
             case 'paquete':
                 document.getElementById('descripcion').value = producto.descripcion || '';
                 document.getElementById('fecha_inicio').value = producto.fecha_inicio_validez || '';
@@ -567,7 +548,7 @@ async function editarProducto(id) {
                 document.getElementById('fecha_llegada').value = producto.fecha_llegada || '';
                 document.getElementById('clase_vuelo').value = producto.clase_vuelo || '';
                 break;
-            case 'alquiler':
+            case 'alquiler_auto':
                 document.getElementById('marca').value = producto.marca || '';
                 document.getElementById('modelo').value = producto.modelo || '';
                 document.getElementById('tipo_vehiculo').value = producto.tipo_vehiculo || '';
@@ -583,7 +564,7 @@ async function editarProducto(id) {
         // Agregar el ID del producto al formulario para la actualización
         const form = document.getElementById('productForm');
         form.dataset.editId = id;
-        form.dataset.editType = tipoProducto;
+        form.dataset.editType = tipo;
 
         // Hacer scroll al formulario
         form.scrollIntoView({ behavior: 'smooth' });
@@ -595,44 +576,36 @@ async function editarProducto(id) {
 }
 
 // Función para eliminar un producto
-async function eliminarProducto(id) {
+async function eliminarProducto(id, tipo) {
     try {
-        if (!id) {
-            throw new Error('ID de producto no válido');
+        if (!id || !tipo) {
+            throw new Error('ID o tipo de producto no válido');
         }
 
-        // Determinar el tipo de producto basado en el ID
         let tabla, idField;
-        if (id.startsWith('PAQ')) {
+        if (tipo === 'paquete') {
             tabla = 'paquete';
             idField = 'id_paquete';
-        } else if (id.startsWith('HOT')) {
+        } else if (tipo === 'hotel') {
             tabla = 'hotel';
             idField = 'id_hotel';
-        } else if (id.startsWith('VUE')) {
+        } else if (tipo === 'vuelo') {
             tabla = 'vuelo';
             idField = 'id_vuelo';
-        } else if (id.startsWith('ALQ')) {
+        } else if (tipo === 'alquiler_auto') {
             tabla = 'alquiler_auto';
             idField = 'id_alquiler_auto';
         } else {
-            throw new Error('ID de producto no válido');
-        }
-
-        if (!tabla || !idField) {
-            throw new Error('No se pudo determinar la tabla o el campo ID');
+            throw new Error('Tipo de producto no reconocido');
         }
 
         if (confirm('¿Estás seguro de que deseas eliminar este producto?')) {
-            console.log('Intentando eliminar producto:', { tabla, idField, id });
-
             const { error } = await supabase
                 .from(tabla)
                 .delete()
                 .eq(idField, id);
 
             if (error) {
-                console.error('Error de Supabase:', error);
                 throw error;
             }
 
@@ -640,49 +613,28 @@ async function eliminarProducto(id) {
             cargarProductos(); // Recargar la tabla
         }
     } catch (error) {
-        console.error('Error al eliminar producto:', error);
         mostrarMensaje('Error al eliminar el producto: ' + error.message, 'error');
     }
 }
 
 // Función para ver un producto
-async function verProducto(id) {
+async function verProducto(id, tipo) {
     try {
-        // Determinar el tipo de producto basado en el ID
-        let tipoProducto, tabla, idField;
-        if (id.startsWith('PAQ')) {
-            tipoProducto = 'paquete';
-            tabla = 'paquete';
-            idField = 'id_paquete';
-        } else if (id.startsWith('HOT')) {
-            tipoProducto = 'hotel';
-            tabla = 'hotel';
-            idField = 'id_hotel';
-        } else if (id.startsWith('VUE')) {
-            tipoProducto = 'vuelo';
-            tabla = 'vuelo';
-            idField = 'id_vuelo';
-        } else if (id.startsWith('ALQ')) {
-            tipoProducto = 'alquiler';
-            tabla = 'alquiler_auto';
-            idField = 'id_alquiler_auto';
-        }
-
         // Obtener los datos del producto
         const { data: producto, error } = await supabase
-            .from(tabla)
+            .from(tipo)
             .select('*')
-            .eq(idField, id)
+            .eq('id_' + tipo, id)
             .single();
 
         if (error) throw error;
 
         // Crear el contenido del modal
         let detallesHTML = '<div class="producto-detalles">';
-        detallesHTML += `<h3>Detalles del ${tipoProducto.charAt(0).toUpperCase() + tipoProducto.slice(1)}</h3>`;
+        detallesHTML += `<h3>Detalles del ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}</h3>`;
 
         // Agregar los detalles según el tipo de producto
-        switch (tipoProducto) {
+        switch (tipo) {
             case 'paquete':
                 detallesHTML += `
                     <p><strong>Nombre:</strong> ${producto.nombre_paquete}</p>
@@ -717,7 +669,7 @@ async function verProducto(id) {
                     <p><strong>Precio Base:</strong> $${producto.precio_base}</p>
                 `;
                 break;
-            case 'alquiler':
+            case 'alquiler_auto':
                 detallesHTML += `
                     <p><strong>Marca:</strong> ${producto.marca}</p>
                     <p><strong>Modelo:</strong> ${producto.modelo}</p>
