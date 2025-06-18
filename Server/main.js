@@ -23,7 +23,7 @@ const app = express()
 
 const session = require('express-session')
 const mysql = require('mysql2');
-const nodemailer = require('nodemailer'); 
+const nodemailer = require('nodemailer');
 
 const bcrypt = require('bcrypt');
 const path = require('path');
@@ -71,7 +71,7 @@ app.use(express.urlencoded({ extended: true }));
 // Encender servidor
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`Servidor corriendo en el puerto ${port}`);
+    console.log(`Servidor corriendo en el puerto ${port}`);
 });
 
 
@@ -107,31 +107,40 @@ app.get('/login', (req, res) => {
 })
 
 app.get('/administrador', async (req, res) => {
-    let { data: vuelo, vueloError } = await supabase
-        .from('vuelo')
-        .select('*')
-
-    if (vueloError) {
-        console.error('❌ Error en Supabase (al obtener los vuelos):', vueloError);
-        if (Object.keys(vueloError).length === 0) {
-            console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
-        }
-        return res.render('login.ejs', { error: 'Error al cargar reseñas.' });
-    } else {
-        let { data: hotel, hotelError } = await supabase
-            .from('hotel')
+    
+    if (req.session.root != true) {
+        res.redirect('login');
+    } if (req.session.root == true) {
+        console.log("Ss")
+        let { data: vuelo, vueloError } = await supabase
+            .from('vuelo')
             .select('*')
-        if (hotelError) {
-            console.error('❌ Error en Supabase (al obtener reseñas):', hotelError);
-            if (Object.keys(hotelError).length === 0) {
+
+        if (vueloError) {
+            console.error('❌ Error en Supabase (al obtener los vuelos):', vueloError);
+            if (Object.keys(vueloError).length === 0) {
                 console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
             }
             return res.render('login.ejs', { error: 'Error al cargar reseñas.' });
         } else {
-            res.render('administrador', { session: req.session, data_vuelo: vuelo, data_hotel: hotel });
-        }
+            let { data: hotel, hotelError } = await supabase
+                .from('hotel')
+                .select('*')
+            if (hotelError) {
+                console.error('❌ Error en Supabase (al obtener reseñas):', hotelError);
+                if (Object.keys(hotelError).length === 0) {
+                    console.error('El objeto de error de Supabase está vacío. Posiblemente un problema de RLS o permisos de API Key.');
+                }
+                return res.render('login.ejs', { error: 'Error al cargar reseñas.' });
+            } else {
+                res.render('administrador', { session: req.session, data_vuelo: vuelo, data_hotel: hotel });
+            }
 
+        }
     }
+
+
+
 
 })
 
@@ -378,9 +387,10 @@ app.post('/iniciar_sesion', async (req, res) => {
         req.session.password_us = usuario.contraseña
         req.session.rol_us = usuario.rol
         req.session.user_sesion = true
-        req.session.root = usuario.rol === 'root'
+        console.log(usuario.rol)
+        req.session.root = usuario.rol === 'admin'
 
-        return res.redirect(req.session.root ? '/dashboard' : '/index')
+        return res.redirect(req.session.root ? '/administrador' : '/index')
 
     } catch (err) {
         console.error('Error en inicio de sesión:', err);
@@ -1077,7 +1087,7 @@ app.post('/api/procesar_pago', isLogged, async (req, res) => {
     if (!/^\d{7,8}$/.test(dni)) {
         return res.status(400).json({ error: 'El DNI debe contener 7 u 8 dígitos numéricos.' });
     }
-    
+
     if (!/^\d{10,}$/.test(phone)) {
         return res.status(400).json({ error: 'El teléfono debe contener al menos 10 dígitos numéricos.' });
     }
