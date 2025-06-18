@@ -16,6 +16,7 @@
 
 /* variables para el DOM en general.<-----------------------------------------------------------> */
 :root {
+  --color-section: #fafafa;
   --color-fondo: #ffffff;
   --color-texto: #000000;
   --azul_oscuro: #2B476C;
@@ -1358,17 +1359,19 @@ body .footer .footer-bottom p {
   grid-row-gap: 0px;
   }
 
-  .dashboard-section {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    gap: 50px;
-  }
+.dashboard-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 50px;
+}
+
 .dashboard-section .agregar-producto { 
   width: 100%;
   min-height: fit-content;
-  background-color: var(--color-fondo);
+  background-color: var(--color-section);
+  height: 15%;
 }
 
 @media (max-width: 1600px) {
@@ -1427,7 +1430,7 @@ body .footer .footer-bottom p {
 .dashboard-section .productos-existentes {
   width: 100%;
   height: 100%;
-  background-color: var(--color-fondo);
+  background-color: var(--color-section);
 }
 
 .dashboard-section .agregar-producto .productos-existentes h2 {
@@ -1462,16 +1465,12 @@ body .footer .footer-bottom p {
 
 /* Estilos para el formulario de productos */
 .agregar-producto {
-    background: var(--Fondo_principal);
     border-radius: 12px;
     padding: 2rem;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     margin-bottom: 2rem;
     transition: transform 0.3s ease;
     border: 1px solid #e0e6ed;
-    min-height: 20%;
-    height: auto;
-    min-height: fit-content;
 }
 
 .agregar-producto:hover {
@@ -1666,8 +1665,8 @@ body .footer .footer-bottom p {
 }
 
 .btn-primary {
-  background: var(--Encabezados_botones_y_primarios);
-  color: white;
+  background: var(--Texto_principal);
+  color: var(--card_destacado_deg1);
 }
 
 .btn-secondary {
@@ -1676,7 +1675,9 @@ body .footer .footer-bottom p {
 }
 
 .btn-primary:hover {
-  background: var(--Botones_secundarios_o_hover_azul);
+  background: var(--card_destacado_deg1);
+  color: var(--azul_oscuro);
+  border: 0.5px solid var(--azul_oscuro);
 }
 
 .btn-secondary:hover {
@@ -2264,7 +2265,7 @@ td {
 .page-btn {
   width: 32px;
   height: 32px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--azul_oscuro);
   background: var(--Fondo_principal);
   border-radius: 6px;
   display: flex;
@@ -2276,14 +2277,21 @@ td {
 }
 
 .page-btn.active {
-  background: var(--Encabezados_botones_y_primarios);
+  background: var(--Texto_secundario);
   color: white;
-  border-color: var(--Encabezados_botones_y_primarios);
+  border-color: var(--azul_oscuro);
+}
+
+.page-btn.active:hover {
+  background: var(--azul_oscuro);
+  color: white;
+  border-color: var(--azul_oscuro);
 }
 
 .page-btn:not(.active):hover {
-  background: var(--fondo_azul_claro);
-  border-color: var(--Encabezados_botones_y_primarios);
+  background: var(--azul_oscuro);
+  border-color: var(--color-texto);
+  color: var(--back_btn);
 }
 
 .page-dots {
