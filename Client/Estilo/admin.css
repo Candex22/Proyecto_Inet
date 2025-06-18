@@ -54,6 +54,7 @@ body {
   /* Asegura que padding y border no aumenten el tamaño total del elemento */
 }
 
+
 body header {
   height: 10vh;
   width: 100vw;
@@ -64,21 +65,21 @@ body header {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
   -webkit-transition: all .2s ease-in-out;
   transition: all .2s ease-in-out;
 }
 
 body header.reducir {
-  height: 50px;
+  height: 60px;
 }
 
 body header nav {
@@ -87,16 +88,17 @@ body header nav {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: distribute;
-  justify-content: space-around;
+      justify-content: space-around;
   -webkit-box-align: start;
-  -ms-flex-align: start;
-  align-items: flex-start;
+      -ms-flex-align: start;
+          align-items: flex-start;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
   height: 100%;
   width: 100%;
+  border-bottom: 1px solid var(--linea_separadora);
 }
 
 body header nav #cont_nav_tit {
@@ -104,11 +106,11 @@ body header nav #cont_nav_tit {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   padding: 3px;
   gap: 10px;
   height: 100%;
@@ -126,11 +128,11 @@ body header nav #cont_nav_tit i {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   font-size: 1em;
   background-color: var(--azul_oscuro);
   color: white;
@@ -140,7 +142,7 @@ body header nav #cont_nav_tit i {
 body header nav #cont_nav_tit h3 {
   text-decoration: none;
   font-size: 2em;
-  color: var(--azul_oscuro);
+  color: var(--Texto_principal);
 }
 
 body header nav .secciones_nav {
@@ -150,18 +152,19 @@ body header nav .secciones_nav {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  gap: 30px;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 250px;
   text-decoration: none;
 }
 
 body header nav .secciones_nav a {
   font-weight: 500;
-  color: var(--azul_oscuro);
+  font-size: 1.2rem;
+  color: var(--Texto_principal);
   text-decoration: none;
 }
 
@@ -170,19 +173,30 @@ body header nav #cont_nav_links {
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: distribute;
-  justify-content: space-around;
+      justify-content: space-around;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   -webkit-box-orient: horizontal;
   -webkit-box-direction: normal;
-  -ms-flex-direction: row;
-  flex-direction: row;
+      -ms-flex-direction: row;
+          flex-direction: row;
   padding: 30px;
   height: auto;
   height: 100%;
   width: 30%;
   gap: 20px;
+}
+
+body header nav #cont_nav_links .user-menu {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  gap: 10px;
 }
 
 body header nav #cont_nav_links a {
@@ -194,22 +208,22 @@ body header nav #cont_nav_links a {
   display: -ms-flexbox;
   display: flex;
   -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
+      -ms-flex-pack: center;
+          justify-content: center;
   -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
+      -ms-flex-align: center;
+          align-items: center;
   gap: 3px;
-  color: var(--azul_oscuro);
+  color: var(--Texto_principal);
   font-weight: 600;
   text-decoration: none;
-  background-color: white;
-  border: 1px solid var(--azul_oscuro);
+  background-color: transparent;
+  border: 1px solid var(--Texto_principal);
   transition: all .2s ease-in-out;
 }
 
 body header nav #cont_nav_links a#admin_btn {
-  background-color: var(--azul_oscuro);
+  background-color: transparent;
   color: white;
 }
 
@@ -218,9 +232,10 @@ body header nav #cont_nav_links a .desac {
 }
 
 body header nav #cont_nav_links a:hover {
-  background-color: var(--azul_oscuro);
-  color: white;
+  -webkit-transform: scale(1.05);
+          transform: scale(1.05);
 }
+
 
 body main {
   height: auto;
