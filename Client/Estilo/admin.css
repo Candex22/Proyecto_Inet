@@ -47,7 +47,7 @@
 body {
   /* Establece la fuente principal y el color de fondo para el cuerpo del dashboard */
   font-family: 'Inter', sans-serif;
-  background-color: #f8f9fa;
+  background-color: var(--Fondo_principal);
   /* Fondo gris claro para el panel de administración */
   margin: 0;
   padding: 0;
@@ -755,7 +755,7 @@ body main .hero-section .buttons .btn-primary:hover {
 body main .hero-section .buttons .btn-secondary {
   background-color: transparent;
   border: 1px solid rgba(255, 255, 255, 0.212);
-  color: #ffffff;
+  color:var(--Texto_principal);
   font-weight: 600;
   min-width: 140px;
 }
@@ -1190,8 +1190,9 @@ body .footer .footer-bottom p {
 
 .titulo h1 {
   /* Estilo del título principal del panel */
+
   font-size: 2.5rem;
-  color: var(--azul_oscuro);
+  color: var(--Texto_principal);
   /* Utiliza la variable de color principal definida globalmente */
   margin-bottom: 0.5rem;
   font-weight: 700;
@@ -1220,7 +1221,7 @@ body .footer .footer-bottom p {
 
 .card {
   /* Estilo de cada tarjeta individual de estadísticas */
-  background: white;
+  background: var(--card_destacado_deg2);
   /* Fondo blanco */
   border-radius: 12px;
   /* Bordes redondeados */
@@ -1265,7 +1266,7 @@ body .footer .footer-bottom p {
 .card-header .icon {
   /* Estilo de los iconos dentro del encabezado de la tarjeta */
   font-size: 1.5rem;
-  color: var(--azul_oscuro);
+  color: var(--Texto_principal);
   /* Un color gris azulado para los iconos */
 }
 
@@ -1273,7 +1274,7 @@ body .footer .footer-bottom p {
   /* Estilo del valor numérico principal en la tarjeta */
   font-size: 2rem;
   font-weight: 700;
-  color: var(--azul_oscuro);
+  color: var(--Texto_secundario);
   /* Utiliza la variable de color principal */
   margin-bottom: 0.5rem;
 }
@@ -1293,14 +1294,14 @@ body .footer .footer-bottom p {
   /* Espacio entre las pestañas */
   margin-bottom: 2rem;
   /* Espacio debajo del menú de pestañas */
-  border-bottom: 1px solid #e0e6ed;
+  border-bottom: 1px solid var(--card_destacado_deg1);
   /* Línea inferior del menú */
   padding-bottom: 0rem;
   /* Asegura que la línea esté pegada a los botones */
   justify-content: space-around;
   align-items: center;
   margin-top: 2rem;
-  background-color: #f0f0f0;
+  background-color: var(--card_destacado_deg2);
   border-radius: 15px;
 }
 
@@ -1324,21 +1325,21 @@ body .footer .footer-bottom p {
 
 .tab:hover {
   /* Efecto al pasar el ratón sobre una pestaña inactiva */
-  background: #f0f0f0;
+  background: var(--card_destacado_deg1);
   /* Fondo gris muy claro */
-  color: var(--azul_oscuro);
+  color: var(--Texto_principal);
   /* Texto azul oscuro */
 }
 
 .tab.active {
   /* Estilo de la pestaña actualmente seleccionada (activa) */
-  background: white;
+  background: var(--card_destacado_deg1);
   /* Fondo blanco */
-  color: var(--azul_oscuro);
+  color: var(--Texto_principal);
   /* Texto azul oscuro */
-  border: 1px solid #e0e6ed;
+  border: 1px solid var(--linea_separadora);
   /* Borde alrededor de la pestaña activa */
-  border-bottom: 1px solid white;
+  border-bottom: 1px solid var(--linea_separadora);;
   /* El borde inferior se "elimina" para fusionarse con el contenido */
   font-weight: 600;
   /* Texto seminegrita */
@@ -1370,7 +1371,7 @@ body .footer .footer-bottom p {
 .dashboard-section .agregar-producto { 
   width: 100%;
   min-height: fit-content;
-  background-color: var(--color-section);
+  background-color: var(--card_destacado_deg2);
   height: 15%;
 }
 
@@ -1430,7 +1431,7 @@ body .footer .footer-bottom p {
 .dashboard-section .productos-existentes {
   width: 100%;
   height: 100%;
-  background-color: var(--color-section);
+  background-color: var(--card_destacado_deg2);
 }
 
 .dashboard-section .agregar-producto .productos-existentes h2 {
@@ -1476,9 +1477,8 @@ body .footer .footer-bottom p {
 .agregar-producto:hover {
   transform: translateY(-10px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #eeeeee;
+
   cursor: pointer;
-  border: 1px solid #e0e6ed;
   transition: transform 0.3s ease;
   border-radius: 12px;
 }
@@ -1671,7 +1671,7 @@ body .footer .footer-bottom p {
 
 .btn-secondary {
   background: var(--fondo_azul_claro);
-  color: var(--Encabezados_botones_y_primarios);
+  color: var(--Texto_principal);
 }
 
 .btn-primary:hover {
@@ -1808,6 +1808,7 @@ th {
   border: 1px solid #ddd;
   background: var(--Fondo_principal);
   cursor: pointer;
+  color: var(--Texto_principal);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1845,11 +1846,10 @@ th {
   }
 }
 
-/* Estilos mejorados para la tabla de productos */
 .productos-existentes {
   width: 90%;
   height: 100%;
-  background: var(--Fondo_principal);
+  background: var(--card_destacado_deg2);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -1860,7 +1860,6 @@ th {
 .productos-existentes:hover {
   transform: translateY(-10px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  background-color: #eeeeee;
   cursor: pointer;
   border: 1px solid #e0e6ed;
   transition: transform 0.3s ease;
@@ -1949,7 +1948,7 @@ th {
 .btn-export {
   padding: 0.75rem 1.5rem;
   background: var(--fondo_azul_claro);
-  color: var(--Encabezados_botones_y_primarios);
+  color: var(--Texto_principal);
   border: none;
   border-radius: 8px;
   font-weight: 500;
@@ -2367,7 +2366,7 @@ td {
 /*# sourceMappingURL=estilo.css.map */
 .pedidos-container,
 .clientes-container {
-  background-color: var(--color-fondo);
+  background-color: var(--card_destacado_deg2);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
