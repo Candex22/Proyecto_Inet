@@ -176,7 +176,7 @@
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 2rem;
     padding: 2rem;
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
 }
 
@@ -188,6 +188,7 @@
     transition: transform 0.3s ease;
     border:  1px solid var(--linea_separadora);
     position: relative;
+    
 }
 
 .tarjeta-paquete:hover {
