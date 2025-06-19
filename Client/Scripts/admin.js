@@ -474,7 +474,7 @@ function actualizarTablaProductos(productos) {
                 </div>
             </td>
             <td>
-                <span class="status-badge active">Activo</span>
+                <span class="status-badge abierto">Activo</span>
             </td>
             <td>
                 <div class="action-buttons">
@@ -857,4 +857,578 @@ async function actualizarAlquilerAuto(id, formData) {
         .update(alquilerData)
         .eq('id_alquiler_auto', id)
         .select();
-} 
+}
+
+// ===== FUNCIONES PARA GESTIÓN DE PEDIDOS =====
+
+// Variables globales para pedidos
+let pedidosData = [];
+let pedidosFiltrados = [];
+let paginaActualPedidos = 1;
+const pedidosPorPagina = 10;
+
+// Función para cargar pedidos
+async function cargarPedidos() {
+    try {
+        console.log('Cargando pedidos...');
+        
+        const { data: pedidos, error } = await supabase
+            .from('pedido')
+            .select('*')
+            .order('fecha_pedido', { ascending: false });
+
+        if (error) {
+            console.error('Error al cargar pedidos:', error);
+            throw error;
+        }
+
+        pedidosData = pedidos || [];
+        pedidosFiltrados = [...pedidosData];
+        
+        console.log('Pedidos cargados:', pedidosData.length);
+        actualizarTablaPedidos();
+        
+    } catch (error) {
+        console.error('Error al cargar pedidos:', error);
+        mostrarMensaje('Error al cargar los pedidos: ' + error.message, 'error');
+    }
+}
+
+// Función para actualizar la tabla de pedidos
+function actualizarTablaPedidos() {
+    const tbody = document.getElementById('pedidosTableBody');
+    if (!tbody) return;
+
+    tbody.innerHTML = '';
+
+    if (!pedidosFiltrados || pedidosFiltrados.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="9" style="text-align: center;">
+                    No hay pedidos disponibles
+                </td>
+            </tr>
+        `;
+        return;
+    }
+
+    // Calcular paginación
+    const inicio = (paginaActualPedidos - 1) * pedidosPorPagina;
+    const fin = inicio + pedidosPorPagina;
+    const pedidosPaginados = pedidosFiltrados.slice(inicio, fin);
+
+    pedidosPaginados.forEach(pedido => {
+        const tr = document.createElement('tr');
+        tr.dataset.pedidoId = pedido.id_pedido;
+        
+        // Formatear fecha
+        const fecha = new Date(pedido.fecha_pedido);
+        const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        // Formatear estado con badge
+        const estadoClass = getEstadoClass(pedido.estado);
+        const estadoText = pedido.estado || 'Pendiente';
+
+        tr.innerHTML = `
+            <td>
+                <label class="checkbox-container">
+                    <input type="checkbox" class="pedido-checkbox" value="${pedido.id_pedido}">
+                    <span class="checkmark"></span>
+                </label>
+            </td>
+            <td>
+                <div class="pedido-info">
+                    <span class="pedido-id">#${pedido.id_pedido.substring(0, 8)}</span>
+                </div>
+            </td>
+            <td>${pedido.id_usuario || 'N/A'}</td>
+            <td>${fechaFormateada}</td>
+            <td>
+                <div class="price-info">
+                    <span class="current-price">$${pedido.total_pedido?.toFixed(2) || '0.00'}</span>
+                </div>
+            </td>
+            <td>
+                <span class="status-badge ${estadoClass}">${estadoText}</span>
+            </td>
+            <td>${pedido.dni_facturacion || 'N/A'}</td>
+            <td>${pedido.telefono_facturacion || 'N/A'}</td>
+            <td>
+                <div class="action-buttons">
+                    <button class="btn-editar" onclick="editarPedido('${pedido.id_pedido}')" title="Editar">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn-view" onclick="verPedido('${pedido.id_pedido}')" title="Ver Detalles">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                    <button class="btn-eliminar" onclick="eliminarPedido('${pedido.id_pedido}')" title="Eliminar">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+    });
+
+    actualizarPaginacionPedidos();
+    actualizarContadorPedidos();
+}
+
+// Función para obtener la clase CSS del estado
+function getEstadoClass(estado) {
+    switch (estado?.toLowerCase()) {
+        case 'abierto':
+            return 'abierto';
+        case 'cerrado':
+            return 'cerrado';
+        case 'pendiente':
+            return 'pending';
+        case 'confirmado':
+            return 'confirmed';
+        case 'en_proceso':
+        case 'en proceso':
+            return 'processing';
+        case 'completado':
+            return 'completed';
+        case 'cancelado':
+            return 'cancelled';
+        default:
+            return 'pending';
+    }
+}
+
+// Función para actualizar paginación de pedidos
+function actualizarPaginacionPedidos() {
+    const paginationContainer = document.getElementById('pedidosPagination');
+    if (!paginationContainer) return;
+
+    const totalPaginas = Math.ceil(pedidosFiltrados.length / pedidosPorPagina);
+    
+    if (totalPaginas <= 1) {
+        paginationContainer.innerHTML = '';
+        return;
+    }
+
+    let paginationHTML = `
+        <button class="pagination-btn" ${paginaActualPedidos === 1 ? 'disabled' : ''} onclick="cambiarPaginaPedidos(${paginaActualPedidos - 1})">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <div class="pagination-pages">
+    `;
+
+    // Mostrar máximo 5 páginas
+    const inicio = Math.max(1, paginaActualPedidos - 2);
+    const fin = Math.min(totalPaginas, paginaActualPedidos + 2);
+
+    if (inicio > 1) {
+        paginationHTML += `<button class="page-btn" onclick="cambiarPaginaPedidos(1)">1</button>`;
+        if (inicio > 2) {
+            paginationHTML += `<span class="page-dots">...</span>`;
+        }
+    }
+
+    for (let i = inicio; i <= fin; i++) {
+        paginationHTML += `
+            <button class="page-btn ${i === paginaActualPedidos ? 'active' : ''}" onclick="cambiarPaginaPedidos(${i})">
+                ${i}
+            </button>
+        `;
+    }
+
+    if (fin < totalPaginas) {
+        if (fin < totalPaginas - 1) {
+            paginationHTML += `<span class="page-dots">...</span>`;
+        }
+        paginationHTML += `<button class="page-btn" onclick="cambiarPaginaPedidos(${totalPaginas})">${totalPaginas}</button>`;
+    }
+
+    paginationHTML += `
+        </div>
+        <button class="pagination-btn" ${paginaActualPedidos === totalPaginas ? 'disabled' : ''} onclick="cambiarPaginaPedidos(${paginaActualPedidos + 1})">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    `;
+
+    paginationContainer.innerHTML = paginationHTML;
+}
+
+// Función para cambiar página de pedidos
+function cambiarPaginaPedidos(pagina) {
+    if (pagina < 1) return;
+    
+    const totalPaginas = Math.ceil(pedidosFiltrados.length / pedidosPorPagina);
+    if (pagina > totalPaginas) return;
+
+    paginaActualPedidos = pagina;
+    actualizarTablaPedidos();
+}
+
+// Función para actualizar contador de pedidos
+function actualizarContadorPedidos() {
+    const contador = document.getElementById('pedidosSelectedCount');
+    const checkboxes = document.querySelectorAll('.pedido-checkbox:checked');
+    const totalPedidos = pedidosFiltrados.length;
+    
+    if (contador) {
+        contador.textContent = `${checkboxes.length} de ${totalPedidos} pedidos seleccionados`;
+    }
+
+    // Habilitar/deshabilitar botón de acción masiva
+    const bulkButton = document.getElementById('bulkActionPedidos');
+    if (bulkButton) {
+        bulkButton.disabled = checkboxes.length === 0;
+    }
+}
+
+// Función para filtrar pedidos
+function filtrarPedidos() {
+    const searchTerm = document.getElementById('searchPedidos')?.value?.toLowerCase() || '';
+    const estadoFilter = document.getElementById('filterEstadoPedidos')?.value || '';
+    const fechaFilter = document.getElementById('filterFechaPedidos')?.value || '';
+
+    pedidosFiltrados = pedidosData.filter(pedido => {
+        // Filtro de búsqueda
+        const searchMatch = !searchTerm || 
+            pedido.id_pedido.toLowerCase().includes(searchTerm) ||
+            (pedido.id_usuario && pedido.id_usuario.toString().includes(searchTerm)) ||
+            (pedido.dni_facturacion && pedido.dni_facturacion.toLowerCase().includes(searchTerm));
+
+        // Filtro de estado
+        const estadoMatch = !estadoFilter || 
+            (pedido.estado && pedido.estado.toLowerCase() === estadoFilter.toLowerCase());
+
+        // Filtro de fecha
+        let fechaMatch = true;
+        if (fechaFilter) {
+            const fechaPedido = new Date(pedido.fecha_pedido);
+            const hoy = new Date();
+            
+            switch (fechaFilter) {
+                case 'hoy':
+                    fechaMatch = fechaPedido.toDateString() === hoy.toDateString();
+                    break;
+                case 'semana':
+                    const inicioSemana = new Date(hoy.setDate(hoy.getDate() - hoy.getDay()));
+                    fechaMatch = fechaPedido >= inicioSemana;
+                    break;
+                case 'mes':
+                    fechaMatch = fechaPedido.getMonth() === hoy.getMonth() && 
+                               fechaPedido.getFullYear() === hoy.getFullYear();
+                    break;
+                case 'anio':
+                    fechaMatch = fechaPedido.getFullYear() === hoy.getFullYear();
+                    break;
+            }
+        }
+
+        return searchMatch && estadoMatch && fechaMatch;
+    });
+
+    paginaActualPedidos = 1;
+    actualizarTablaPedidos();
+}
+
+// Función para ver detalles de un pedido
+async function verPedido(id) {
+    try {
+        const { data: pedido, error } = await supabase
+            .from('pedido')
+            .select('*')
+            .eq('id_pedido', id)
+            .single();
+
+        if (error) throw error;
+
+        const fecha = new Date(pedido.fecha_pedido);
+        const fechaFormateada = fecha.toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+
+        const detallesHTML = `
+            <div class="pedido-detalles">
+                <h3>Detalles del Pedido</h3>
+                <p><strong>ID Pedido:</strong> ${pedido.id_pedido}</p>
+                <p><strong>Cliente ID:</strong> ${pedido.id_usuario || 'N/A'}</p>
+                <p><strong>Fecha de Pedido:</strong> ${fechaFormateada}</p>
+                <p><strong>Estado:</strong> ${pedido.estado || 'Pendiente'}</p>
+                <p><strong>Total:</strong> $${pedido.total_pedido?.toFixed(2) || '0.00'}</p>
+                <p><strong>DNI Facturación:</strong> ${pedido.dni_facturacion || 'N/A'}</p>
+                <p><strong>Dirección Facturación:</strong> ${pedido.direccion_facturacion || 'N/A'}</p>
+                <p><strong>Teléfono Facturación:</strong> ${pedido.telefono_facturacion || 'N/A'}</p>
+                ${pedido.fecha_cierre ? `<p><strong>Fecha de Cierre:</strong> ${new Date(pedido.fecha_cierre).toLocaleDateString('es-ES')}</p>` : ''}
+            </div>
+        `;
+
+        // Crear y mostrar modal
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                ${detallesHTML}
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Cerrar modal
+        const closeBtn = modal.querySelector('.close');
+        closeBtn.onclick = () => modal.remove();
+        window.onclick = (event) => {
+            if (event.target === modal) modal.remove();
+        };
+
+    } catch (error) {
+        console.error('Error al cargar detalles del pedido:', error);
+        mostrarMensaje('Error al cargar los detalles del pedido: ' + error.message, 'error');
+    }
+}
+
+// Función para editar un pedido
+async function editarPedido(id) {
+    try {
+        const { data: pedido, error } = await supabase
+            .from('pedido')
+            .select('*')
+            .eq('id_pedido', id)
+            .single();
+
+        if (error) throw error;
+
+        // Crear formulario de edición
+        const modal = document.createElement('div');
+        modal.className = 'modal';
+        modal.innerHTML = `
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <h3>Editar Pedido</h3>
+                <form id="editPedidoForm">
+                    <div class="form-group">
+                        <label for="editEstado">Estado</label>
+                        <select id="editEstado" name="estado" required>
+                            <option value="abierto" ${pedido.estado === 'abierto' ? 'selected' : ''}>Abierto</option>
+                            <option value="cerrado" ${pedido.estado === 'cerrado' ? 'selected' : ''}>Cerrado</option>
+                            <option value="pendiente" ${pedido.estado === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+                            <option value="confirmado" ${pedido.estado === 'confirmado' ? 'selected' : ''}>Confirmado</option>
+                            <option value="en_proceso" ${pedido.estado === 'en_proceso' ? 'selected' : ''}>En Proceso</option>
+                            <option value="completado" ${pedido.estado === 'completado' ? 'selected' : ''}>Completado</option>
+                            <option value="cancelado" ${pedido.estado === 'cancelado' ? 'selected' : ''}>Cancelado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTotal">Total</label>
+                        <input type="number" id="editTotal" name="total_pedido" value="${pedido.total_pedido || 0}" step="0.01" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editDNI">DNI Facturación</label>
+                        <input type="text" id="editDNI" name="dni_facturacion" value="${pedido.dni_facturacion || ''}" maxlength="8">
+                    </div>
+                    <div class="form-group">
+                        <label for="editDireccion">Dirección Facturación</label>
+                        <textarea id="editDireccion" name="direccion_facturacion" rows="3">${pedido.direccion_facturacion || ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTelefono">Teléfono Facturación</label>
+                        <input type="text" id="editTelefono" name="telefono_facturacion" value="${pedido.telefono_facturacion || ''}" maxlength="15">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="this.closest('.modal').remove()">Cancelar</button>
+                        <button type="submit" class="btn-primary">Guardar Cambios</button>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        document.body.appendChild(modal);
+
+        // Manejar envío del formulario
+        const form = modal.querySelector('#editPedidoForm');
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const updateData = {
+                estado: formData.get('estado'),
+                total_pedido: parseFloat(formData.get('total_pedido')),
+                dni_facturacion: formData.get('dni_facturacion'),
+                direccion_facturacion: formData.get('direccion_facturacion'),
+                telefono_facturacion: formData.get('telefono_facturacion')
+            };
+
+            try {
+                const { error } = await supabase
+                    .from('pedido')
+                    .update(updateData)
+                    .eq('id_pedido', id);
+
+                if (error) throw error;
+
+                mostrarMensaje('Pedido actualizado exitosamente', 'success');
+                modal.remove();
+                cargarPedidos();
+
+            } catch (error) {
+                console.error('Error al actualizar pedido:', error);
+                mostrarMensaje('Error al actualizar el pedido: ' + error.message, 'error');
+            }
+        };
+
+        // Cerrar modal
+        const closeBtn = modal.querySelector('.close');
+        closeBtn.onclick = () => modal.remove();
+        window.onclick = (event) => {
+            if (event.target === modal) modal.remove();
+        };
+
+    } catch (error) {
+        console.error('Error al cargar pedido para editar:', error);
+        mostrarMensaje('Error al cargar el pedido: ' + error.message, 'error');
+    }
+}
+
+// Función para eliminar un pedido
+async function eliminarPedido(id) {
+    if (!confirm('¿Estás seguro de que deseas eliminar este pedido? Esta acción también eliminará todos los detalles asociados.')) return;
+
+    try {
+        // Primero eliminar los detalles del pedido
+        const { error: errorDetalles } = await supabase
+            .from('detalles_pedido')
+            .delete()
+            .eq('id_pedido', id);
+
+        if (errorDetalles) {
+            console.error('Error al eliminar detalles del pedido:', errorDetalles);
+            // Si no existe la tabla detalles_pedido, continuar con la eliminación del pedido
+            if (errorDetalles.code !== '42P01') { // 42P01 = tabla no existe
+                throw errorDetalles;
+            }
+        }
+
+        // Luego eliminar el pedido principal
+        const { error } = await supabase
+            .from('pedido')
+            .delete()
+            .eq('id_pedido', id);
+
+        if (error) throw error;
+
+        mostrarMensaje('Pedido eliminado exitosamente', 'success');
+        cargarPedidos();
+
+    } catch (error) {
+        console.error('Error al eliminar pedido:', error);
+        mostrarMensaje('Error al eliminar el pedido: ' + error.message, 'error');
+    }
+}
+
+// Función para exportar pedidos
+function exportarPedidos() {
+    const csvContent = "data:text/csv;charset=utf-8," 
+        + "ID Pedido,Cliente ID,Fecha Pedido,Total,Estado,DNI Facturación,Teléfono\n"
+        + pedidosFiltrados.map(pedido => {
+            const fecha = new Date(pedido.fecha_pedido).toLocaleDateString('es-ES');
+            return `${pedido.id_pedido},${pedido.id_usuario || 'N/A'},${fecha},${pedido.total_pedido || 0},${pedido.estado || 'Pendiente'},${pedido.dni_facturacion || 'N/A'},${pedido.telefono_facturacion || 'N/A'}`;
+        }).join("\n");
+
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "pedidos.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Event listeners para pedidos
+document.addEventListener('DOMContentLoaded', function() {
+    // Event listeners para filtros de pedidos
+    const searchInput = document.getElementById('searchPedidos');
+    const estadoFilter = document.getElementById('filterEstadoPedidos');
+    const fechaFilter = document.getElementById('filterFechaPedidos');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filtrarPedidos);
+    }
+    if (estadoFilter) {
+        estadoFilter.addEventListener('change', filtrarPedidos);
+    }
+    if (fechaFilter) {
+        fechaFilter.addEventListener('change', filtrarPedidos);
+    }
+
+    // Event listener para select all de pedidos
+    const selectAllPedidos = document.getElementById('select-all-pedidos');
+    if (selectAllPedidos) {
+        selectAllPedidos.addEventListener('change', function() {
+            const checkboxes = document.querySelectorAll('.pedido-checkbox');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = this.checked;
+            });
+            actualizarContadorPedidos();
+        });
+    }
+
+    // Event listener para checkboxes individuales de pedidos
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('pedido-checkbox')) {
+            actualizarContadorPedidos();
+        }
+    });
+
+    // Event listener para acción masiva de pedidos
+    const bulkActionPedidos = document.getElementById('bulkActionPedidos');
+    if (bulkActionPedidos) {
+        bulkActionPedidos.addEventListener('click', async function() {
+            const checkboxes = document.querySelectorAll('.pedido-checkbox:checked');
+            const ids = Array.from(checkboxes).map(cb => cb.value);
+
+            if (ids.length === 0) return;
+
+            if (confirm(`¿Estás seguro de que deseas marcar ${ids.length} pedidos como completados?`)) {
+                try {
+                    const { error } = await supabase
+                        .from('pedido')
+                        .update({ 
+                            estado: 'completado',
+                            fecha_cierre: new Date().toISOString()
+                        })
+                        .in('id_pedido', ids);
+
+                    if (error) throw error;
+
+                    mostrarMensaje(`${ids.length} pedidos marcados como completados`, 'success');
+                    cargarPedidos();
+
+                } catch (error) {
+                    console.error('Error al actualizar pedidos:', error);
+                    mostrarMensaje('Error al actualizar los pedidos: ' + error.message, 'error');
+                }
+            }
+        });
+    }
+});
+
+// Cargar pedidos cuando se muestre la pestaña
+document.addEventListener('DOMContentLoaded', function() {
+    const pedidosTab = document.querySelector('.tab:nth-child(2)');
+    if (pedidosTab) {
+        pedidosTab.addEventListener('click', function() {
+            // Cargar pedidos solo si no se han cargado antes
+            if (pedidosData.length === 0) {
+                cargarPedidos();
+            }
+        });
+    }
+}); 

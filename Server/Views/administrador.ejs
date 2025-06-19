@@ -365,42 +365,78 @@
             </div>
 
             <div class="tab-content" id="pedidos-tab">
-                <section class="dashboard-content">
-                    <div class="dashboard-section">
+                <section class="dashboard-content-pedidos">
+                    <div class="dashboard-section-pedidos">
                         <div class="pedidos-container">
-                            <h2><i class="fas fa-shopping-cart"></i> Gestión de Pedidos</h2>
+                            <div class="table-header">
+                                <div class="header-left">
+                                    <h2><i class="fas fa-shopping-cart"></i> Gestión de Pedidos</h2>
+                                    <p class="table-subtitle">Gestiona y organiza los pedidos de tus clientes</p>
+                                </div>
+                                <div class="table-actions">
+                                    <div class="search-box">
+                                        <i class="fas fa-search"></i>
+                                        <input type="text" placeholder="Buscar pedido..." class="search-input" id="searchPedidos">
+                                    </div>
+                                    <div class="filter-group">
+                                        <select class="filter-select" id="filterEstadoPedidos">
+                                            <option value="">Todos los estados</option>
+                                            <option value="pendiente">Pendiente</option>
+                                            <option value="confirmado">Confirmado</option>
+                                            <option value="en_proceso">En Proceso</option>
+                                            <option value="completado">Completado</option>
+                                            <option value="cancelado">Cancelado</option>
+                                        </select>
+                                        <select class="filter-select" id="filterFechaPedidos">
+                                            <option value="">Todas las fechas</option>
+                                            <option value="hoy">Hoy</option>
+                                            <option value="semana">Esta semana</option>
+                                            <option value="mes">Este mes</option>
+                                            <option value="anio">Este año</option>
+                                        </select>
+                                    </div>
+                                    <button class="btn-export" onclick="exportarPedidos()">
+                                        <i class="fas fa-file-export"></i>
+                                        Exportar
+                                    </button>
+                                </div>
+                            </div>
                             <div class="table-responsive">
                                 <table>
                                     <thead>
                                         <tr>
+                                            <th class="th-checkbox">
+                                                <label class="checkbox-container">
+                                                    <input type="checkbox" id="select-all-pedidos">
+                                                    <span class="checkmark"></span>
+                                                </label>
+                                            </th>
                                             <th>ID Pedido</th>
-                                            <th>Cliente</th>
-                                            <th>Fecha</th>
+                                            <th>Cliente ID</th>
+                                            <th>Fecha Pedido</th>
                                             <th>Total</th>
                                             <th>Estado</th>
-                                            <th>Acciones</th>
+                                            <th>DNI Facturación</th>
+                                            <th>Teléfono</th>
+                                            <th class="th-actions">Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>#ORD-001</td>
-                                            <td>Juan Pérez</td>
-                                            <td>2024-03-15</td>
-                                            <td>$1,299.99</td>
-                                            <td><span class="status-badge active">En Proceso</span></td>
-                                            <td>
-                                                <div class="action-buttons">
-                                                    <button class="btn-editar" title="Editar">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                    <button class="btn-view" title="Ver Detalles">
-                                                        <i class="fas fa-eye"></i>
-                                                    </button>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                    <tbody id="pedidosTableBody">
+                                        <!-- Los pedidos se cargarán dinámicamente aquí -->
                                     </tbody>
                                 </table>
+                            </div>
+                            <div class="table-footer">
+                                <div class="footer-left">
+                                    <span class="selected-count" id="pedidosSelectedCount">0 pedidos seleccionados</span>
+                                    <button class="btn-bulk-action" disabled id="bulkActionPedidos">
+                                        <i class="fas fa-check-double"></i>
+                                        Marcar como completados
+                                    </button>
+                                </div>
+                                <div class="pagination" id="pedidosPagination">
+                                    <!-- Paginación se generará dinámicamente -->
+                                </div>
                             </div>
                         </div>
                     </div>
