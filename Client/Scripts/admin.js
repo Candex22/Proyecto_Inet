@@ -332,6 +332,10 @@ async function agregarAlquilerAuto(formData) {
     return response;
 }
 
+// Variables globales para productos
+let productosData = [];
+let productosFiltrados = [];
+
 // Función para cargar los productos existentes
 async function cargarProductos() {
     try {
@@ -390,7 +394,12 @@ async function cargarProductos() {
         ];
 
         console.log('Total de productos a mostrar:', todosLosProductos.length);
-        actualizarTablaProductos(todosLosProductos);
+        
+        // Guardar en variables globales
+        productosData = todosLosProductos;
+        productosFiltrados = [...productosData];
+        
+        actualizarTablaProductos(productosFiltrados);
 
     } catch (error) {
         console.error('Error al cargar productos:', error);
@@ -499,6 +508,21 @@ function actualizarTablaProductos(productos) {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOM cargado, iniciando carga de productos...');
     cargarProductos();
+    
+    // Event listeners para filtros de productos
+    const searchInput = document.getElementById('searchProductos');
+    const categoriaFilter = document.getElementById('filterCategoriaProductos');
+    const estadoFilter = document.getElementById('filterEstadoProductos');
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filtrarProductos);
+    }
+    if (categoriaFilter) {
+        categoriaFilter.addEventListener('change', filtrarProductos);
+    }
+    if (estadoFilter) {
+        estadoFilter.addEventListener('change', filtrarProductos);
+    }
 });
 
 // Función para editar un producto
@@ -1431,4 +1455,49 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-}); 
+});
+
+// Función para filtrar productos
+function filtrarProductos() {
+    const searchTerm = document.getElementById('searchProductos')?.value?.toLowerCase() || '';
+    const categoriaFilter = document.getElementById('filterCategoriaProductos')?.value || '';
+    const estadoFilter = document.getElementById('filterEstadoProductos')?.value || '';
+
+    productosFiltrados = productosData.filter(producto => {
+        let nombre, categoria;
+
+        if ('nombre_paquete' in producto) {
+            nombre = producto.nombre_paquete;
+            categoria = 'Paquete';
+        } else if ('nombre' in producto && 'precio_noche' in producto) {
+            nombre = producto.nombre;
+            categoria = 'Hotel';
+        } else if ('numero_vuelo' in producto) {
+            nombre = producto.numero_vuelo;
+            categoria = 'Vuelo';
+        } else {
+            nombre = `${producto.marca} ${producto.modelo}`;
+            categoria = 'Alquiler';
+        }
+
+        // Filtro de búsqueda
+        const searchMatch = !searchTerm || 
+            nombre.toLowerCase().includes(searchTerm) ||
+            (producto.descripcion && producto.descripcion.toLowerCase().includes(searchTerm));
+
+        // Filtro de categoría
+        const categoriaMatch = !categoriaFilter || 
+            categoria.toLowerCase() === categoriaFilter.toLowerCase() ||
+            (categoriaFilter === 'paquetes' && categoria === 'Paquete') ||
+            (categoriaFilter === 'hotel' && categoria === 'Hotel') ||
+            (categoriaFilter === 'vuelo' && categoria === 'Vuelo') ||
+            (categoriaFilter === 'alquiler_auto' && categoria === 'Alquiler');
+
+        // Filtro de estado (por ahora todos están activos)
+        const estadoMatch = !estadoFilter || estadoFilter === 'activo';
+
+        return searchMatch && categoriaMatch && estadoMatch;
+    });
+
+    actualizarTablaProductos(productosFiltrados);
+} 

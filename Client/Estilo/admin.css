@@ -1811,7 +1811,7 @@ th {
   width: 32px;
   height: 32px;
   border-radius: 6px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--azul_oscuro);
   background: var(--Fondo_principal);
   cursor: pointer;
   color: var(--Texto_principal);
@@ -2071,24 +2071,27 @@ td {
   font-weight: 500;
 }
 
-.category-badge.tours {
-  background: #e3f2fd;
-  color: #1976d2;
-}
 
-.category-badge.hoteles {
-  background: #e8f5e9;
-  color: #2e7d32;
-}
 
-.category-badge.paquetes {
+.category-badge.paquete {
   background: #fff3e0;
   color: #f57c00;
 }
 
-.category-badge.vuelos {
+
+.category-badge.hotel {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.category-badge.vuelo {
   background: #f3e5f5;
   color: #7b1fa2;
+}
+
+.category-badge.alquiler {
+  background: #e1f5fe;
+  color: #0277bd;
 }
 
 .price-info {
